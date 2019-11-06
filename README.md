@@ -7,26 +7,27 @@ _Author: Colin Smith_
 
 This collection of OpenSim force component plugins, models, and executables (tools) are designed to enable simulations that include 6 degree of freedom joint mechanics with explicit representations of articular contact and ligament structures. It is currently a standalone package that requires OpenSim 4.0 to be installed. As development of pieces are finished I intend to integrate them into the OpenSim source code (opensim-core). 
 
-Much of the included models and codes were initially developed in the UW Neuromuscular Biomechanics Lab at the University of Wisconsin-Madison. Contributers to this work include Darryl Thelen, Rachel Lenhart, Jarred Kaiser, Michael Vignos, Kwang won Choi, Scott Brandon, and Josh Roth. Translation and extension of the orginal SIMM and UWPipeline into OpenSim was performed during my time as a PhD at UW-Madison, NCSRR visiting scholar at Stanford, and as a post-doc at ETH Zürich. 
+Much of the included models and codes were initially developed in the UW Neuromuscular Biomechanics Lab at the University of Wisconsin-Madison https://uwnmbl.engr.wisc.edu. Contributers to this work include Darryl Thelen, Rachel Lenhart, Jarred Kaiser, Michael Vignos, Kwang won Choi, Scott Brandon, and Josh Roth. Translation and extension of the orginal SIMM and UWPipeline into OpenSim was performed during my time as a PhD at UW-Madison, NCSRR visiting scholar at Stanford, and as a post-doc at ETH Zürich. 
 
 ## Software:
 ### Dependencies
 #### OpenSim 4.0
-Needed for the executables to link against and to visualize models and simulation results.
 https://opensim.stanford.edu/
+Needed for the executables to link against and to visualize models and simulation results.
 
-#### HDF5 
-A library used to generate .h5 files which store data in a binary hiearchial structure. This is used to save the per triangle contact distance and pressure maps in a compact format. MATLAB and Python both have readers available. HDFviewer is a standalone gui to explore .h5 file contents. This file type can be read much faster than text files, which is convinent when performing large scale monte carlo type analyses. 
-
-The source code for HDF5 is redistributed as a dependency library within this repository (LINK). See source code or website for their licensing information. 
-
+#### HDF5 and HDFView
 https://www.hdfgroup.org/solutions/hdf5/
 https://www.hdfgroup.org/downloads/hdfview/
 
+HDF5 is a library used to generate .h5 files which store data in a binary hiearchial structure. This is used to save the per triangle contact distance and pressure maps in a compact format. MATLAB and Python both have readers available. This file type can be read much faster than text files, which is convinent when performing large scale monte carlo type analyses. The source code for HDF5 is redistributed as a dependency library within this repository (LINK). See source code or website for their licensing information.\ 
+
+HDFviewer is a standalone gui to explore .h5 file contents. 
+
 ### Post Processing
-#### Paraview 5.7 - High quality rendering of simulation results, visualization of contact maps. 
+#### Paraview 5.7
 https://www.paraview.org/
 
+High quality rendering of simulation results, visualization of contact maps. 
  
 ## Force Components
 ### Blankevoort1991_Ligament
@@ -83,7 +84,7 @@ This tool enables detailed post-hoc analysis of simulations involving joint mech
 Visualize Measured Kinematics: 
 
 **JAM References**
-Below are all the references I am aware of that use these models or tools in some form. Note that all of these were performed using the older UWPipeline/SIMM implementation. Some of the early papers use a modified version of CMC to simulate the 6 DOF knee mechanics during walking (details in Thelen, JBME, 2014). This algorithm is not included in JAM and we don't plan to implement it at the moment. 
+Below are all the references I am aware of that use these models or tools in some form. Note that all of these were performed using the older UWPipeline/SIMM implementation. Some of the early papers use a modified version of CMC to simulate the 6 DOF knee mechanics during walking (details in Thelen, JBME, 2014). This algorithm is not included in JAM and we don't plan to implement it at the moment.\ 
 
 Clouthier, A., Borschneck, D., Thelen, D. G., Deluzio, K., & Rainbow, M. J. (2019). Relationship Between Lateral Patellar Stability Following Tibial Tubercle Osteotomy for Varying Patellofemoral Geometries. Journal of biomechanical engineering.
 
