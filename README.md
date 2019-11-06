@@ -7,48 +7,56 @@ _Author: Colin Smith_
 
 This collection of OpenSim force component plugins, models, and executables (tools) are designed to enable simulations that include 6 degree of freedom joint mechanics with explicit representations of articular contact and ligament structures. It is currently a standalone package that requires OpenSim 4.0 to be installed. As development of pieces are finished I intend to integrate them into the OpenSim source code (opensim-core). 
 
-Much of the included models and codes were initially developed in the UW Neuromuscular Biomechanics Lab at the University of Wisconsin-Madison https://uwnmbl.engr.wisc.edu. Contributers to this work include Darryl Thelen, Rachel Lenhart, Jarred Kaiser, Michael Vignos, Kwang won Choi, Scott Brandon, and Josh Roth. Translation and extension of the orginal SIMM and UWPipeline into OpenSim was performed during my time as a PhD at UW-Madison, NCSRR visiting scholar at Stanford, and as a post-doc at ETH Zürich. 
+Much of the included models and codes were initially developed in the [UW Neuromuscular Biomechanics Lab at the University of Wisconsin-Madison](https://uwnmbl.engr.wisc.edu). Contributers to this work include Darryl Thelen, Rachel Lenhart, Jarred Kaiser, Michael Vignos, Kwang won Choi, Scott Brandon, and Josh Roth. Translation and extension of the orginal SIMM and UWPipeline into OpenSim was performed during my time as a PhD at UW-Madison, NCSRR visiting scholar at Stanford, and as a post-doc at ETH Zürich. 
 
 ## Software:
 ### Dependencies
-#### OpenSim 4.0
-https://opensim.stanford.edu/
+#### [OpenSim 4.0](https://opensim.stanford.edu/)
 Needed for the executables to link against and to visualize models and simulation results.
 
-#### HDF5 and HDFView
-https://www.hdfgroup.org/solutions/hdf5/
-https://www.hdfgroup.org/downloads/hdfview/
-
+#### [HDF5](https://www.hdfgroup.org/solutions/hdf5/)
 HDF5 is a library used to generate .h5 files which store data in a binary hiearchial structure. This is used to save the per triangle contact distance and pressure maps in a compact format. MATLAB and Python both have readers available. This file type can be read much faster than text files, which is convinent when performing large scale monte carlo type analyses. The source code for HDF5 is redistributed as a dependency library within this repository (LINK). See source code or website for their licensing information.\ 
 
+
+
+### Addtional Software
+#### [HDFView](https://www.hdfgroup.org/downloads/hdfview/)
 HDFviewer is a standalone gui to explore .h5 file contents. 
 
-### Post Processing
-#### Paraview 5.7
-https://www.paraview.org/
-
+#### [Paraview 5.7](https://www.paraview.org/)
 High quality rendering of simulation results, visualization of contact maps. 
  
-## Force Components
+#### [Mesh Mixer](http://www.meshmixer.com/) 
+Nice software for mesh refinement, cutting, smoothing etc.
+
+#### [Mesh Lab](http://www.meshlab.net/)
+
+#### [GIBBON](https://www.gibboncode.org/)
+MALTAB based software toolkit that includes mesh editing features. 
+
+## OpenSim Components
+For details of implementation and usage, see the doxygen links. 
+
 ### Blankevoort1991_Ligament
-This one dimensional path geometry acts as a spring-damper to represent ligament fibers. The force strain relationship includes a nonlinear toe region at low strains and a linear region at high strains to represent the uncrimping and stretching of collagen fibers within a ligament. Details of the ligament implementation can be found in the doxygen file.<LINK TO DOXY> 
+This one dimensional path geometry acts as a spring-damper to represent ligament fibers. The force strain relationship includes a nonlinear toe region at low strains and a linear region at high strains to represent the uncrimping and stretching of collagen fibers within a ligament. 
+[Blakevoort1991_Ligament Doxygen]()
 
-**Examples**:
-
-**Publications**:
+**Relavent Publications**:
 *Smith, C. R., Lenhart, R. L., Kaiser, J., Vignos, M. F., & Thelen, D. G. (2016). Influence of ligament properties on tibiofemoral mechanics in walking. The journal of knee surgery, 29(02), 099-106.*
 
 Smith, C. R., Vignos, M. F., Lenhart, R. L., Kaiser, J., & Thelen, D. G. (2016). The influence of component alignment and ligament properties on tibiofemoral contact forces in total knee replacement. Journal of biomechanical engineering, 138(2), 021017.
   
-**Smith2018_ContactTriangleMesh**
-This component stores the triangular mesh file that represents one of the articular surfaces in the 
+### Smith2018_ContactTriangleMesh
+This component stores a triangular mesh representation of an articular surface that can be used in a Smith2018_ArticularContactForce contact pair. 
+[Blakevoort1991_Ligament Doxygen]()
+### Smith2018_ArticularContactForce
+This force component uses an elastic foundation model to compute contact pressures on each contacting triangle on a pair of Smith2018_ContactTriangleMesh components. The pressure is computed as a function of the local depth of penetration. To visualize the pressure maps, you must use the joint-mechanics tool to generate .vtp files that can be read into Paraview. 
+[Blakevoort1991_Ligament Doxygen]()
 
-**Smith2018_ArticularContactForce**
-This force component uses an elastic foundation model to compute contact pressures on each contacting triangle on a pair of Smith2018_ContactTriangleMesh components. The pressure is computed as a function of the local depth of penetration. For implementation details see the doxygen file ***LINK***. To visualize the pressure maps, you must use the joint-mechanics tool to generate .vtp files that can be read into Paraview. 
-
+**Relavent Publications**:
 *Smith, C. R., Won Choi, K., Negrut, D., & Thelen, D. G. (2018). Efficient computation of cartilage contact pressures within dynamic simulations of movement. Computer Methods in Biomechanics and Biomedical Engineering: Imaging & Visualization, 6(5), 491-498.*
 
-Bei, Y., & Fregly, B. J. (2004). Multibody dynamic simulation of knee contact mechanics. Medical engineering & physics, 26(9), 777-789.
+*Bei, Y., & Fregly, B. J. (2004). Multibody dynamic simulation of knee contact mechanics. Medical engineering & physics, 26(9), 777-789.*
 
 ## Models
 ### Lenhart2015 
