@@ -62,13 +62,16 @@ This force component uses an elastic foundation model to compute contact pressur
 
 ## Models
 ### Lenhart2015 
-A multibody knee model was constructed based on magnetic resonance images from a healthy young adult female. The bones, ligaments, and cartilage were segmented from different image sets that were optimized for the discerning the relavent structures and registered. The tibiofemoral and patellofemoral joints are 
+![alt text](https://github.com/clnsmith/opensim-jam/blob/master/graphics/lenhart2015_fullbody.JPG)
+![alt text](https://github.com/clnsmith/opensim-jam/blob/master/graphics/lenhart2015_knee.JPG)
+
+A multibody knee model was constructed based on magnetic resonance images from a healthy young adult female. The bones, ligaments, and cartilage were segmented from different image sets that were optimized for the discerning the relavent structures and registered. The tibiofemoral and patellofemoral joints are 6 DOF joints. See publication for details of model construction. 
 
 **Publications**
 *Lenhart, R. L., Kaiser, J., Smith, C. R., & Thelen, D. G. (2015). Prediction and validation of load-dependent behavior of the tibiofemoral and patellofemoral joints during movement. Annals of biomedical engineering, 43(11), 2675-2685*
 
 ### Smith2018 
-This model extends the Lenhart2015 model to include representations of the medial and lateral mensici. The menisici are connected via 6 degree of freedom joints to the tibia. Smith2018_ArticularContact is implemented 
+This model is based on the same subject and experimental data as the Lenhart2015 model, but also includes representations of the medial and lateral mensici. The menisici are connected via 6 degree of freedom joints to the tibia. Smith2018_ArticularContact is implemented beween the mensici and cartilage surfaces. 
 
 **Publications**
 *Smith, C. R., Brandon, S. C., & Thelen, D. G. (2019). Can altered neuromuscular coordination restore soft tissue loading patterns in anterior cruciate ligament and menisci deficient knees during walking?. Journal of biomechanics, 82, 124-133.*
