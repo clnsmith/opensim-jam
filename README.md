@@ -3,7 +3,7 @@ _A framework to simulate **J**oint and **A**rticular **M**echanics in OpenSim._
 
 _Author: Colin Smith_
 
-# This project is still in development. An official release will occur at the CAMS-Knee OpenSim Workshop at ETH Zürich in Feb 4-7 2019. Please be aware that naming conventions and structure may change until this date
+# This project is still in development. An official release will occur at the [CAMS-Knee OpenSim Workshop at ETH Zürich](https://opensim2020.ethz.ch/) from Feb 4-7 2019. Please be aware that naming conventions and structure may change until this event.
 
 This collection of OpenSim force component plugins, models, and executables (tools) are designed to enable simulations that include 6 degree of freedom joint mechanics with explicit representations of articular contact and ligament structures. It is currently a standalone package that requires OpenSim 4.0 to be installed. As development of pieces are finished I intend to integrate them into the OpenSim source code (opensim-core). 
 
