@@ -19,7 +19,7 @@ HDF5 is a library used to generate .h5 files which store data in a binary hiearc
 
 
 
-### Addtional Software
+### Additional Software
 #### [HDFView](https://www.hdfgroup.org/downloads/hdfview/)
 HDFviewer is a standalone gui to explore .h5 file contents. 
 
@@ -38,9 +38,9 @@ MALTAB based software toolkit that includes mesh editing features.
 ## OpenSim Components
 For details of implementation and usage, see the doxygen links. 
 
-### Blankevoort1991_Ligament
+### Blankevoort1991Ligament
 This one dimensional path geometry acts as a spring-damper to represent ligament fibers. The force strain relationship includes a nonlinear toe region at low strains and a linear region at high strains to represent the uncrimping and stretching of collagen fibers within a ligament. 
-[Blakevoort1991_Ligament Doxygen]()
+[Blakevoort1991Ligament Doxygen]()
 
 **Relavent Publications**:
 *Smith, C. R., Lenhart, R. L., Kaiser, J., Vignos, M. F., & Thelen, D. G. (2016). Influence of ligament properties on tibiofemoral mechanics in walking. The journal of knee surgery, 29(02), 099-106.*
@@ -49,11 +49,11 @@ Smith, C. R., Vignos, M. F., Lenhart, R. L., Kaiser, J., & Thelen, D. G. (2016).
   
 ### Smith2018_ContactMesh
 This component stores a triangular mesh representation of an articular surface that can be used in a Smith2018_ArticularContactForce contact pair. 
-[Smith2018_ContactMesh_Ligament Doxygen]()
+[Smith2018ContactMesh_Ligament Doxygen]()
 
-### Smith2018_ArticularContactForce
+### Smith2018ArticularContactForce
 This force component uses an elastic foundation model to compute contact pressures on each contacting triangle on a pair of Smith2018_ContactTriangleMesh components. The pressure is computed as a function of the local depth of penetration. To visualize the pressure maps, you must use the joint-mechanics tool to generate .vtp files that can be read into Paraview. 
-[Smith2018_ArticularContactForce Doxygen]()
+[Smith2018ArticularContactForce Doxygen]()
 
 **Relavent Publications**:
 *Smith, C. R., Won Choi, K., Negrut, D., & Thelen, D. G. (2018). Efficient computation of cartilage contact pressures within dynamic simulations of movement. Computer Methods in Biomechanics and Biomedical Engineering: Imaging & Visualization, 6(5), 491-498.*
