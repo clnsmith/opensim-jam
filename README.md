@@ -27,9 +27,10 @@ HDFviewer is a standalone gui to explore .h5 file contents.
 High quality rendering of simulation results, visualization of contact maps. 
  
 #### [Mesh Mixer](http://www.meshmixer.com/) 
-Nice software for mesh refinement, cutting, smoothing etc.
+Software for mesh visualization, refinement, cutting, smoothing etc.
 
 #### [Mesh Lab](http://www.meshlab.net/)
+Software for mesh visualization, smoothing etc. 
 
 #### [GIBBON](https://www.gibboncode.org/)
 MALTAB based software toolkit that includes mesh editing features. 
@@ -46,12 +47,13 @@ This one dimensional path geometry acts as a spring-damper to represent ligament
 
 Smith, C. R., Vignos, M. F., Lenhart, R. L., Kaiser, J., & Thelen, D. G. (2016). The influence of component alignment and ligament properties on tibiofemoral contact forces in total knee replacement. Journal of biomechanical engineering, 138(2), 021017.
   
-### Smith2018_ContactTriangleMesh
+### Smith2018_ContactMesh
 This component stores a triangular mesh representation of an articular surface that can be used in a Smith2018_ArticularContactForce contact pair. 
-[Blakevoort1991_Ligament Doxygen]()
+[Smith2018_ContactMesh_Ligament Doxygen]()
+
 ### Smith2018_ArticularContactForce
 This force component uses an elastic foundation model to compute contact pressures on each contacting triangle on a pair of Smith2018_ContactTriangleMesh components. The pressure is computed as a function of the local depth of penetration. To visualize the pressure maps, you must use the joint-mechanics tool to generate .vtp files that can be read into Paraview. 
-[Blakevoort1991_Ligament Doxygen]()
+[Smith2018_ArticularContactForce Doxygen]()
 
 **Relavent Publications**:
 *Smith, C. R., Won Choi, K., Negrut, D., & Thelen, D. G. (2018). Efficient computation of cartilage contact pressures within dynamic simulations of movement. Computer Methods in Biomechanics and Biomedical Engineering: Imaging & Visualization, 6(5), 491-498.*
@@ -68,8 +70,6 @@ A multibody knee model was constructed based on magnetic resonance images from a
 ### Smith2018 
 This model extends the Lenhart2015 model to include representations of the medial and lateral mensici. The menisici are connected via 6 degree of freedom joints to the tibia. Smith2018_ArticularContact is implemented 
 
-**Examples**
-
 **Publications**
 *Smith, C. R., Brandon, S. C., & Thelen, D. G. (2019). Can altered neuromuscular coordination restore soft tissue loading patterns in anterior cruciate ligament and menisci deficient knees during walking?. Journal of biomechanics, 82, 124-133.*
 
@@ -81,17 +81,16 @@ Similar to the forward simulation tool in the OpenSim gui, but the interface is 
 ### COMAK
 The **C**oncurrent **O**ptimization of **M**uscle **A**ctivations and **K**inematics simulation tool enables the calculation of muscle forces and joint mechanics during dynamic movements. In early publications we also called this algorithim Enhanced Static Optimization before we came up with the clearly superior COMAK acroynm. 
 
-Examples:
-
 Publications:
 
 ### Joint Mechanics
 This tool enables detailed post-hoc analysis of simulations involving joint mechanics. It can be used to generate .vtp files to visualize simulation results in Paraview, or .h5 files which are binary files that can store the large quantites of contact data (multiple calculated values for each triange face) in compact files that can be quickly read by MATLAB, Python, or HDF View (https://www.hdfgroup.org/downloads/hdfview/)
 
-**Examples**
+## Examples
+
 Visualize Measured Kinematics: 
 
-**JAM References**
+## JAM References
 Below are all the references I am aware of that use these models or tools in some form. Note that all of these were performed using the older UWPipeline/SIMM implementation. Some of the early papers use a modified version of CMC to simulate the 6 DOF knee mechanics during walking (details in Thelen, JBME, 2014). This algorithm is not included in JAM and we don't plan to implement it at the moment.\ 
 
 Clouthier, A., Borschneck, D., Thelen, D. G., Deluzio, K., & Rainbow, M. J. (2019). Relationship Between Lateral Patellar Stability Following Tibial Tubercle Osteotomy for Varying Patellofemoral Geometries. Journal of biomechanical engineering.
@@ -134,6 +133,6 @@ Lenhart, R. L., Kaiser, J., Smith, C. R., & Thelen, D. G. (2015). Prediction and
 
 Lenhart, R. L., Smith, C. R., Vignos, M. F., Kaiser, J., Heiderscheit, B. C., & Thelen, D. G. (2015). Influence of step rate and quadriceps load distribution on patellofemoral cartilage contact pressures during running. Journal of biomechanics, 48(11), 2871-2878.
 
-
+Thelen, D. G., Won Choi, K., & Schmitz, A. M. (2014). Co-simulation of neuromuscular dynamics and knee mechanics during human walking. Journal of biomechanical engineering, 136(2).
 
 
