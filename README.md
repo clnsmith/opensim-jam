@@ -33,7 +33,7 @@ Software for mesh visualization, refinement, cutting, smoothing etc.
 Software for mesh visualization, smoothing etc. 
 
 #### [GIBBON](https://www.gibboncode.org/)
-MALTAB based software toolkit that includes mesh editing features. 
+MATLAB based software toolkit that includes mesh editing features. 
 
 ## OpenSim Components
 For details of implementation and usage, see the doxygen links. 
