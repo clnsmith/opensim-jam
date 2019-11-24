@@ -7,7 +7,7 @@ _Author: Colin Smith_
 
 This collection of OpenSim force component plugins, models, and executables (tools) are designed to enable simulations that include 6 degree of freedom joint mechanics with explicit representations of articular contact and ligament structures. It is currently a standalone package that requires OpenSim 4.0 to be installed. As development of pieces are finished I intend to integrate them into the OpenSim source code (opensim-core). 
 
-Much of the included models and codes were initially developed in the [UW Neuromuscular Biomechanics Lab at the University of Wisconsin-Madison](https://uwnmbl.engr.wisc.edu). Contributers to this work include Darryl Thelen, Rachel Lenhart, Jarred Kaiser, Michael Vignos, Kwang won Choi, Scott Brandon, and Josh Roth. Translation and extension of the orginal SIMM and UWPipeline into OpenSim was performed during my time as a PhD at UW-Madison (NIH EB015410) and Stanford ([NCSRR Visiting Scholar](https://opensim.stanford.edu/support/scholars.html)), and as a post-doc at ETH Zürich ([Whitaker International Program](https://www.whitaker.org/), [OpenSim Pilot Project](https://opensim.stanford.edu/support/pilot.html)). 
+Much of the included models and codes were initially developed in the [UW Neuromuscular Biomechanics Lab at the University of Wisconsin-Madison](https://uwnmbl.engr.wisc.edu). Contributers to this work include Darryl Thelen, Rachel Lenhart, Jarred Kaiser, Michael Vignos, Kwang won Choi, Scott Brandon, and Josh Roth. Translation and extension of the orginal SIMM and UWPipeline into OpenSim was performed during my time as a PhD at UW-Madison (NIH EB015410) and Stanford ([NCSRR Visiting Scholar](https://opensim.stanford.edu/support/scholars.html)), and as a post-doc at the [Laboratory for Movement Biomechanics](https://www.movement.ethz.ch/) at ETH Zürich ([Whitaker International Program](https://www.whitaker.org/), [OpenSim Pilot Project](https://opensim.stanford.edu/support/pilot.html)). 
 
 ## Software:
 ### Dependencies
@@ -89,12 +89,25 @@ Publications:
 ### Joint Mechanics
 This tool enables detailed post-hoc analysis of simulations involving joint mechanics. It can be used to generate .vtp files to visualize simulation results in Paraview, or .h5 files which are binary files that can store the large quantites of contact data (multiple calculated values for each triange face) in compact files that can be quickly read by MATLAB, Python, or HDF View (https://www.hdfgroup.org/downloads/hdfview/)
 
-## Examples
+## JAM Distribution 
 
-### Joint-Mechanics 
 
-#### Visualize Measured Kinematics: 
+### Examples
+
+### Visualize Measured or Simulated Kinematics 
 You can use the joint mechanics tool to analyze and visualize measured bone kinematics from fluoroscopy, dynamic MRI, etc or static poses from medical imaging. The tool can calculate distance maps if only bone .stl files are available, or  
+
+### Passive Knee Flexion
+Perform a forward simulation of passive knee flexion where tibiofemoral flexion is prescribed and the other knee coordinates are unconstrained and thus are calculated based on the passive muscle, ligament, and articular contact forces. 
+
+### Anterior Drawer Laxity Test
+Perform a forward simulation where the knee is flexed to 45* and an anterior force is applied to the tibia. The 
+
+### Quadriceps Load
+
+### Walking Simulation
+
+### 
 ## JAM References
 Below are all the references I am aware of that use these models or tools in some form. Note that all of these were performed using the older UWPipeline/SIMM implementation. Some of the early papers use a modified version of CMC to simulate the 6 DOF knee mechanics during walking (details in Thelen, JBME, 2014). This algorithm is not included in JAM and we don't plan to implement it at the moment.\ 
 
