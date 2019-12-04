@@ -89,13 +89,14 @@ Publications:
 ### Joint Mechanics
 This tool enables detailed post-hoc analysis of simulations involving joint mechanics. It can be used to generate .vtp files to visualize simulation results in Paraview, or .h5 files which are binary files that can store the large quantites of contact data (multiple calculated values for each triange face) in compact files that can be quickly read by MATLAB, Python, or HDF View (https://www.hdfgroup.org/downloads/hdfview/)
 
-## JAM Distribution 
+## JAM Distribution
+The opensim-jam-distribute folder contains everything you need to get started using the OpenSim components and applications (tools) described above. 
 
 
 ### Examples
 
-### Visualize Measured or Simulated Kinematics 
-You can use the joint mechanics tool to analyze and visualize measured bone kinematics from fluoroscopy, dynamic MRI, etc or static poses from medical imaging. The tool can calculate distance maps if only bone .stl files are available, or  
+### Visualize Kinematics 
+You can use the joint-mechanics tool to analyze and visualize simulated or measured bone kinematics from fluoroscopy, dynamic MRI, etc or static poses from medical imaging. The tool can calculate distance maps between bone surfaces or overlap maps if cartilage surfaces are also provided.
 
 ### Passive Knee Flexion
 Perform a forward simulation of passive knee flexion where tibiofemoral flexion is prescribed and the other knee coordinates are unconstrained and thus are calculated based on the passive muscle, ligament, and articular contact forces. 
