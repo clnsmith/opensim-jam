@@ -73,7 +73,6 @@ JointMechanicsTool::JointMechanicsTool(Model *aModel,
 void JointMechanicsTool::setNull()
 {
     setAuthors("Colin Smith");
-
 }
 
 void JointMechanicsTool::constructProperties()
@@ -420,11 +419,7 @@ void JointMechanicsTool::setModelingOptions(SimTK::State& state) {
 		Smith2018ArticularContactForce& contactForce = _model->updComponent
 			<Smith2018ArticularContactForce>(_contact_force_paths[i]);
 
-		contactForce.setModelingOption(state, "flip_meshes", 1);
-
-		if (get_h5_summary_contact_data()) {
-			contactForce.setModelingOption(state, "contact_stats", 1);
-		}
+		contactForce.setModelingOption(state, "flip_meshes", 1);		
 	}
     
 	setupDynamicVertexLocationStorage();
@@ -451,71 +446,6 @@ void JointMechanicsTool::setupDynamicVertexLocationStorage() {
     bool dummyBool;
     SimTK::Pathname::deconstructPathname(model_file, dummyBool, model_dir, dummy1, dummy2);
     
-    if (get_write_blender_csv()) {
-        
-        std::vector<std::string> mesh_names;
-        int count = 0;
-        for (const Frame& frame : _model->updComponentList<Frame>()) {
-            for (int i = 0; i< frame.getProperty_attached_geometry().size(); ++i) {
-                const Geometry& geo = frame.get_attached_geometry(i);
-                const Mesh* mesh = dynamic_cast<const Mesh*>(&geo);
-                std::string filename = mesh->get_mesh_file();
-                std::vector<std::string> mesh_file_parts = split_string(filename,".");
-                std::string mesh_file = mesh_file_parts[0];
-                if (mesh != NULL) {
-                    for (int m = 0; m < 4; ++m) {
-                        for (int n = 0; n < 4; ++n) {
-                            mesh_names.push_back(mesh_file + "_" + std::to_string(m) + std::to_string(n));
-                            count++;
-                        }
-                    }
-                    std::ifstream file(filename);
-                    if (!file) {
-                        filename = model_dir + mesh->get_mesh_file();
-                        file.open(filename);
-                    }
-                    if (!file) {
-                        filename = model_dir + "Geometry/" + mesh->get_mesh_file();
-                        file.open(filename);
-                    }
-
-                    if (!file) {
-                        OPENSIM_THROW(Exception, "Attached Geometry file doesn't exist:\n" + model_dir + "[Geometry/]" + mesh->get_mesh_file());
-                    }
-
-                    SimTK::PolygonalMesh ply_mesh;
-                    ply_mesh.loadFile(filename);
-
-                    //Apply Scale Factors
-                    SimTK::Vec3 scale = mesh->get_scale_factors();
-                    if (scale != SimTK::Vec3(1)) {
-                        SimTK::PolygonalMesh scaled_mesh;
-
-                        for (int v = 0; v < ply_mesh.getNumVertices(); ++v) {
-                            scaled_mesh.addVertex(ply_mesh.getVertexPosition(v).elementwiseMultiply(scale));
-                        }
-
-                        for (int f = 0; f < ply_mesh.getNumFaces(); ++f) {
-                            SimTK::Array_<int> facevertex;
-                            for (int k = 0; k < ply_mesh.getNumVerticesForFace(f); ++k) {
-                                facevertex.push_back(ply_mesh.getFaceVertex(f, k));
-                            }
-                            scaled_mesh.addFace(facevertex);
-                        }
-                        ply_mesh.copyAssign(scaled_mesh);
-                    }
-
-                    //Write Scaled Meshes
-			        //VTPFileAdapter* mesh_vtp = new VTPFileAdapter();
-			        //mesh_vtp->setDataFormat("binary");
-                    //mesh_vtp->setPolygonsFromMesh(ply_mesh);
-				    //mesh_vtp->write(mesh_file, get_results_directory()+"/vtp/", 1);
-                }
-            }
-        }
-        _frame_transform_n_col = count;
-        _frame_transform_in_ground.setColumnLabels(mesh_names);
-    }
     
     if (get_write_vtp_files()) {
         if (get_vtp_frame() != "static") {
@@ -630,7 +560,8 @@ void JointMechanicsTool::setupDynamicVertexLocationStorage() {
                         SimTK::PolygonalMesh scaled_mesh;
 
                         for (int v = 0; v < ply_mesh.getNumVertices(); ++v) {
-                            scaled_mesh.addVertex(ply_mesh.getVertexPosition(v).elementwiseMultiply(scale));
+                            scaled_mesh.addVertex
+                            (ply_mesh.getVertexPosition(v).elementwiseMultiply(scale));
                         }
 
                         for (int f = 0; f < ply_mesh.getNumFaces(); ++f) {
@@ -643,8 +574,6 @@ void JointMechanicsTool::setupDynamicVertexLocationStorage() {
                         ply_mesh.copyAssign(scaled_mesh);
                     }
 
-
-
                     _attach_geo_names.push_back(geo.getName());
                     _attach_geo_frames.push_back(frame.getAbsolutePathString());
                     _attach_geo_meshes.push_back(ply_mesh);
@@ -656,6 +585,8 @@ void JointMechanicsTool::setupDynamicVertexLocationStorage() {
 }
 
 void JointMechanicsTool::setupLigamentStorage() {
+    if (_model->countNumComponents<Blankevoort1991Ligament>() == 0) return;
+
     const Blankevoort1991Ligament& lig0 = _model->updComponentList<Blankevoort1991Ligament>().begin().deref();
 
     for (const auto& entry : lig0.getOutputs()) {
@@ -682,6 +613,7 @@ void JointMechanicsTool::setupLigamentStorage() {
 }
 
 void JointMechanicsTool::setupMuscleStorage() {
+    if (_model->countNumComponents<Muscle>() == 0) return;
     const Muscle& msl0 = _model->getMuscles().get(0);
     
     for (const auto& entry : msl0.getOutputs()) {
@@ -723,6 +655,8 @@ void JointMechanicsTool::setupCoordinateStorage() {
 }
 
 void JointMechanicsTool::setupContactStorage(const SimTK::State& state) {
+     if (_model->countNumComponents<Smith2018ArticularContactForce>() == 0) return;
+
     const Smith2018ArticularContactForce& frc0 = _model->getComponent<Smith2018ArticularContactForce>(_contact_force_paths[0]);
 
     for (const auto& entry : frc0.getOutputs()) {
@@ -775,32 +709,7 @@ int JointMechanicsTool::record(const SimTK::State& s, const int frame_num)
 {
     _model->realizeReport(s);
 
-    //Store global body transformations
-    if (get_write_blender_csv()) {
-
-        ComponentList<const Frame> frame_list = _model->getComponentList<Frame>();
-        SimTK::RowVector row(_frame_transform_n_col);
-        int c = 0;
-        for (const Frame& frame : _model->updComponentList<Frame>()) {
-            SimTK::Mat44 trans_matrix = frame.getTransformInGround(s).toMat44();
-            for (int i = 0; i< frame.getProperty_attached_geometry().size(); ++i) {
-                const Geometry& geo = frame.get_attached_geometry(i);
-                const Mesh* mesh = dynamic_cast<const Mesh*>(&geo);
-
-                if (mesh != NULL) {
-                    for (int m = 0; m < 4; ++m) {
-                        for (int n = 0; n < 4; ++n) {
-                            row(c) = trans_matrix(m, n);
-                            c++;
-                        }
-                    }
-                }
-            }
-        }
-        _frame_transform_in_ground.appendRow(_time[frame_num],row);
-    }
-
-	//Store mesh vertex locations
+    //Store mesh vertex locations
 	std::string frame_name = get_vtp_frame();
     const Frame& frame = _model->getComponent<Frame>(frame_name);
     std::string origin_name = get_vtp_origin();
@@ -1045,10 +954,6 @@ int JointMechanicsTool::printResults(const std::string &aBaseName,const std::str
 		writeH5File(aBaseName, aDir);
 	}
 
-    //Write blender .csv file
-    if (get_write_blender_csv()) {
-        writeBlenderCSVFile();
-    }
     return(0);
 }
 

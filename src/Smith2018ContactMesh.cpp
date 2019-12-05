@@ -89,19 +89,19 @@ void Smith2018ContactMesh::setNull()
 void Smith2018ContactMesh::constructProperties()
 {
 	constructProperty_file_name("");
-	constructProperty_mesh_frame(PhysicalOffsetFrame());
-	constructProperty_display_preference(1);
+	constructProperty_mesh_frame(PhysicalOffsetFrame());	
+    constructProperty_scale_factors(SimTK::Vec3(1.0));
     constructProperty_min_proximity(-0.02);
     constructProperty_max_proximity(0.01);
 	constructProperty_mesh_back_file("");
 	constructProperty_material_properties_file("");
 	constructProperty_min_thickness(0.001);
 	constructProperty_max_thickness(0.01);
-	constructProperty_scale_factors(SimTK::Vec3(1.0));
-
-	Array<double> defaultColor(1.0, 3); //color default to 0, 1, 1
-	defaultColor[0] = 0.0;
-	constructProperty_color(defaultColor);
+	
+    Appearance defaultAppearance;
+    defaultAppearance.set_color(SimTK::Gray);
+    defaultAppearance.set_representation(VisualRepresentation::DrawSurface);
+    constructProperty_Appearance(defaultAppearance);
 }
 
 void Smith2018ContactMesh::extendScale(const SimTK::State& s, const ScaleSet& scaleSet)
@@ -115,12 +115,13 @@ void Smith2018ContactMesh::extendScale(const SimTK::State& s, const ScaleSet& sc
 
 void Smith2018ContactMesh::extendFinalizeFromProperties() {
 	Super::extendFinalizeFromProperties();
-	if (!mesh_is_cached) {
-		initializeMesh();
+    if (!mesh_is_cached) {
+        initializeMesh();
 
-	if(!get_mesh_back_file().empty())
-		computeVariableCartilageThickness();
-	}
+        if(!get_mesh_back_file().empty()){
+		    computeVariableCartilageThickness();
+	    }
+    }	
 }
 
 void Smith2018ContactMesh::extendAddToSystem(SimTK::MultibodySystem &system) const {
@@ -399,6 +400,10 @@ void Smith2018ContactMesh::initializeMesh()
         allFaces[i] = i;}
 
     createObbTree(_obb, _mesh, allFaces);
+
+    //Create Decorative Mesh
+    _decorative_mesh.reset(new SimTK::DecorativeMeshFile(file));
+    _decorative_mesh->setScaleFactors(get_scale_factors());
 }
 
 void Smith2018ContactMesh::computeVariableCartilageThickness() {
@@ -444,9 +449,6 @@ void Smith2018ContactMesh::computeVariableCartilageThickness() {
 	}
 }
 
-
-
-
 SimTK::Vector Smith2018ContactMesh::getNeighborTris(int tri, int& nNeighborTri) const
 {
 	nNeighborTri = _n_tri_neighbors(tri);
@@ -460,21 +462,41 @@ SimTK::Vector Smith2018ContactMesh::getNeighborTris(int tri, int& nNeighborTri) 
     return neighbor_tri_list;
 }
 
-const int Smith2018ContactMesh::getDisplayPreference()
-{
-	return get_display_preference();
-}
-
-void Smith2018ContactMesh::setDisplayPreference(const int dispPref)
-{
-	set_display_preference(dispPref);
-}
-
-
 void Smith2018ContactMesh::scale(const ScaleSet& aScaleSet)
 {
 	throw Exception("ContactGeometry::scale is not implemented");
 }
+
+void Smith2018ContactMesh::generateDecorations(bool fixed, const ModelDisplayHints& hints,
+    const SimTK::State& s, SimTK::Array_<SimTK::DecorativeGeometry>& geometry) const
+{
+    Super::generateDecorations(fixed, hints, s, geometry);
+
+    // There is no fixed geometry to generate here.
+    if (fixed) { return; }
+
+    // Guard against the case where the Force was disabled or mesh failed to load.
+    if (_decorative_mesh == nullptr) return;
+    if (!hints.get_show_contact_geometry()) return;
+    
+    const Frame& myFrame = get_mesh_frame();
+    const Frame& bFrame = myFrame.findBaseFrame();
+    const PhysicalFrame* bPhysicalFrame =
+        dynamic_cast<const PhysicalFrame*>(&bFrame);
+    if (bPhysicalFrame == nullptr) {
+        // throw exception something is wrong
+        throw (Exception("Frame for Geometry " + getName() +
+            " is not attached to a PhysicalFrame."));
+    }
+     
+    SimTK::MobilizedBodyIndex mbidx = bPhysicalFrame->getMobilizedBodyIndex();
+    SimTK::Transform transformInBaseFrame = myFrame.findTransformInBaseFrame();
+    
+    _decorative_mesh->setBodyId(mbidx);
+    _decorative_mesh->setTransform(transformInBaseFrame);
+    _decorative_mesh->setIndexOnBody(0);        
+}
+
 
 void Smith2018ContactMesh::createObbTree
     (OBBTreeNode& node, const SimTK::PolygonalMesh& mesh, 
@@ -483,7 +505,7 @@ void Smith2018ContactMesh::createObbTree
     node._numTriangles = faceIndices.size();
     
     set<int> vertexIndices;
-    for (int i = 0; i < faceIndices.size(); i++) {        
+    for (int i = 0; i < (int)faceIndices.size(); i++) {        
         for (int j = 0; j < 3; j++) {
             vertexIndices.insert(mesh.getFaceVertex(faceIndices[i], j));
         }

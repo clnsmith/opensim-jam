@@ -26,6 +26,8 @@
 #include <OpenSim/Common/Constant.h>
 #include <OpenSim/Common/FunctionSet.h>
 #include <OpenSim\Actuators\Millard2012EquilibriumMuscle.h>
+#include <Blankevoort1991Ligament.h>
+
 using namespace OpenSim;
 
 
@@ -46,6 +48,7 @@ ForsimTool::ForsimTool(std::string settings_file) : Object(settings_file) {
 	loadModel(settings_file);
 	
     _directoryOfSetupFile = IO::getParentDirectory(settings_file);	
+    IO::chDir(_directoryOfSetupFile); 
 }
 
 
@@ -79,6 +82,7 @@ void ForsimTool::constructProperties()
 	constructProperty_constant_muscle_frc(-1);
 	constructProperty_unconstrained_coordinates();
 	constructProperty_use_visualizer(false);
+    constructProperty_verbose(0);
 	constructProperty_AnalysisSet(AnalysisSet());
 }
 
@@ -99,7 +103,7 @@ void ForsimTool::run()
 	}	
 	
 	//Add Analysis set
-	AnalysisSet aSet = get_AnalysisSet();
+    AnalysisSet aSet = get_AnalysisSet();
 	int size = aSet.getSize();
 
     for(int i=0;i<size;i++) {
@@ -116,29 +120,12 @@ void ForsimTool::run()
 	
 	//Apply Muscle Forces
 	initializeActuators(state);
-	state = _model.initSystem();
-	
+		
 	//Set Start and Stop Times
     initializeStartStopTimes();
 
 	//Allocate Results Storage
-	TimeSeriesTable q_table;
-	TimeSeriesTable u_table;
-
-	SimTK::RowVector q_row(_model.getNumCoordinates());
-	SimTK::RowVector u_row(_model.getNumCoordinates());
-
-	std::vector<std::string> q_names;
-	std::vector<std::string> u_names;
-
-	for (auto& coord : _model.updComponentList<Coordinate>()) {
-					
-		q_names.push_back(coord.getAbsolutePathString() + "/value");
-		u_names.push_back(coord.getAbsolutePathString() + "/speed");
-	}
-
-	q_table.setColumnLabels(q_names);
-	u_table.setColumnLabels(u_names);
+    StatesTrajectory result_states;
 
 	_model.equilibrateMuscles(state);
 
@@ -146,20 +133,24 @@ void ForsimTool::run()
 	if (get_use_visualizer()) {
 		_model.updMatterSubsystem().setShowDefaultGeometry(false);
 		SimTK::Visualizer& viz = _model.updVisualizer().updSimbodyVisualizer();
-		viz.setBackgroundColor(SimTK::White);
-		viz.setShowSimTime(true);		
+		viz.setBackgroundColor(SimTK::Black);
+        viz.setBackgroundType(SimTK::Visualizer::BackgroundType::SolidColor);
+        viz.setMode(SimTK::Visualizer::Mode::Sampling);
+		viz.setShowSimTime(true);
+        viz.setDesiredFrameRate(100);
 	}
 
 	//Set Integrator
+    state.setTime(get_start_time());
+    
 	SimTK::CPodesIntegrator integrator(_model.getSystem(), SimTK::CPodes::BDF, SimTK::CPodes::Newton);
 	integrator.setAccuracy(get_integrator_accuracy());
 	integrator.setMinimumStepSize(get_minimum_time_step());
 	integrator.setMaximumStepSize(get_maximum_time_step());
-
+    
 	SimTK::TimeStepper timestepper(_model.getSystem(), integrator);
-	state.setTime(get_start_time());
 	timestepper.initialize(state);
-
+    
 	//Integrate Forward in Time
 	double dt = get_report_time_step();
 	int nSteps = round((get_stop_time() - get_start_time()) / dt);
@@ -171,38 +162,28 @@ void ForsimTool::run()
 	std::cout << "Start Time: " << get_start_time() << std::endl;
 	std::cout << "Stop Time: " << get_stop_time() << std::endl;
 	std::cout << std::endl;
-	
-	//SimTK::State& s= timestepper.updIntegrator().updAdvancedState();
 
 	for (int i = 0; i <= nSteps; ++i) {
-
+        
 		double t = get_start_time() + i * dt;
 		std::cout << "Time:" << t << std::endl;
 
+        if (get_verbose() >= 2) {
+            printDebugInfo(state);
+        }
+
 		//Set Prescribed Muscle Forces
-		
-		for (int j = 0; j < _prescribed_frc_actuator_paths.size();++j) {
-           
+		for (int j = 0; j < _prescribed_frc_actuator_paths.size();++j) {           
 			std::string actuator_path = _prescribed_frc_actuator_paths[j];
 			ScalarActuator& actuator = _model.updComponent<ScalarActuator>(actuator_path);
 			double value = _frc_functions.get(actuator_path +"_frc").calcValue(SimTK::Vector(1,t));
 			actuator.setOverrideActuation(state, value);
 		}
-		
 
-
+        timestepper.initialize(state);
 		timestepper.stepTo(t);
-        state = timestepper.updIntegrator().getState();
 
-        for (int j = 0; j < _prescribed_frc_actuator_paths.size();++j) {
-			std::string actuator_path = _prescribed_frc_actuator_paths[j];
-			ScalarActuator& actuator = _model.updComponent<ScalarActuator>(actuator_path);
-		}
-
-        for (int j = 0; j < _prescribed_act_actuator_paths.size(); ++j) {
-            std::string actuator_path = _prescribed_frc_actuator_paths[j];
-			Muscle& actuator = _model.updComponent<Muscle>(actuator_path);
-        }
+        state = timestepper.updIntegrator().updAdvancedState();
 
 		//Record parameters
 		if (i == 0) {
@@ -212,39 +193,20 @@ void ForsimTool::run()
 			analysisSet.step(state, i);
 		}
 
-		
-		int j = 0;
-		for (const auto& coord : _model.updComponentList<Coordinate>()) {
-			if (coord.getMotionType() == Coordinate::MotionType::Rotational) {
-				q_row(j) = coord.getValue(state)*180/SimTK::Pi;
-				u_row(j) = coord.getSpeedValue(state)*180/SimTK::Pi;
-			}
-			else {
-				q_row(j) = coord.getValue(state);
-				u_row(j) = coord.getSpeedValue(state);
-			}
-			j++;
-		}
-		q_table.appendRow(state.getTime(), q_row);
-		u_table.appendRow(state.getTime(), u_row);
+        result_states.append(state);        
 	}
 
-
 	//Print Results
+    TimeSeriesTable states_table = result_states.exportToTable(_model);
+    states_table.addTableMetaData("header", std::string("CoordinateValues"));
+	states_table.addTableMetaData("nRows", std::to_string(states_table.getNumRows()));
+	states_table.addTableMetaData("nColumns", std::to_string(states_table.getNumColumns()+1));
+	states_table.addTableMetaData("inDegrees", std::string("yes"));
+
 	STOFileAdapter sto;
 	std::string basefile = get_results_directory() + "/" + get_results_file_basename();
-	
-	q_table.addTableMetaData("header", std::string("CoordinateValues"));
-	q_table.addTableMetaData("nRows", std::to_string(q_table.getNumRows()));
-	q_table.addTableMetaData("nColumns", std::to_string(q_table.getNumColumns()+1));
-	q_table.addTableMetaData("inDegrees", std::string("yes"));
-	sto.write(q_table, basefile + "_values.sto");
-	
-	u_table.addTableMetaData("header", std::string("CoordinateSpeeds"));
-	u_table.addTableMetaData("nRows", std::to_string(u_table.getNumRows()));
-	u_table.addTableMetaData("nColumns", std::to_string(u_table.getNumColumns()+1));
-	u_table.addTableMetaData("inDegrees", std::string("yes"));
-	sto.write(u_table, basefile + "_speeds.sto");
+
+    sto.write(states_table, basefile + "_states.sto");
 	
 	_model.updAnalysisSet().printResults(get_results_file_basename(), get_results_directory());
 
@@ -304,34 +266,29 @@ void ForsimTool::initializeStartStopTimes() {
 }
 
 void ForsimTool::initializeActuators(SimTK::State& state) {
+    PrescribedController* control = new PrescribedController();
 	if (!(get_actuator_input_file() == "")){
 		STOFileAdapter actuator_file;
-		TimeSeriesTable _actuator_table = actuator_file.read(get_actuator_input_file());
+		_actuator_table = actuator_file.read(get_actuator_input_file());
 
 		int nDataPt = _actuator_table.getNumRows();
 		std::vector<std::string> labels = _actuator_table.getColumnLabels();
 		std::vector<double> time = _actuator_table.getIndependentColumn();
-
+        
 		//Set minimum activation
-		PrescribedController* control = new PrescribedController();
-
 		for (int i = 0; i < labels.size(); ++i) {
 			std::vector<std::string> split_label = split_string(labels[i], "_");
 
 			if (split_label.back() == "frc") {
-				std::string actuator_path = erase_sub_string(labels[i], "_frc");
-
+				std::string actuator_path = erase_sub_string(labels[i], "_frc");                
 				try {
 					ScalarActuator& actuator = _model.updComponent<ScalarActuator>(actuator_path);
-
 					actuator.overrideActuation(state, true);
-
 					_prescribed_frc_actuator_paths.push_back(actuator_path);
-
 					SimTK::Vector values = _actuator_table.getDependentColumn(labels[i]);
 					SimmSpline* frc_function = new SimmSpline(nDataPt, &time[0], &values[0], actuator_path + "_frc");
 
-					_frc_functions.adoptAndAppend(frc_function);
+					_frc_functions.adoptAndAppend(frc_function); 
 				}
 				catch (ComponentNotFoundOnSpecifiedPath) {
 					OPENSIM_THROW(Exception,
@@ -342,11 +299,10 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
 
 			if (split_label.back() == "act") {
 				std::string actuator_path = erase_sub_string(labels[i], "_act");
-
 				try {
 					Millard2012EquilibriumMuscle& msl = _model.updComponent<Millard2012EquilibriumMuscle>(actuator_path);
 
-					_prescribed_act_actuator_paths.push_back(actuator_path);
+                    _prescribed_act_actuator_paths.push_back(actuator_path);
 
 					SimTK::Vector values = _actuator_table.getDependentColumn(labels[i]);
 					SimmSpline* act_function = new SimmSpline(nDataPt, &time[0], &values[0], actuator_path + "_act");
@@ -355,7 +311,6 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
 
 					control->prescribeControlForActuator(msl.getName(), act_function);
 
-					//_act_functions.adoptAndAppend(act_function);
 					msl.set_ignore_activation_dynamics(true);
 				}
 				catch (ComponentNotFoundOnSpecifiedPath) {
@@ -367,7 +322,6 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
 
 			if (split_label.back() == "control") {
 				std::string actuator_path = erase_sub_string(labels[i], "_control");
-
 				try {
 					ScalarActuator& actuator = _model.updComponent<ScalarActuator>(actuator_path);
 					_prescribed_control_actuator_paths.push_back(actuator_path);
@@ -414,8 +368,10 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
 				std::cout << name << std::endl;
 			}
 			std::cout << std::endl;
-		}
+		}        
 	}
+    _model.addComponent(control);
+    state = _model.initSystem();
 
 	//Set Constant Muscle Activation
 	if (get_constant_muscle_frc() > -1) {
@@ -431,32 +387,30 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
 			}
 			if (contains_string(_prescribed_control_actuator_paths, msl_path)) {
 				continue;
-			}
-			
-			msl.overrideActuation(state, true);
-
-			if (msl.getConcreteClassName() == "Millard2012EquilibriumMuscle") {
-				msl.setIgnoreTendonCompliance(state, true);
-				msl.setIgnoreActivationDynamics(state, true);
-			}
+			}		
 
 			_prescribed_frc_actuator_paths.push_back(msl_path);
 			
-			Constant* frc_function = new Constant(0.0);
+            double const_frc = get_constant_muscle_frc() * msl.getMaxIsometricForce();
+			Constant* frc_function = new Constant();
 			frc_function->setName(msl_path + "_frc");
-				//SimmSpline(nDataPt, &time[0], &values[0], msl_path + "_frc");
 
 			_frc_functions.adoptAndAppend(frc_function);
+
+
 			std::cout << msl_path << std::endl;
 		}
 		std::cout << std::endl;
 	}
+
+    for (int j = 0; j < _prescribed_frc_actuator_paths.size();++j) {           
+		std::string actuator_path = _prescribed_frc_actuator_paths[j];
+		ScalarActuator& actuator = _model.updComponent<ScalarActuator>(actuator_path);
+        actuator.overrideActuation(state, true);
+	}    
 }
 
-
-
-void ForsimTool::initializeCoordinates() {
-	
+void ForsimTool::initializeCoordinates() {	
 	for (Coordinate& coord : _model.updComponentList<Coordinate>()) {
 		coord.set_locked(true);
 	}
@@ -473,8 +427,7 @@ void ForsimTool::initializeCoordinates() {
 		catch(ComponentNotFoundOnSpecifiedPath){OPENSIM_THROW(Exception,
 			"Unconstrained Coordinate: " +  coord_path + "Not found in model."
 			"Did you use absolute path?") }
-	}
-	
+	}	
     
 	//Load prescribed coordinates file
 	STOFileAdapter coord_file;
@@ -554,108 +507,6 @@ void ForsimTool::applyExternalLoads()
     IO::chDir(savedCwd);
     return;
 }
-/*
-void ForsimTool::formQandUMatrixFromFile() {
-	
-	Storage store(get_coordinates_file());
-			std::cout << _model->getName() << std::endl;
-	const CoordinateSet& coordinateSet = _model->getCoordinateSet();
-
-	std::cout << coordinateSet.get(0).getName() << std::endl;
-	
-	if (store.isInDegrees()) {
-		_model->getSimbodyEngine().convertDegreesToRadians(store);
-	}
-
-	if (get_resample_step_size() != -1) {
-		store.resampleLinear(get_resample_step_size());
-	}
-
-	if (get_lowpass_filter_frequency() != -1) {
-		store.pad(store.getSize() / 2);
-		store.lowpassIIR(get_lowpass_filter_frequency());
-	}
-	
-	
-	//Set Start and Stop Times
-	store.getTimeColumn(_time);
-	 
-
-	if (get_start_time() == -1) {
-		set_start_time(_time.get(0));
-	}
-	if (get_stop_time() == -1) {
-		set_stop_time(_time.getLast());
-	}
-
-	//Set number of Frames
-	_n_frames = _time.size();
-	_n_out_frames = 0;
-	for (int i = 0; i < _n_frames; ++i) {
-		if (_time[i] < get_start_time()) { continue; }
-		if (_time[i] > get_stop_time()) { break; };
-		_n_out_frames++;
-	}
-	//Gather Q and U values
-	Array<std::string> col_labels = store.getColumnLabels();
-	
-	Array<int> q_col_map(-1,_model->getNumCoordinates());
-	//q_col_map = -1;
-	
-	for (int i = 0; i < col_labels.size(); ++i) {
-		std::vector<std::string> split_label = split_string(col_labels[i], "/");
-
-		int j = 0;
-		for (const Coordinate& coord : _model->getComponentList<Coordinate>()) {
-			if (contains_string(split_label, coord.getName())) {
-				if (split_label.back() == "value" || split_label.back() == coord.getName()){
-					q_col_map[j] = i;
-				}
-			}
-			j++;
-		}
-
-	}
-	
-	_q_matrix.resize(_n_frames, _model->getNumCoordinates());
-	_u_matrix.resize(_n_frames, _model->getNumCoordinates());
-	
-	_q_matrix = 0;
-	_u_matrix = 0;
-
-	int j = 0;
-	for (const Coordinate& coord : _model->getComponentList<Coordinate>()) {
-
-		if (q_col_map[j] != -1) {
-			double* data = NULL;
-			store.getDataColumn(col_labels[q_col_map[j]], data);
-			for (int i = 0; i < _n_frames; ++i) {
-				_q_matrix(i,j) = data[i];
-			}
-		}
-		else{
-			std::cout << "Coordinate Value: " << coord.getName() << " not found in coordinates_file, assuming 0." << std::endl;			
-		}
-		
-		GCVSpline q_spline;
-		q_spline.setDegree(5);
-
-		for (int i = 0; i < _n_frames; ++i) {
-			Array<double> data;
-			store.getDataColumn(col_labels[q_col_map[j]], data);
-			q_spline.addPoint(_time[i], data[i]);
-		}
-
-		for (int i = 0; i < _n_frames; ++i) {
-			SimTK::Vector x(1);
-			x(0) = _time[i];
-
-			std::vector<int> u_order = { 0 };
-			_u_matrix(i, j) = q_spline.calcDerivative(u_order, x);
-		}		
-		j++;
-	}
-}*/                                                                              
 
 void ForsimTool::loadModel(const std::string &aToolSetupFileName)
 {
@@ -681,4 +532,66 @@ void ForsimTool::loadModel(const std::string &aToolSetupFileName)
     }
     _model = model;
     IO::chDir(saveWorkingDirectory);
+}
+
+void ForsimTool::printDebugInfo(const SimTK::State& state) {
+    _model.realizeReport(state);
+    int w = 20;
+
+    std::cout << std::setw(w) << "Muscle" 
+        << std::setw(w) << "Force"  
+        << std::setw(w) << "Activation"
+        << std::setw(w) << "Control" << std::endl;
+
+    for (const Muscle& msl : _model.updComponentList<Muscle>()) {
+        std::cout << std::setw(w) << msl.getName()
+            << std::setw(w) << msl.getActuation(state)
+            << std::setw(w) << msl.getActivation(state)
+            << std::setw(w) << msl.getControl(state) 
+            << std::endl;
+    }
+    std::cout << std::endl;
+
+    std::cout << std::setw(w) << "Ligament " 
+        << std::setw(w) << "Total Force" 
+        << std::setw(w) << "Spring Force" 
+        << std::setw(w) << "Damping Force" 
+        << std::setw(w) << "Strain" 
+        << std::setw(w) << "Strain Rate" 
+        << std::setw(w) << "Length" 
+        << std::setw(w) << "Lengthening Rate" 
+        << std::endl;
+
+            
+
+    for (const Blankevoort1991Ligament& lig : _model.updComponentList<Blankevoort1991Ligament>()) {
+        std::cout << std::setw(w) << lig.getName()
+            << std::setw(w) << lig.getOutputValue<double>(state, "force_total")
+            << std::setw(w) << lig.getOutputValue<double>(state, "force_spring")
+            << std::setw(w) << lig.getOutputValue<double>(state, "force_damping")
+            << std::setw(w) << lig.getOutputValue<double>(state, "strain")
+            << std::setw(w) << lig.getOutputValue<double>(state, "strain_rate")
+            << std::setw(w) << lig.getOutputValue<double>(state, "length")
+            << std::setw(w) << lig.getOutputValue<double>(state, "lengthening_rate")                    
+            << std::endl;
+    }
+    std::cout << std::endl;
+
+    std::cout << std::setw(w) << "Contact " << std::setw(20) 
+        << "Force" << std::setw(w) << "COP" << std::endl;
+
+    for (Smith2018ArticularContactForce& cnt : _model.updComponentList<Smith2018ArticularContactForce>()) {
+        cnt.getOutputValue<SimTK::Vec3>(state, "casting_total_contact_force");
+        cnt.getOutputValue<SimTK::Vec3>(state, "casting_total_center_of_pressure");
+
+
+        std::cout << std::setw(w) <<cnt.getName() 
+            << std::setw(w) << cnt.getOutputValue<SimTK::Vec3>(state, "casting_total_contact_force") 
+            << std::setw(w) << cnt.getOutputValue<SimTK::Vec3>(state, "casting_total_center_of_pressure")
+            << std::endl;
+    }
+    std::cout << std::endl;    
+    std::cin.ignore();
+    std::cout << "Press Any Key to Continue." << std::endl;
+     
 }

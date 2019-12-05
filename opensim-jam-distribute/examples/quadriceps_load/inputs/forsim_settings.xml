@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<OpenSimDocument Version="40000">
+	<ForsimTool>
+		<!--Path to .osim file for analysis.-->
+		<model_file>../../../models/lenhart2015/lenhart2015_test.osim</model_file>
+		<!--Storage file (.sto) containing the time varying actuator forces (MuscleName_frc)or actuator activations (MuscleName_act) to be applied during the simulation.-->
+		<actuator_input_file>./muscle_inputs.sto</actuator_input_file>
+		<!--External loads file (.xml) to apply to the model during the simulation.-->
+		<external_loads_file></external_loads_file>
+		<!--Storage file (.sto) containing the time varying trajectories for the prescribed coordinates.Columns labels are 'time' and '/Path/To/Coordinate'-->
+		<prescribed_coordinates_file>./quadriceps_load_prescribed_coordinates.sto</prescribed_coordinates_file>
+		<!--Folder where the results files are output.-->
+		<results_directory>../results/forsim</results_directory>
+		<!--Prefix to each results file name.-->
+		<results_file_basename>quadriceps_load</results_file_basename>
+		<!--Time to start analysis. Set to -1 to use initial frame in coordinates_file-->
+		<start_time>-1</start_time>
+		<!--Time to stop analysis. Set to -1 to use last frame in coordinates_file-->
+		<stop_time>-1</stop_time>
+		<!--Accuracy setting for BDF integrator.-->
+		<integrator_accuracy>0.000001</integrator_accuracy>
+		<!--The timestep interval to report the results.-->
+		<report_time_step>0.01</report_time_step>
+		<!--The smallest timestep the integrator is allowed to take.-->
+		<minimum_time_step>-1</minimum_time_step>
+		<!--The largest timestep the integrator is allowed to take.-->
+		<maximum_time_step>0.01</maximum_time_step>
+		<!--Constant muscle force applied for all muscles not listed in actuator_input_file.For each muscle, force=constant_muscle_frc*Max_Isometeric_Force. Set to -1 to ignore-->
+		<constant_muscle_frc>0.02</constant_muscle_frc>
+		<!--Paths to Coordinates that will be unconstrained in the simulation.All Coordinates not listed here or in the prescribed_coordinates_filewill be locked. Note coordinates listed here will override settingsin the .osim file.-->
+		<unconstrained_coordinates>
+			/jointset/knee_r/knee_add_r
+			/jointset/knee_r/knee_rot_r
+			/jointset/knee_r/knee_tx_r
+			/jointset/knee_r/knee_ty_r
+			/jointset/knee_r/knee_tz_r
+			/jointset/pf_r/pf_flex_r
+			/jointset/pf_r/pf_rot_r
+			/jointset/pf_r/pf_tilt_r
+			/jointset/pf_r/pf_tx_r
+			/jointset/pf_r/pf_ty_r
+			/jointset/pf_r/pf_tz_r
+		</unconstrained_coordinates>
+		<!--Use the SimTK visualizer.-->
+		<use_visualizer>true</use_visualizer>
+		<verbose>0</verbose>
+		<!--Analyses to be performedduring forward simulation.-->
+		<AnalysisSet name="Analyses">
+			<objects>
+				<ForceReporter name = "ForceReporter">
+					<!--Flag (true or false) specifying whether on. True by default.-->
+					<on>true</on>
+					<!--Start time.-->
+					<start_time>-Inf</start_time>
+					<!--End time.-->
+					<end_time>Inf</end_time>
+					<!--Specifies how often to store results during a simulation. More specifically, the interval (a positive integer) specifies how many successful integration steps should be taken before results are recorded again.-->
+					<step_interval>1</step_interval>
+					<!--Flag (true or false) indicating whether the results are in degrees or not.-->
+					<in_degrees>true</in_degrees>
+					<!--Flag indicating whether to include forces due to constraints.-->
+					<include_constraint_forces>false</include_constraint_forces>
+				</ForceReporter>
+			</objects>
+			<groups />
+		</AnalysisSet>
+	</ForsimTool>
+</OpenSimDocument>

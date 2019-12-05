@@ -84,6 +84,7 @@ public:
 		"will be locked. Note coordinates listed here will override settings"
 		"in the .osim file.")
 	OpenSim_DECLARE_PROPERTY(use_visualizer,bool,"Use the SimTK visualizer.")
+    OpenSim_DECLARE_PROPERTY(verbose,int,"0 - silent, 1 - contact info, 2 - model force info")
 	OpenSim_DECLARE_UNNAMED_PROPERTY(AnalysisSet,"Analyses to be performed"
 		"during forward simulation.")
 
@@ -106,7 +107,7 @@ private:
 	void initializeActuators(SimTK::State& state);
 	void applyExternalLoads();
     void initializeStartStopTimes();
-	
+    void printDebugInfo(const SimTK::State& state);
 	
 //=============================================================================
 // DATA

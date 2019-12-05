@@ -35,8 +35,6 @@
 
 namespace OpenSim {
     
-
-
 	class OSIMPLUGIN_API Smith2018ContactMesh : public ModelComponent {
     //class Smith2018ContactMesh : public ModelComponent {
 
@@ -44,15 +42,13 @@ namespace OpenSim {
 
 	public:
         class OBBTreeNode;
-		//=============================================================================
+		//=====================================================================
 		// PROPERTIES
-		//=============================================================================
+		//=====================================================================
 		OpenSim_DECLARE_PROPERTY(file_name, std::string,
 			"Path to mesh geometry file (supports .obj, .stl, .vtp). ")
 		OpenSim_DECLARE_PROPERTY(mesh_frame, PhysicalOffsetFrame,
-			"Local mesh frame to locate mesh in parent body.")
-		OpenSim_DECLARE_PROPERTY(display_preference, int,
-			"0:Hide 1:Wire 3:Flat 4:Shaded")
+			"Local mesh frame to locate mesh in parent body.")		
 		OpenSim_DECLARE_PROPERTY(scale_factors,SimTK::Vec3,
 			"[x,y,z] scale factors applied to mesh vertex locations.")
         OpenSim_DECLARE_PROPERTY(min_proximity, double,
@@ -66,9 +62,13 @@ namespace OpenSim {
 		OpenSim_DECLARE_OPTIONAL_PROPERTY(min_thickness, double,
 			"Minimum thickness of cartilage [m] for variable cartilage thickness")
 		OpenSim_DECLARE_OPTIONAL_PROPERTY(max_thickness, double,
-			"Minimum thickness of cartilage [m] for variable cartilage thickness")
-		OpenSim_DECLARE_LIST_PROPERTY_SIZE(color, double, 3,
-			"Display Color to apply to the contact geometry.")
+			"Minimum thickness of cartilage [m] for variable cartilage thickness")   
+        OpenSim_DECLARE_UNNAMED_PROPERTY(Appearance,
+            "Default appearance for this Geometry");
+        //=============================================================================
+		// SOCKETS
+		//=============================================================================
+
 		OpenSim_DECLARE_SOCKET(parent_frame, PhysicalFrame,
 			"The frame to which this geometry is attached.")
 		OpenSim_DECLARE_SOCKET(scale_frame, PhysicalFrame,
@@ -96,9 +96,6 @@ namespace OpenSim {
 			const SimTK::Vec3& location, const SimTK::Vec3& orientation,
 			const std::string& mesh_back_file, double  min_thickness, double max_thickness);
                
-		const int getDisplayPreference();
-		void setDisplayPreference(const int dispPref);
-
 		const SimTK::PolygonalMesh& getPolygonalMesh() const {
 			return _mesh;}
 
@@ -156,6 +153,10 @@ namespace OpenSim {
             int& tri, SimTK::Vec3 intersection_point,
             SimTK::Real& distance) const;
 
+        void generateDecorations(bool fixed, const ModelDisplayHints& hints,
+            const SimTK::State& s, 
+            SimTK::Array_<SimTK::DecorativeGeometry>& geometry) const override;
+
 	protected:
 
 	private:
@@ -197,7 +198,10 @@ namespace OpenSim {
 		SimTK::Vector _tri_elastic_modulus;
 		SimTK::Vector _tri_poissons_ratio;
 		bool mesh_is_cached;
-
+        // We cache the DecorativeMeshFile if we successfully
+        // load the mesh from file so we don't try loading from disk every frame.
+        // This is mutable since it is not part of the public interface.
+        mutable SimTK::ResetOnCopy<std::unique_ptr<SimTK::DecorativeMeshFile>> _decorative_mesh;
     //=========================================================================
     //                            OBB TREE NODE
     //=========================================================================

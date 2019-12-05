@@ -30,7 +30,7 @@ namespace OpenSim {
  * A class to store and generate the settings parameters for COMAK.
  *
  * @author Colin Smith
- * @version 1.0
+
  */
 class OSIMPLUGIN_API COMAKTool : public Component{
 	OpenSim_DECLARE_CONCRETE_OBJECT(COMAKTool, Component)

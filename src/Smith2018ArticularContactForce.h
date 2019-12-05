@@ -32,7 +32,7 @@ namespace OpenSim {
 * overlap depth is calculated for each triangle. The contact pressure on each
 * triangle face is then calculated based on the overlap depth (see below).
 * 
-* To calculate the local overlap depth, it is necessary to detection the mesh 
+* To calculate the local overlap depth, it is necessary to detect the mesh 
 * triangles that are in contact. This process is extremely slow if a brute 
 * force approach is applied. Smith et al, CMBBE I&V, 2018 introduced a method 
 * to efficiently detect contact between triangular meshes using Object Oriented
@@ -260,29 +260,29 @@ namespace OpenSim {
                 getCastingRegionalMaxPressure, SimTK::Stage::Dynamics)
 
             //center of proximity
-            OpenSim_DECLARE_OUTPUT(target_total_center_of_proximity, double,
+            OpenSim_DECLARE_OUTPUT(target_total_center_of_proximity, SimTK::Vec3,
                 getTargetCenterOfProximity, SimTK::Stage::Position)
-            OpenSim_DECLARE_OUTPUT(casting_total_center_of_proximity, double,
+            OpenSim_DECLARE_OUTPUT(casting_total_center_of_proximity, SimTK::Vec3,
                 getCastingCenterOfProximity, SimTK::Stage::Position)
 
             OpenSim_DECLARE_OUTPUT(target_regional_center_of_proximity,
-                SimTK::Vector, getTargetRegionalCenterOfProximity,
+                SimTK::Vector_<SimTK::Vec3>, getTargetRegionalCenterOfProximity,
                 SimTK::Stage::Position)
             OpenSim_DECLARE_OUTPUT(casting_regional_center_of_proximity,
-                SimTK::Vector, getCastingRegionalCenterOfProximity,
+                SimTK::Vector_<SimTK::Vec3>, getCastingRegionalCenterOfProximity,
                 SimTK::Stage::Position)
 
             //center of pressure
-            OpenSim_DECLARE_OUTPUT(target_total_center_of_pressure, double,
+            OpenSim_DECLARE_OUTPUT(target_total_center_of_pressure, SimTK::Vec3,
                 getTargetCenterOfPressure, SimTK::Stage::Dynamics)
-            OpenSim_DECLARE_OUTPUT(casting_total_center_of_pressure, double,
+            OpenSim_DECLARE_OUTPUT(casting_total_center_of_pressure, SimTK::Vec3,
                 getCastingCenterOfPressure, SimTK::Stage::Dynamics)
 
             OpenSim_DECLARE_OUTPUT(target_regional_center_of_pressure,
-                SimTK::Vector, getTargetRegionalCenterOfPressure,
+                SimTK::Vector_<SimTK::Vec3>, getTargetRegionalCenterOfPressure,
                 SimTK::Stage::Dynamics)
             OpenSim_DECLARE_OUTPUT(casting_regional_center_of_pressure,
-                SimTK::Vector, getCastingRegionalCenterOfPressure,
+                SimTK::Vector_<SimTK::Vec3>, getCastingRegionalCenterOfPressure,
                 SimTK::Stage::Dynamics)
 
             //contact force
@@ -468,40 +468,40 @@ namespace OpenSim {
         }
 
         //center of proximity
-        double getTargetCenterOfProximity(const SimTK::State& state) const {
-            return getCacheVariableValue<double>
+        SimTK::Vec3 getTargetCenterOfProximity(const SimTK::State& state) const {
+            return getCacheVariableValue<SimTK::Vec3>
                 (state, "target.center_of_proximity");
         }
-        double getCastingCenterOfProximity(const SimTK::State& state) const {
-            return getCacheVariableValue<double>
+        SimTK::Vec3 getCastingCenterOfProximity(const SimTK::State& state) const {
+            return getCacheVariableValue<SimTK::Vec3>
                 (state, "casting.center_of_proximity");
         }
 
-        SimTK::Vector getTargetRegionalCenterOfProximity(const SimTK::State& state) const {
-            return getCacheVariableValue<SimTK::Vector>
+        SimTK::Vector_<SimTK::Vec3> getTargetRegionalCenterOfProximity(const SimTK::State& state) const {
+            return getCacheVariableValue<SimTK::Vector_<SimTK::Vec3>>
                 (state, "target.regional.center_of_proximity");
         }
-        SimTK::Vector getCastingRegionalCenterOfProximity(const SimTK::State& state) const {
-            return getCacheVariableValue<SimTK::Vector>
+        SimTK::Vector_<SimTK::Vec3> getCastingRegionalCenterOfProximity(const SimTK::State& state) const {
+            return getCacheVariableValue<SimTK::Vector_<SimTK::Vec3>>
                 (state, "casting.regional.center_of_proximity");
         }
 
         //center of pressure
-        double getTargetCenterOfPressure(const SimTK::State& state) const {
-            return getCacheVariableValue<double>
+        SimTK::Vec3 getTargetCenterOfPressure(const SimTK::State& state) const {
+            return getCacheVariableValue<SimTK::Vec3>
                 (state, "target.center_of_pressure");
         }
-        double getCastingCenterOfPressure(const SimTK::State& state) const {
-            return getCacheVariableValue<double>
+        SimTK::Vec3 getCastingCenterOfPressure(const SimTK::State& state) const {
+            return getCacheVariableValue<SimTK::Vec3>
                 (state, "casting.center_of_pressure");
         }
 
-        SimTK::Vector getTargetRegionalCenterOfPressure(const SimTK::State& state) const {
-            return getCacheVariableValue<SimTK::Vector>
+        SimTK::Vector_<SimTK::Vec3> getTargetRegionalCenterOfPressure(const SimTK::State& state) const {
+            return getCacheVariableValue<SimTK::Vector_<SimTK::Vec3>>
                 (state, "target.regional.center_of_pressure");
         }
-        SimTK::Vector getCastingRegionalCenterOfPressure(const SimTK::State& state) const {
-            return getCacheVariableValue<SimTK::Vector>
+        SimTK::Vector_<SimTK::Vec3> getCastingRegionalCenterOfPressure(const SimTK::State& state) const {
+            return getCacheVariableValue<SimTK::Vector_<SimTK::Vec3>>
                 (state, "casting.regional.center_of_pressure");
         }
 
@@ -563,14 +563,14 @@ namespace OpenSim {
         void computeTriProximity(const SimTK::State& state,
             const Smith2018ContactMesh& casting_mesh,
             const Smith2018ContactMesh& target_mesh,
-            const std::string& cache_mesh_name) const;
+            const std::string& cache_mesh_name,
+            SimTK::Vector& tri_proximity) const;
 
         void computeTriDynamics(const SimTK::State& state,
             const Smith2018ContactMesh& casting_mesh,
             const Smith2018ContactMesh& target_mesh,
-            const std::string& cache_mesh_name,
-            SimTK::Vector_<SimTK::SpatialVec>& bodyForces,
-            SimTK::Vector_<SimTK::Vec3>& tri_force) const;
+            SimTK::Vector_<SimTK::Vec3>& tri_force,
+            SimTK::Vector& tri_pressure,SimTK::Vector& tri_energy) const;
 
         SimTK::Vec3 computeContactForceVector(
             double pressure, double area, SimTK::Vec3 normal) const;
@@ -579,8 +579,10 @@ namespace OpenSim {
             double pressure, double area, SimTK::Vec3 normal,
             SimTK::Vec3 center) const;
 
-        contact_stats computeContactStats(const SimTK::State& state,
-            const std::string& mesh_type, const std::vector<int>& triIndices) const;
+        contact_stats computeContactStats(const Smith2018ContactMesh& mesh,
+            const SimTK::Vector& total_tri_proximity,
+            const SimTK::Vector& total_tri_pressure,
+            const std::vector<int>& triIndices) const;
 
     private:
         void setNull();

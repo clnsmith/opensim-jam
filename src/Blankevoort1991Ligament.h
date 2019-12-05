@@ -35,9 +35,7 @@ is represented as a nonlinear spring with the force-strain relationship
 described by a quadratic "toe" region at low strains and a linear region at
 high strains. Additionally, the ligament includes a normalized damping force.   
 \image html fig_Blankevoort1991Ligament.svg
-*/
 
-/*
 <B>Governing Equations</B>
 Spring Force:
 \f[
@@ -59,15 +57,65 @@ F_{total} = F_{spring} + F_{damping}
 
 
 This model has the following properties:
-\li linear stiffness (k): The force/strain stiffness of the linear region of 
-the ligament model.
+\li linear stiffness (k): The force/distance (e.g. N/m) stiffness of the linear
+region of the ligament model.
 \li slack_length (l_0): The resting length of the ligament.
+\li normalized damping coefficient (c): Damping coefficient used in the damping
+force calculation in units of seconds. Commonly set to 0.003.
 \li transisiton_strain (e_t): The strain value where the ligament model 
 transisitions from the quadratic toe region to the linear stiffness region.
-Commonly 0.06 in the literature. 
-\li normalized damping coefficient (c): Damping coefficient used in the damping
-force calculation in units of seconds. Commonly set to 0.003.  
+Default value of 0.06 (6%) according to Blankevoort J Biomech Eng 1991.
+This value is widely used in the multibody knee modeling literature:
 
+Marra, J Biomech Eng, 2015
+Guess, J Knee Surg, 2016
+Smith, J Knee Surg, 2016
+Li, J Biomech Eng, 1999
+
+This value also agrees with some experimental studies:
+
+Ristaniemi, A., Stenroth, L., Mikkonen, S., & Korhonen, R. K. (2018). 
+Comparison of elastic, viscoelastic and failure tensile material properties of 
+knee ligaments and patellar tendon. Journal of biomechanics, 79, 31-38.
+
+Other literature suggests the transistion strain occurs in the region of 2% to
+3% strain (0.02 - 0.03). 
+
+Weiss, J. A., & Gardiner, J. C. (2001). Computational modeling of ligament 
+mechanics. Critical Reviews in Biomedical Engineering, 29(3).
+
+Martin, R. B., Burr, D. B., Sharkey, N. A., & Fyhrie, D. P. (2015). 
+Mechanical properties of ligament and tendon. In Skeletal Tissue Mechanics 
+(pp. 175-225). Springer, New York, NY.
+
+In reality, the transisition strain appears to be dependent on the strain-rate:
+
+Pioletti, D. P., Rakotomanana, L. R., Benvenuti, J. F., & Leyvraz, P. F. 
+(1998). Viscoelastic constitutive law in large deformations: application to 
+human knee ligaments and tendons. Journal of biomechanics, 31(8), 753-757.
+
+Pioletti, D. P., Rakotomanana, L. R., & Leyvraz, P. F. (1999). Strain rate 
+effect on the mechanical behavior of the anterior cruciate ligament–bone
+complex. Medical Engineering & Physics, 21(2), 95-100.
+
+
+  
+
+This implementation is intended to be compatible with the common methods in
+the literature to parameterize ligament properties. The slack_length property 
+is saved in the model file, but this property can be set using 
+setSlackLengthFromReferenceStrain() and setSlackLengthFromReferenceForce() as
+well. If you want to compute the reference strain or reference force of the 
+ligament at at reference state (pose), you can use the getStrain(state) and
+getSpringForce(state) methods. 
+
+The linear_stiffness is saved in 
+units of force/distance but can be set and reported in units of force/strain.
+
+Scaling the Blankevoort1991Ligament component adjusts the slack_length 
+property after the scale factors are applied in a manner that keeps the strain 
+in the ligament in the default model pose (reference strain) constant. The 
+linear_stiffness parameter is not affected by scaling the model. 
 
 <B>Reference</B>\n
 	Blankevoort, L. and Huiskes, R., (1991).
@@ -91,15 +139,15 @@ class OSIMPLUGIN_API Blankevoort1991Ligament : public Force  {
 	OpenSim_DECLARE_CONCRETE_OBJECT(Blankevoort1991Ligament, Force)
 
 	public:
-	//=============================================================================
+	//=========================================================================
 	// PROPERTIES
-	//=============================================================================
+	//=========================================================================
 
         OpenSim_DECLARE_UNNAMED_PROPERTY(GeometryPath,
         "The set of points defining the path of the ligament")
         OpenSim_DECLARE_PROPERTY(linear_stiffness, double,
-            "Slope of the linear portion of the force-strain curve of ligament."
-            "Units of force/strain.")
+            "Slope of the linear portion of the force-strain curve of "
+            "ligament. Units of force/length.")
         OpenSim_DECLARE_PROPERTY(transition_strain, double,
             "Strain at which ligament force-strain curve transitions from"
             "quadratic to linear. Default value of 0.06.")
@@ -109,77 +157,97 @@ class OSIMPLUGIN_API Blankevoort1991Ligament : public Force  {
         OpenSim_DECLARE_PROPERTY(slack_length, double,
             "Length at which ligament begins developing tension")
 
-        //=============================================================================
+        //=====================================================================
         // OUTPUTS
-        //=============================================================================
+        //=====================================================================
         
-        OpenSim_DECLARE_OUTPUT(force_spring, double, getSpringForce, SimTK::Stage::Position);
-        OpenSim_DECLARE_OUTPUT(force_damping, double, getDampingForce, SimTK::Stage::Velocity);
-        OpenSim_DECLARE_OUTPUT(force_total, double, getTension, SimTK::Stage::Velocity);
-        OpenSim_DECLARE_OUTPUT(strain, double, getStrain, SimTK::Stage::Position);
-        OpenSim_DECLARE_OUTPUT(strain_rate, double, getStrainRate, SimTK::Stage::Velocity);
-        OpenSim_DECLARE_OUTPUT(length, double, getLength, SimTK::Stage::Position);
-        OpenSim_DECLARE_OUTPUT(lengthening_rate, double, getLengtheningSpeed, SimTK::Stage::Velocity);
+        OpenSim_DECLARE_OUTPUT(force_spring, double, getSpringForce, 
+            SimTK::Stage::Position);
+        OpenSim_DECLARE_OUTPUT(force_damping, double, getDampingForce, 
+            SimTK::Stage::Velocity);
+        OpenSim_DECLARE_OUTPUT(force_total, double, getTotalForce,
+            SimTK::Stage::Velocity);
+        OpenSim_DECLARE_OUTPUT(strain, double, getStrain,
+            SimTK::Stage::Position);
+        OpenSim_DECLARE_OUTPUT(strain_rate, double, getStrainRate,
+            SimTK::Stage::Velocity);
+        OpenSim_DECLARE_OUTPUT(length, double, getLength,
+            SimTK::Stage::Position);
+        OpenSim_DECLARE_OUTPUT(lengthening_rate, double, getLengtheningSpeed,
+            SimTK::Stage::Velocity);
 	
 
 
-	//=============================================================================
+	//=========================================================================
 	// METHODS
-	//=============================================================================
+	//=========================================================================
 	public:
-		// Default Constructor
+		//Constructors
 		Blankevoort1991Ligament();
-		Blankevoort1991Ligament(std::string name, const PhysicalFrame& frame1, SimTK::Vec3 point1,
-			const PhysicalFrame& frame2, SimTK::Vec3 point2);
-		Blankevoort1991Ligament(std::string name, const PhysicalFrame& frame1, SimTK::Vec3 point1,
-			const PhysicalFrame& frame2, SimTK::Vec3 point2,
-			double linear_stiffness, double reference_strain);
 
-		//--------------------------------------------------------------------------
+		Blankevoort1991Ligament(std::string name, 
+            const PhysicalFrame& frame1, SimTK::Vec3 point1,
+            const PhysicalFrame& frame2, SimTK::Vec3 point2);
+
+		Blankevoort1991Ligament(std::string name, 
+            const PhysicalFrame& frame1, SimTK::Vec3 point1,
+			const PhysicalFrame& frame2, SimTK::Vec3 point2,
+			double linear_stiffness, double slack_lnegth);
+
+		//---------------------------------------------------------------------
 		// SET
-		//--------------------------------------------------------------------------
+		//---------------------------------------------------------------------
         /**
-	     * Set the slack length property from the strain in the ligament at a known
-         * pose 
+	     * Set the slack length property from the strain in the ligament at a 
+         * known pose (reference state)
 	     */
-		void setSlackLengthFromReferenceStrain(double referenceStrain, const SimTK::State state);
+		void setSlackLengthFromReferenceStrain(
+            double strain, const SimTK::State& reference_state);
         /**
-	     * Set the slack length property from the force in the ligament at a known
-         * pose 
+	     * Set the slack length property from the force in the ligament at a 
+         * known pose (reference state)
 	     */
-		void setSlackLengthFromReferenceForce(double referenceForce, const SimTK::State state);
+		void setSlackLengthFromReferenceForce(
+            double force, const SimTK::State& reference_state);
+         /**
+	     * Set the linear_stiffness property using a value in units of 
+         * force/strain 
+	     */
+        void setLinearStiffnessForcePerStrain(double linear_stiffness);
 
 		//--------------------------------------------------------------------------
 		// GET
 		//--------------------------------------------------------------------------
-		double getTension(const SimTK::State& s) const;
-        double getStrain(const SimTK::State& s) const;
-        double getStrainRate(const SimTK::State& s) const;
-        double getLength(const SimTK::State& s) const;
-        double getLengtheningSpeed(const SimTK::State& s) const;
-        double getSpringForce(const SimTK::State& s) const;
-        double getDampingForce(const SimTK::State& s) const;
+		double getTotalForce(const SimTK::State& state) const;
+        double getStrain(const SimTK::State& state) const;
+        double getStrainRate(const SimTK::State& state) const;
+        double getLength(const SimTK::State& state) const;
+        double getLengtheningSpeed(const SimTK::State& state) const;
+        double getSpringForce(const SimTK::State& state) const;
+        double getDampingForce(const SimTK::State& state) const;
+
+        double getLinearStiffnessForcePerStrain() const;
 
 		//--------------------------------------------------------------------------
 		// COMPUTATIONS
 		//--------------------------------------------------------------------------
-		virtual double computeMomentArm(const SimTK::State& s, Coordinate& aCoord) const ;
-		void computeForce(const SimTK::State& s,
-								  SimTK::Vector_<SimTK::SpatialVec>& bodyForces,
-								  SimTK::Vector& generalizedForces) const override;
-		double computePotentialEnergy(const SimTK::State& state) const override;
+		double computeMomentArm(
+            const SimTK::State& s, Coordinate& aCoord) const;
+
+		void computeForce(const SimTK::State& s, 
+            SimTK::Vector_<SimTK::SpatialVec>& bodyForces,
+			SimTK::Vector& generalizedForces) const override;
+
+		double computePotentialEnergy(
+            const SimTK::State& state) const override;
 				
 		
-		double computeSpringForce(double strain) const;
-		double computeSpringStrain(double force) const;
-		double computeReferenceForce(const SimTK::State& state) const;
-		double computeReferenceStrain(const SimTK::State& state) const;
-		double computeReferenceLength(SimTK::State state) const;
+
 		
 		//--------------------------------------------------------------------------
 		// SCALE
 		//--------------------------------------------------------------------------
-
+        
 		void extendPostScale(const SimTK::State& s, const ScaleSet& scaleSet) override;
 
 		//-----------------------------------------------------------------------------
@@ -188,13 +256,14 @@ class OSIMPLUGIN_API Blankevoort1991Ligament : public Force  {
 		OpenSim::Array<std::string> getRecordLabels() const override;
 		OpenSim::Array<double> getRecordValues(const SimTK::State& state) const override;
 		
-		//void printPropertiesToConsole();
-
-	protected:
+    protected:
 
 		void extendFinalizeFromProperties() override;
 		void extendAddToSystem(SimTK::MultibodySystem& system) const override;
 
+        double calcSpringForce(const SimTK::State& state) const;
+		double calcDampingForce(const SimTK::State& state) const;
+        double calcTotalForce(const SimTK::State& state) const;
 	private:
 		void setNull();
 		void constructProperties();
