@@ -95,7 +95,7 @@ The opensim-jam-distribute folder contains everything you need to get started us
 
 ### Examples
 
-### Visualize Kinematics 
+### [Visualize Kinematics](opensim-jam-distribute/examples/visualize_kinematics/README.md)
 You can use the joint-mechanics tool to analyze and visualize simulated or measured bone kinematics from fluoroscopy, dynamic MRI, etc or static poses from medical imaging. The tool can calculate distance maps between bone surfaces or overlap maps if cartilage surfaces are also provided.
 
 ### Passive Knee Flexion
@@ -105,7 +105,7 @@ Perform a forward simulation of passive knee flexion where tibiofemoral flexion 
 Perform a forward simulation where the knee is flexed to 45* and an anterior force is applied to the tibia. The 
 
 ### Quadriceps Load
-
+Prescribe the tibiofemoral flexion from 0 -> 30*, then hold at 30* while the vastus medialis (), vastus lateralis (), and vastus intermedius inputs are presecribed. All other 11 knee DOFs are unconstrained and thus are predicted based on the contact, ligament, and muscle forces. The remaining model coordinates are all locked.  
 ### Walking Simulation
 
 ### 
