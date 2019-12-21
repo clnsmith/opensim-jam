@@ -17,8 +17,6 @@ Needed for the executables to link against and to visualize models and simulatio
 #### [HDF5](https://www.hdfgroup.org/solutions/hdf5/)
 HDF5 is a library used to generate .h5 files which store data in a binary hiearchial structure. This is used to save the per triangle contact distance and pressure maps in a compact format. MATLAB and Python both have readers available. This file type can be read much faster than text files, which is convinent when performing large scale monte carlo type analyses. The source code for HDF5 is redistributed as a dependency library within this repository (LINK). See source code or website for their licensing information.\ 
 
-
-
 ### Additional Software
 #### [HDFView](https://www.hdfgroup.org/downloads/hdfview/)
 HDFviewer is a standalone gui to explore .h5 file contents. 
@@ -42,7 +40,7 @@ For details of implementation and usage, see the doxygen links.
 This one dimensional path geometry acts as a spring-damper to represent ligament fibers. The force strain relationship includes a nonlinear toe region at low strains and a linear region at high strains to represent the uncrimping and stretching of collagen fibers within a ligament. 
 [Blakevoort1991Ligament Doxygen]()
 
-**Relavent Publications**:
+**Relavent Publications**\
 *Smith, C. R., Lenhart, R. L., Kaiser, J., Vignos, M. F., & Thelen, D. G. (2016). Influence of ligament properties on tibiofemoral mechanics in walking. The journal of knee surgery, 29(02), 099-106.*
 
 Smith, C. R., Vignos, M. F., Lenhart, R. L., Kaiser, J., & Thelen, D. G. (2016). The influence of component alignment and ligament properties on tibiofemoral contact forces in total knee replacement. Journal of biomechanical engineering, 138(2), 021017.
@@ -55,7 +53,7 @@ This component stores a triangular mesh representation of an articular surface t
 This force component uses an elastic foundation model to compute contact pressures on each contacting triangle on a pair of Smith2018_ContactTriangleMesh components. The pressure is computed as a function of the local depth of penetration. To visualize the pressure maps, you must use the joint-mechanics tool to generate .vtp files that can be read into Paraview. 
 [Smith2018ArticularContactForce Doxygen]()
 
-**Relavent Publications**:
+**Relavent Publications**\
 *Smith, C. R., Won Choi, K., Negrut, D., & Thelen, D. G. (2018). Efficient computation of cartilage contact pressures within dynamic simulations of movement. Computer Methods in Biomechanics and Biomedical Engineering: Imaging & Visualization, 6(5), 491-498.*
 
 *Bei, Y., & Fregly, B. J. (2004). Multibody dynamic simulation of knee contact mechanics. Medical engineering & physics, 26(9), 777-789.*
@@ -73,7 +71,7 @@ A multibody knee model was constructed based on magnetic resonance images from a
 ### Smith2018 
 This model is based on the same subject and experimental data as the Lenhart2015 model, but also includes representations of the medial and lateral mensici. The menisici are connected via 6 degree of freedom joints to the tibia. Smith2018_ArticularContact is implemented beween the mensici and cartilage surfaces. 
 
-**Publications**
+**Relavent Publications**\
 *Smith, C. R., Brandon, S. C., & Thelen, D. G. (2019). Can altered neuromuscular coordination restore soft tissue loading patterns in anterior cruciate ligament and menisci deficient knees during walking?. Journal of biomechanics, 82, 124-133.*
 
 
@@ -82,9 +80,13 @@ This model is based on the same subject and experimental data as the Lenhart2015
 Similar to the forward simulation tool in the OpenSim gui, but the interface is designed for performing forward simulations involving articular contact. The tool exposes the BDF implicit integrator, which gives far superior performance for simulations for contact. There are interfaces for prescribing joint kinematics and muscle forces to replicate cadaver experiments or passive experiments. 
 
 ### COMAK
-The **C**oncurrent **O**ptimization of **M**uscle **A**ctivations and **K**inematics simulation tool enables the calculation of muscle forces and joint mechanics during dynamic movements. In early publications we also called this algorithim Enhanced Static Optimization before we came up with the clearly superior COMAK acroynm. 
+The **C**oncurrent **O**ptimization of **M**uscle **A**ctivations and **K**inematics simulation tool enables the calculation of muscle forces and joint mechanics during dynamic movements. In early publications we also called this algorithim Enhanced Static Optimization before we came up with the clearly superior COMAK acronym. 
 
-Publications:
+**Relavent Publications**\
+Brandon, S. C., Smith, C. R., & Thelen, D. G. (2018). Simulation of soft tissue loading from observed movement dynamics. Handbook of Human Motion, 395-428.
+
+Smith, C. R., Brandon, S. C., & Thelen, D. G. (2019). Can altered neuromuscular coordination restore soft tissue loading patterns in anterior cruciate ligament and menisci deficient knees during walking?. Journal of biomechanics, 82, 124-133.
+
 
 ### Joint Mechanics
 This tool enables detailed post-hoc analysis of simulations involving joint mechanics. It can be used to generate .vtp files to visualize simulation results in Paraview, or .h5 files which are binary files that can store the large quantites of contact data (multiple calculated values for each triange face) in compact files that can be quickly read by MATLAB, Python, or HDF View (https://www.hdfgroup.org/downloads/hdfview/)
@@ -92,21 +94,24 @@ This tool enables detailed post-hoc analysis of simulations involving joint mech
 ## JAM Distribution
 The opensim-jam-distribute folder contains everything you need to get started using the OpenSim components and applications (tools) described above. 
 
+The jam-plugin.dll is compilied for you and located [here](opensim-jam-distribute/bin/jam-plugin.dll)
 
 ### Examples
 
-### Visualize Kinematics 
+### [Visualize Kinematics](opensim-jam-distribute/examples/visualize_kinematics)
 You can use the joint-mechanics tool to analyze and visualize simulated or measured bone kinematics from fluoroscopy, dynamic MRI, etc or static poses from medical imaging. The tool can calculate distance maps between bone surfaces or overlap maps if cartilage surfaces are also provided.
 
-### Passive Knee Flexion
+### [Passive Flexion](opensim-jam-distribute/examples/passive_flexion)
 Perform a forward simulation of passive knee flexion where tibiofemoral flexion is prescribed and the other knee coordinates are unconstrained and thus are calculated based on the passive muscle, ligament, and articular contact forces. 
 
-### Anterior Drawer Laxity Test
+### [Anterior Laxity](opensim-jam-distribute/examples/anterior_laxity)
 Perform a forward simulation where the knee is flexed to 45* and an anterior force is applied to the tibia. The 
 
-### Quadriceps Load
+### [Quadriceps Load](opensim-jam-distribute/examples/quadriceps_load)
+Prescribe the tibiofemoral flexion from 0 -> 30*, then hold at 30* while the vastus medialis (), vastus lateralis (), and vastus intermedius inputs are presecribed. All other 11 knee DOFs are unconstrained and thus are predicted based on the contact, ligament, and muscle forces. The remaining model coordinates are all locked.
 
 ### Walking Simulation
+In progress
 
 ### 
 ## JAM References
