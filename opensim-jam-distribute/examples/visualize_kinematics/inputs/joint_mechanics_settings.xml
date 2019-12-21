@@ -12,7 +12,7 @@
         <!--Time to start analysis. Set to -1 to use initial frame in coordinates_file-->
         <start_time>-1</start_time>
         <!--Time to stop analysis. Set to -1 to use last frame in coordinates_file-->
-        <stop_time>1.16</stop_time>
+        <stop_time>-1</stop_time>
         <!--Time step size to report results, set to -1 to use steps directly from coordinates_file-->
         <resample_step_size>-1</resample_step_size>
         <!--Resample to 101 equally spaced time steps. Note: If true, this overrides resample_step_size.-->
@@ -36,9 +36,9 @@
         <!--Reference frame for mesh motion in .vtp files.Options: 'ground' or 'body_name' for dynamic files, 'static' for the contact meshes in local reference frame.-->
         <vtp_frame>ground</vtp_frame>
         <!--Generate .vtp files for attached_geometry meshes for visualization.Options: 'none','all', or a list of frame names.-->
-        <vtp_attached_geometries>none</vtp_attached_geometries>
+        <vtp_attached_geometries>all</vtp_attached_geometries>
         <!--Write ligament lines of action and output data to .vtp files-->
-        <vtp_ligaments>false</vtp_ligaments>
+        <vtp_ligaments>true</vtp_ligaments>
         <!--Write muscle lines of action and output data to .vtp files-->
         <vtp_muscles>false</vtp_muscles>
         <!--Add cartilage thickness and material property maps to vtp files.Options: 'none','thickness','elastic modulus','poisson ratio' or 'all'-->
@@ -50,13 +50,13 @@
         <!--Write binary .h5 file-->
         <write_h5_file>false</write_h5_file>
         <!--Write states data to .h5 file-->
-        <h5_states_data>true</h5_states_data>
+        <h5_states_data>false</h5_states_data>
         <!--Write kinematics data to .h5 file-->
-        <h5_kinematics_data>true</h5_kinematics_data>
+        <h5_kinematics_data>false</h5_kinematics_data>
         <!--Write muscle analysis data to .h5 file-->
-        <h5_muscle_data>true</h5_muscle_data>
+        <h5_muscle_data>false</h5_muscle_data>
         <!--Write Blankevoort1991_Ligament data to h5 file-->
-        <h5_ligament_data>true</h5_ligament_data>
+        <h5_ligament_data>false</h5_ligament_data>
         <!--Write transformation matrix -->
         <write_blender_csv>false</write_blender_csv>
     </JointMechanicsTool>

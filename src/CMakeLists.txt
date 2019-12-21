@@ -6,9 +6,6 @@
 # Author: Colin Smith
 # Date: 1/27/2017
 #===============================================================================
-add_subdirectory(dev_tools)
-add_subdirectory(cmd_tools)
-
 set(PLUGIN_NAME "jam_plugin"
     CACHE STRING "Name of shared library to create")
 

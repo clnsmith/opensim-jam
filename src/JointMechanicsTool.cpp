@@ -40,8 +40,8 @@ using namespace OpenSim;
 
 JointMechanicsTool::JointMechanicsTool() : Object()
 {
-	setNull();
-	constructProperties();
+    setNull();
+    constructProperties();
     _directoryOfSetupFile = "";
 
 }
@@ -49,23 +49,23 @@ JointMechanicsTool::JointMechanicsTool() : Object()
 
 JointMechanicsTool::JointMechanicsTool(std::string settings_file) : 
     Object(settings_file) {
-	constructProperties();
-	updateFromXMLDocument();
-	
-	loadModel(settings_file);
-	_directoryOfSetupFile = IO::getParentDirectory(settings_file);
+    constructProperties();
+    updateFromXMLDocument();
+    
+    loadModel(settings_file);
+    _directoryOfSetupFile = IO::getParentDirectory(settings_file);
     IO::chDir(_directoryOfSetupFile);    
 }
 
 JointMechanicsTool::JointMechanicsTool(Model *aModel, 
-	std::string coordinates_file, std::string results_dir) :
-	JointMechanicsTool()
+    std::string coordinates_file, std::string results_dir) :
+    JointMechanicsTool()
 {
     if(aModel==NULL) return;
     setModel(*aModel);
 
-	set_coordinates_file(coordinates_file);
-	set_results_directory(results_dir);
+    set_coordinates_file(coordinates_file);
+    set_results_directory(results_dir);
 
 
 }
@@ -78,88 +78,88 @@ void JointMechanicsTool::setNull()
 void JointMechanicsTool::constructProperties()
 {
     Array<std::string> defaultListNames;
-	defaultListNames.append("all");
+    defaultListNames.append("all");
 
-	Array<std::string> defaultAttachGeo;
-	defaultAttachGeo.append("none");
+    Array<std::string> defaultAttachGeo;
+    defaultAttachGeo.append("none");
 
-	constructProperty_model_file("");
-	constructProperty_coordinates_file("");
-	constructProperty_results_directory(".");
-	constructProperty_results_file_basename("");
-	constructProperty_start_time(-1);
-	constructProperty_stop_time(-1);
-	constructProperty_resample_step_size(-1);
-	constructProperty_normalize_to_cycle(false);
-	constructProperty_smoothing_spline_frequency(-1);
-	constructProperty_smoothing_spline_order(5);
-	constructProperty_lowpass_filter_frequency(-1);
-	constructProperty_print_processed_kinematcs(false);
-	constructProperty_contact_names(defaultListNames);
-	constructProperty_tri_output_data_names(defaultListNames);
+    constructProperty_model_file("");
+    constructProperty_coordinates_file("");
+    constructProperty_results_directory(".");
+    constructProperty_results_file_basename("");
+    constructProperty_start_time(-1);
+    constructProperty_stop_time(-1);
+    constructProperty_resample_step_size(-1);
+    constructProperty_normalize_to_cycle(false);
+    constructProperty_smoothing_spline_frequency(-1);
+    constructProperty_smoothing_spline_order(5);
+    constructProperty_lowpass_filter_frequency(-1);
+    constructProperty_print_processed_kinematcs(false);
+    constructProperty_contact_names(defaultListNames);
+    constructProperty_tri_output_data_names(defaultListNames);
     
     constructProperty_write_vtp_files(true);
     constructProperty_vtp_origin("ground");
     constructProperty_vtp_frame("ground");
     constructProperty_vtp_contact(true);
-	constructProperty_vtp_attached_geometries(defaultAttachGeo);
-	constructProperty_vtp_ligaments(true);
+    constructProperty_vtp_attached_geometries(defaultAttachGeo);
+    constructProperty_vtp_ligaments(true);
     constructProperty_vtp_muscles(true);	
-	constructProperty_vtp_contact_properties(defaultListNames);
+    constructProperty_vtp_contact_properties(defaultListNames);
 
     constructProperty_write_h5_file(true);
-	constructProperty_h5_raw_contact_data(true);
-	constructProperty_h5_summary_contact_data(true);
+    constructProperty_h5_raw_contact_data(true);
+    constructProperty_h5_summary_contact_data(true);
     constructProperty_h5_regional_summary_contact(true);
-	constructProperty_h5_states_data(true);
-	constructProperty_h5_kinematics_data(true);
-	constructProperty_h5_muscle_data(true);
-	constructProperty_h5_ligament_data(true);
+    constructProperty_h5_states_data(true);
+    constructProperty_h5_kinematics_data(true);
+    constructProperty_h5_muscle_data(true);
+    constructProperty_h5_ligament_data(true);
 }
 
 void JointMechanicsTool::setModel(Model& aModel)
 {
-	_model = &aModel;
-	set_model_file(_model->getDocumentFileName());
+    _model = &aModel;
+    set_model_file(_model->getDocumentFileName());
 }
 
 
 void JointMechanicsTool::run() {
-	_max_path_points = 100;
+    _max_path_points = 100;
 
-	if (_model == NULL) {
-		OPENSIM_THROW(Exception, "No model was set in JointMechanicsTool");
-	}
-	
-	_model->initSystem();	
+    if (_model == NULL) {
+        OPENSIM_THROW(Exception, "No model was set in JointMechanicsTool");
+    }
     
-	//Get Coordinates and Speeds from file
-	formQandUMatrixFromFile();
-	
-	initializeSettings();
-	
-	SimTK::State state = _model->initSystem();
-	
+    _model->initSystem();	
     
-	setModelingOptions(state);
-	
-	AnalysisSet& analysisSet = _model->updAnalysisSet();
+    //Get Coordinates and Speeds from file
+    formQandUMatrixFromFile();
+    
+    initializeSettings();
+    
+    SimTK::State state = _model->initSystem();
+    
+    
+    setModelingOptions(state);
+    
+    AnalysisSet& analysisSet = _model->updAnalysisSet();
 
-	//loop over each frame
-	for (int i = 0; i < _n_frames; ++i) {
-		
-		//Set Time
-		state.setTime(_time[i]);
+    //loop over each frame
+    for (int i = 0; i < _n_frames; ++i) {
+        
+        //Set Time
+        state.setTime(_time[i]);
 
-		std::cout << "Time: " << _time[i] << std::endl;
+        std::cout << "Time: " << _time[i] << std::endl;
 
-		//Set Qs and Us
-		int nCoord = 0;
-		for (const Coordinate& coord : _model->getComponentList<Coordinate>()) {
+        //Set Qs and Us
+        int nCoord = 0;
+        for (const Coordinate& coord : _model->getComponentList<Coordinate>()) {
             coord.setValue(state, _q_matrix(i, nCoord));
             coord.setSpeedValue(state, _u_matrix(i, nCoord));
-			nCoord++;
-		}
+            nCoord++;
+        }
 
         //Set Muscle States
         if (get_vtp_muscles()) {
@@ -172,17 +172,17 @@ void JointMechanicsTool::run() {
             }
         }
         //Record Values
-		record(state,i);
+        record(state,i);
 
-		//Perform analyses
-		if (i == 0) {
-			analysisSet.begin(state);
-		}
-		else {
-			analysisSet.step(state, i);
-		}
-	}
-	printResults(get_results_file_basename(), get_results_directory());
+        //Perform analyses
+        if (i == 0) {
+            analysisSet.begin(state);
+        }
+        else {
+            analysisSet.step(state, i);
+        }
+    }
+    printResults(get_results_file_basename(), get_results_directory());
 }
 
 void JointMechanicsTool::formQandUMatrixFromFile() {
@@ -206,20 +206,20 @@ void JointMechanicsTool::formQandUMatrixFromFile() {
     //else{
     //    store = Storage(get_coordinates_file());
     //}
-	//Set Start and Stop Times
-	store.getTimeColumn(_time);
-	 
-	if (get_start_time() == -1) {
-		set_start_time(_time.get(0));
-	}
-	if (get_stop_time() == -1) {
-		set_stop_time(_time.getLast());
-	}
+    //Set Start and Stop Times
+    store.getTimeColumn(_time);
+     
+    if (get_start_time() == -1) {
+        set_start_time(_time.get(0));
+    }
+    if (get_stop_time() == -1) {
+        set_stop_time(_time.getLast());
+    }
 
-	const CoordinateSet& coordinateSet = _model->getCoordinateSet();
-	
-	if (store.isInDegrees()) {
-		_model->getSimbodyEngine().convertDegreesToRadians(store);
+    const CoordinateSet& coordinateSet = _model->getCoordinateSet();
+    
+    if (store.isInDegrees()) {
+        _model->getSimbodyEngine().convertDegreesToRadians(store);
     }
 
     if (get_smoothing_spline_frequency() != -1) {
@@ -352,84 +352,84 @@ void JointMechanicsTool::formQandUMatrixFromFile() {
 
 void JointMechanicsTool::initializeSettings() {
     //Check Contact Names
-	if (get_contact_names(0) == "all") {
-		for (const Smith2018ArticularContactForce& contactForce : _model->getComponentList<Smith2018ArticularContactForce>()) {
-			_contact_force_names.push_back(contactForce.getName());
-			_contact_force_paths.push_back(contactForce.getAbsolutePathString());
+    if (get_contact_names(0) == "all") {
+        for (const Smith2018ArticularContactForce& contactForce : _model->getComponentList<Smith2018ArticularContactForce>()) {
+            _contact_force_names.push_back(contactForce.getName());
+            _contact_force_paths.push_back(contactForce.getAbsolutePathString());
 
-			std::string casting_mesh_name = contactForce.getConnectee<Smith2018ContactMesh>("casting_mesh").getName();
-			std::string target_mesh_name = contactForce.getConnectee<Smith2018ContactMesh>("target_mesh").getName();
-			std::string casting_mesh_path = contactForce.getConnectee<Smith2018ContactMesh>("casting_mesh").getAbsolutePathString();
-			std::string target_mesh_path = contactForce.getConnectee<Smith2018ContactMesh>("target_mesh").getAbsolutePathString();
+            std::string casting_mesh_name = contactForce.getConnectee<Smith2018ContactMesh>("casting_mesh").getName();
+            std::string target_mesh_name = contactForce.getConnectee<Smith2018ContactMesh>("target_mesh").getName();
+            std::string casting_mesh_path = contactForce.getConnectee<Smith2018ContactMesh>("casting_mesh").getAbsolutePathString();
+            std::string target_mesh_path = contactForce.getConnectee<Smith2018ContactMesh>("target_mesh").getAbsolutePathString();
+            
+            if (!contains_string(_contact_mesh_names, casting_mesh_name)) {
+                _contact_mesh_names.push_back(casting_mesh_name);
+                _contact_mesh_paths.push_back(casting_mesh_path);
+            }
+            if (!contains_string(_contact_mesh_names, target_mesh_name)) {
+                _contact_mesh_names.push_back(target_mesh_name);
+                _contact_mesh_paths.push_back(target_mesh_path);
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < getProperty_contact_names().size(); ++i) {
+            try {
+                const Smith2018ArticularContactForce& contactForce = _model->getComponent<Smith2018ArticularContactForce>(get_contact_names(i));
+                _contact_force_names.push_back(contactForce.getName());
+                _contact_force_paths.push_back(contactForce.getAbsolutePathString());
 
-			if (!contains_string(_contact_mesh_names, casting_mesh_name)) {
-				_contact_mesh_names.push_back(casting_mesh_name);
-				_contact_mesh_paths.push_back(casting_mesh_name);
-			}
-			if (!contains_string(_contact_mesh_names, target_mesh_name)) {
-				_contact_mesh_names.push_back(target_mesh_name);
-				_contact_mesh_paths.push_back(target_mesh_name);
-			}
-		}
-	}
-	else {
-		for (int i = 0; i < getProperty_contact_names().size(); ++i) {
-			try {
-				const Smith2018ArticularContactForce& contactForce = _model->getComponent<Smith2018ArticularContactForce>(get_contact_names(i));
-				_contact_force_names.push_back(contactForce.getName());
-				_contact_force_paths.push_back(contactForce.getAbsolutePathString());
-
-				std::string casting_mesh_name = contactForce.getConnectee<Smith2018ContactMesh>("casting_mesh").getName();
-				std::string target_mesh_name = contactForce.getConnectee<Smith2018ContactMesh>("target_mesh").getName();
-				std::string casting_mesh_path = contactForce.getConnectee<Smith2018ContactMesh>("casting_mesh").getAbsolutePathString();
-				std::string target_mesh_path = contactForce.getConnectee<Smith2018ContactMesh>("target_mesh").getAbsolutePathString();
-
-				if (!contains_string(_contact_mesh_names, casting_mesh_name)) {
-					_contact_mesh_names.push_back(casting_mesh_name);
-					_contact_mesh_paths.push_back(casting_mesh_path);
-				}
-				if (!contains_string(_contact_mesh_names, target_mesh_name)) {
-					_contact_mesh_names.push_back(target_mesh_name);
-					_contact_mesh_paths.push_back(target_mesh_path);
-				}
-			}
-			catch (ComponentNotFoundOnSpecifiedPath){
-				OPENSIM_THROW(Exception, "contact_name: " + get_contact_names(i)
-					+ " was not found as a Smith2018ArticularContactForce path" 
-					" in the model. Did you use absolute path?");
-			}
-		}
-	}
-	
-	//States	
-	if (get_h5_states_data()) {
-		StatesReporter* states_rep = new StatesReporter();
-		states_rep->setName("states_analysis");
-		states_rep->setStepInterval(1);
-		states_rep->setPrintResultFiles(false);
-		_model->addAnalysis(states_rep);
-	}
-	
+                std::string casting_mesh_name = contactForce.getConnectee<Smith2018ContactMesh>("casting_mesh").getName();
+                std::string target_mesh_name = contactForce.getConnectee<Smith2018ContactMesh>("target_mesh").getName();
+                std::string casting_mesh_path = contactForce.getConnectee<Smith2018ContactMesh>("casting_mesh").getAbsolutePathString();
+                std::string target_mesh_path = contactForce.getConnectee<Smith2018ContactMesh>("target_mesh").getAbsolutePathString();
+                
+                if (!contains_string(_contact_mesh_names, casting_mesh_name)) {
+                    _contact_mesh_names.push_back(casting_mesh_name);
+                    _contact_mesh_paths.push_back(casting_mesh_path);
+                }
+                if (!contains_string(_contact_mesh_names, target_mesh_name)) {
+                    _contact_mesh_names.push_back(target_mesh_name);
+                    _contact_mesh_paths.push_back(target_mesh_path);
+                }
+            }
+            catch (ComponentNotFoundOnSpecifiedPath){
+                OPENSIM_THROW(Exception, "contact_name: " + get_contact_names(i)
+                    + " was not found as a Smith2018ArticularContactForce path" 
+                    " in the model. Did you use absolute path?");
+            }
+        }
+    }
+    
+    //States	
+    if (get_h5_states_data()) {
+        StatesReporter* states_rep = new StatesReporter();
+        states_rep->setName("states_analysis");
+        states_rep->setStepInterval(1);
+        states_rep->setPrintResultFiles(false);
+        _model->addAnalysis(states_rep);
+    }
+    
 
 }
 void JointMechanicsTool::setModelingOptions(SimTK::State& state) {
 
-	for (int i = 0; i < _contact_force_paths.size(); ++i) {
+    for (int i = 0; i < _contact_force_paths.size(); ++i) {
 
-		Smith2018ArticularContactForce& contactForce = _model->updComponent
-			<Smith2018ArticularContactForce>(_contact_force_paths[i]);
+        Smith2018ArticularContactForce& contactForce = _model->updComponent
+            <Smith2018ArticularContactForce>(_contact_force_paths[i]);
 
-		contactForce.setModelingOption(state, "flip_meshes", 1);		
-	}
+        contactForce.setModelingOption(state, "flip_meshes", 1);		
+    }
     
-	setupDynamicVertexLocationStorage();
+    setupDynamicVertexLocationStorage();
 
-	if (get_vtp_ligaments() || get_h5_ligament_data()) {
-		setupLigamentStorage();
-	}
+    if (get_vtp_ligaments() || get_h5_ligament_data()) {
+        setupLigamentStorage();
+    }
     if (get_vtp_muscles() || get_h5_muscle_data()) {
-		setupMuscleStorage();
-	}
+        setupMuscleStorage();
+    }
     if (get_h5_kinematics_data()) {
         setupCoordinateStorage();
     }
@@ -449,12 +449,12 @@ void JointMechanicsTool::setupDynamicVertexLocationStorage() {
     
     if (get_write_vtp_files()) {
         if (get_vtp_frame() != "static") {
-            _mesh_vertex_locations.resize(_contact_mesh_names.size());
+            _mesh_vertex_locations.resize(_contact_mesh_paths.size());
 
-            for (int i = 0; i < _contact_mesh_names.size(); ++i) {
+            for (int i = 0; i < _contact_mesh_paths.size(); ++i) {
 
                 int mesh_nVer = _model->getComponent<Smith2018ContactMesh>
-                    (_contact_mesh_names[i]).getPolygonalMesh().getNumVertices();
+                    (_contact_mesh_paths[i]).getPolygonalMesh().getNumVertices();
 
                 _mesh_vertex_locations[i].resize(_n_frames, mesh_nVer);
             }
@@ -710,7 +710,7 @@ int JointMechanicsTool::record(const SimTK::State& s, const int frame_num)
     _model->realizeReport(s);
 
     //Store mesh vertex locations
-	std::string frame_name = get_vtp_frame();
+    std::string frame_name = get_vtp_frame();
     const Frame& frame = _model->getComponent<Frame>(frame_name);
     std::string origin_name = get_vtp_origin();
     const Frame& origin = _model->getComponent<Frame>(origin_name);
@@ -726,7 +726,7 @@ int JointMechanicsTool::record(const SimTK::State& s, const int frame_num)
                 SimTK::Vector_<SimTK::Vec3> ver = _model->getComponent<Smith2018ContactMesh>
                     (_contact_mesh_paths[i]).getVertexLocations(); 
                 const SimTK::Transform& T = _model->getComponent<Smith2018ContactMesh>
-                    (_contact_mesh_paths[i]).get_mesh_frame().findTransformBetween(s,frame);
+                    (_contact_mesh_paths[i]).getMeshFrame().findTransformBetween(s,frame);
 
                 for (int j = 0; j < nVertex; ++j) {
                     _mesh_vertex_locations[i](frame_num, j) = T.shiftFrameStationToBase(ver(j));
@@ -843,7 +843,7 @@ int JointMechanicsTool::record(const SimTK::State& s, const int frame_num)
 
 
     }
-	return(0);
+    return(0);
 }
 
 void JointMechanicsTool::getGeometryPathPoints(const SimTK::State& s, const GeometryPath& geoPath, SimTK::Vector_<SimTK::Vec3>& path_points, int& nPoints) {
@@ -904,15 +904,24 @@ void JointMechanicsTool::getGeometryPathPoints(const SimTK::State& s, const Geom
  */
 int JointMechanicsTool::printResults(const std::string &aBaseName,const std::string &aDir)
 {
+    std::string file_path = get_results_directory();
+    std::string base_name = get_results_file_basename();
+    
     //Write VTP files
-    if (get_write_vtp_files()) {
+    if (get_write_vtp_files()) {        
         //Contact Meshes
-        for (std::string mesh_name : _contact_mesh_names) {
+        for (int i = 0; i < _contact_mesh_names.size(); ++i) {
+            std::string mesh_name = _contact_mesh_names[i];
+            std::string mesh_path = _contact_mesh_paths[i];
+
+            std::cout << "Writing .vtp files: " << file_path << "/" 
+                << base_name << "_"<< mesh_name << std::endl;
+
             if (get_vtp_frame() == "static") {
-                writeVTPFile(mesh_name, _contact_force_names, false);
+                writeVTPFile(mesh_path, _contact_force_names, false);
             }
             else{
-                writeVTPFile(mesh_name, _contact_force_names, true);
+                writeVTPFile(mesh_path, _contact_force_names, true);
             }
         }
 
@@ -930,6 +939,9 @@ int JointMechanicsTool::printResults(const std::string &aBaseName,const std::str
         if (get_vtp_ligaments()) {
             int i = 0;
             for (std::string lig : _ligament_names) {
+                std::cout << "Writing .vtp files: " << file_path << "/" 
+                    << base_name << "_"<< lig << std::endl;
+
                 writeLineVTPFiles("ligament_" + lig, _ligament_path_nPoints[i],
                     _ligament_path_points[i], _ligament_output_double_names,
                     _ligament_output_double_values[i]);
@@ -941,6 +953,9 @@ int JointMechanicsTool::printResults(const std::string &aBaseName,const std::str
         if (get_vtp_muscles()) {
             int i = 0;
             for (std::string msl : _muscle_names) {
+                std::cout << "Writing .vtp files: " << file_path << "/" 
+                    << base_name << "_"<< msl << std::endl;
+
                 writeLineVTPFiles("muscle_" + msl, _muscle_path_nPoints[i],
                     _muscle_path_points[i], _muscle_output_double_names,
                     _muscle_output_double_values[i]);
@@ -949,10 +964,10 @@ int JointMechanicsTool::printResults(const std::string &aBaseName,const std::str
         }
     }
 
-	//Write h5 file
-	if (get_write_h5_file()) {
-		writeH5File(aBaseName, aDir);
-	}
+    //Write h5 file
+    if (get_write_h5_file()) {
+        writeH5File(aBaseName, aDir);
+    }
 
     return(0);
 }
@@ -1014,7 +1029,6 @@ void JointMechanicsTool::collectMeshContactOutputData(const std::string& mesh_na
             }
             
             if (output_data_type == "tri") {
-
                 if (getProperty_tri_output_data_names().findIndex(output_data_name) == -1
                     && get_tri_output_data_names(0) != "all") {
                     continue;
@@ -1028,68 +1042,71 @@ void JointMechanicsTool::collectMeshContactOutputData(const std::string& mesh_na
 
                 //Combined data for all contacts visualized on one mesh
                 int data_index;
-				if (contains_string(triDataNames, "tri." + output_data_name,data_index)) {
-					triData[data_index] += _contact_output_vector_double_values[nFrc][nVectorDouble];
-				}
-				else {
-					triDataNames.push_back("tri." + output_data_name);
-                    triData.push_back(_contact_output_vector_double_values[nFrc][nVectorDouble]);
-                    std::cout <<  _contact_output_vector_double_values[nFrc][nVectorDouble].nrow() << _contact_output_vector_double_values[nFrc][nVectorDouble].ncol() << std::endl;
-				}
+                if (contains_string(triDataNames, "tri." + output_data_name,data_index)) {
+                    triData[data_index] += _contact_output_vector_double_values[nFrc][nVectorDouble];
+                }
+                else {
+                    triDataNames.push_back("tri." + output_data_name);
+                    triData.push_back(_contact_output_vector_double_values[nFrc][nVectorDouble]);                    
+                }
             }
             
         }
         //Variable Cartilage Properties
-	    if ((getProperty_vtp_contact_properties().findIndex("thickness") != -1
+        if ((getProperty_vtp_contact_properties().findIndex("thickness") != -1
             || getProperty_vtp_contact_properties().findIndex("all") != -1)
-		    && !contains_string(triDataNames, "tri.thickness")){            
-		
-		    SimTK::Matrix thickness_matrix(_n_frames, mesh.getNumFaces());
-		    for (int i = 0; i < _n_frames; ++i) {                
+            && !contains_string(triDataNames, "tri.thickness")){            
+        
+            SimTK::Matrix thickness_matrix(_n_frames, mesh.getNumFaces());
+            for (int i = 0; i < _n_frames; ++i) {                
                 thickness_matrix[i] =  ~mesh.getTriangleThickness();
-		    }
+            }
 
-		    triDataNames.push_back("tri.thickness");            
-		    triData.push_back(thickness_matrix);
-	    }	    
+            triDataNames.push_back("tri.thickness");            
+            triData.push_back(thickness_matrix);
+        }	    
     }
     if ((getProperty_vtp_contact_properties().findIndex("elastic_modulus") != -1
         || getProperty_vtp_contact_properties().findIndex("all") != -1)
         && !contains_string(triDataNames, "tri.elastic_modulus")) {
             
             SimTK::Matrix E_matrix(_n_frames, mesh.getNumFaces());
-		    for (int i = 0; i < _n_frames; ++i) {
-			    E_matrix[i] = ~mesh.getTriangleElasticModulus();
-		    }
-		    triDataNames.push_back("tri.elastic_modulus");
-		    triData.push_back(E_matrix);
-	}
-	if ((getProperty_vtp_contact_properties().findIndex("poissons_ratio") != -1
+            for (int i = 0; i < _n_frames; ++i) {
+                E_matrix[i] = ~mesh.getTriangleElasticModulus();
+            }
+            triDataNames.push_back("tri.elastic_modulus");
+            triData.push_back(E_matrix);
+    }
+    if ((getProperty_vtp_contact_properties().findIndex("poissons_ratio") != -1
         || getProperty_vtp_contact_properties().findIndex("all") != -1)
         && !contains_string(triDataNames, "tri.poissons_ratio")) {
 
-		SimTK::Matrix v_matrix(_n_frames, mesh.getNumFaces());
-		for (int i = 0; i < _n_frames; ++i) {
-			v_matrix[i] = ~mesh.getTrianglePoissonsRatio();
-		}
-		triDataNames.push_back("tri.poissons_ratio");
-		triData.push_back(v_matrix);
-	}
+        SimTK::Matrix v_matrix(_n_frames, mesh.getNumFaces());
+        for (int i = 0; i < _n_frames; ++i) {
+            v_matrix[i] = ~mesh.getTrianglePoissonsRatio();
+        }
+        triDataNames.push_back("tri.poissons_ratio");
+        triData.push_back(v_matrix);
+    }
     if ((getProperty_vtp_contact_properties().findIndex("area") != -1
         || getProperty_vtp_contact_properties().findIndex("all") != -1)
         && !contains_string(triDataNames, "tri.area")) {
 
-		SimTK::Matrix area_matrix(_n_frames, mesh.getNumFaces());
-		for (int i = 0; i < _n_frames; ++i) {
-			area_matrix[i] = ~mesh.getTriangleAreas();
-		}
-		triDataNames.push_back("tri.area");
-		triData.push_back(area_matrix);
-	}
+        SimTK::Matrix area_matrix(_n_frames, mesh.getNumFaces());
+        for (int i = 0; i < _n_frames; ++i) {
+            area_matrix[i] = ~mesh.getTriangleAreas();
+        }
+        triDataNames.push_back("tri.area");
+        triData.push_back(area_matrix);
+    }
 }
 
-void JointMechanicsTool::writeVTPFile(const std::string& mesh_name,
-	const std::vector<std::string>& contact_names, bool isDynamic) {
+void JointMechanicsTool::writeVTPFile(const std::string& mesh_path,
+    const std::vector<std::string>& contact_names, bool isDynamic) {
+
+    const Smith2018ContactMesh& cnt_mesh = 
+        _model->getComponent<Smith2018ContactMesh>(mesh_path);
+    std::string mesh_name = cnt_mesh.getName();
 
     std::string file_path = get_results_directory();
     std::string base_name = get_results_file_basename();
@@ -1097,56 +1114,55 @@ void JointMechanicsTool::writeVTPFile(const std::string& mesh_name,
     std::string frame = split_string(get_vtp_frame(), "/").back();
     std::string origin = split_string(get_vtp_origin(), "/").back();
 
-	//Collect data
-	std::vector<SimTK::Matrix> triData, vertexData;
-	std::vector<std::string> triDataNames, vertexDataNames;
+    //Collect data
+    std::vector<SimTK::Matrix> triData, vertexData;
+    std::vector<std::string> triDataNames, vertexDataNames;
 
-	collectMeshContactOutputData(mesh_name,
+    collectMeshContactOutputData(mesh_name,
         triData, triDataNames, vertexData, vertexDataNames);
 
-	//Mesh face connectivity
-	SimTK::PolygonalMesh mesh = _model->getComponent<Smith2018ContactMesh>
-		(mesh_name).getPolygonalMesh();
+    //Mesh face connectivity
+    const SimTK::PolygonalMesh& mesh = cnt_mesh.getPolygonalMesh();
 
-	SimTK::Matrix mesh_faces(mesh.getNumFaces(), mesh.getNumVerticesForFace(0));
+    SimTK::Matrix mesh_faces(mesh.getNumFaces(), mesh.getNumVerticesForFace(0));
 
-	for (int j = 0; j < mesh.getNumFaces(); ++j) {
-		for (int k = 0; k < mesh.getNumVerticesForFace(0); ++k) {
-			mesh_faces(j, k) = mesh.getFaceVertex(j, k);
-		}
-	}
+    for (int j = 0; j < mesh.getNumFaces(); ++j) {
+        for (int k = 0; k < mesh.getNumVerticesForFace(0); ++k) {
+            mesh_faces(j, k) = mesh.getFaceVertex(j, k);
+        }
+    }
 
-	for (int frame_num = 0; frame_num < _n_frames; ++frame_num) {
-		//Write file
-		VTPFileAdapter* mesh_vtp = new VTPFileAdapter();
-		mesh_vtp->setDataFormat("binary");	
+    for (int frame_num = 0; frame_num < _n_frames; ++frame_num) {
+        //Write file
+        VTPFileAdapter* mesh_vtp = new VTPFileAdapter();
+        mesh_vtp->setDataFormat("binary");	
         //mesh_vtp->setDataFormat("ascii");
-		for (int i = 0; i < triDataNames.size(); ++i) {
-			mesh_vtp->appendFaceData(triDataNames[i], ~triData[i][frame_num]);
-		}
+        for (int i = 0; i < triDataNames.size(); ++i) {
+            mesh_vtp->appendFaceData(triDataNames[i], ~triData[i][frame_num]);
+        }
 
 
-		if (isDynamic) {
-			int mesh_index;
-			contains_string(_contact_mesh_names, mesh_name, mesh_index);
+        if (isDynamic) {
+            int mesh_index;
+            contains_string(_contact_mesh_names, mesh_name, mesh_index);
 
-			mesh_vtp->setPointLocations(_mesh_vertex_locations[mesh_index][frame_num]);
-			mesh_vtp->setPolygonConnectivity(mesh_faces);
+            mesh_vtp->setPointLocations(_mesh_vertex_locations[mesh_index][frame_num]);
+            mesh_vtp->setPolygonConnectivity(mesh_faces);
 
-			mesh_vtp->write(base_name + "_contact_" + mesh_name + "_dynamic_" + frame + "_" + origin,
-				file_path + "/", frame_num);
-		}
-		else { //static
-			SimTK::PolygonalMesh poly_mesh =
-				_model->getComponent<Smith2018ContactMesh>(mesh_name).getPolygonalMesh();
+            mesh_vtp->write(base_name + "_contact_" + mesh_name + "_dynamic_" + frame + "_" + origin,
+                file_path + "/", frame_num);
+        }
+        else { //static
+            SimTK::PolygonalMesh poly_mesh =
+                _model->getComponent<Smith2018ContactMesh>(mesh_name).getPolygonalMesh();
 
-			mesh_vtp->setPolygonsFromMesh(poly_mesh);
+            mesh_vtp->setPolygonsFromMesh(poly_mesh);
 
-			mesh_vtp->write(base_name + "_contact_" + mesh_name +
-				"_static_" + frame, file_path + "/", frame_num);
-		}
-		delete mesh_vtp;
-	}
+            mesh_vtp->write(base_name + "_contact_" + mesh_name +
+                "_static_" + frame, file_path + "/", frame_num);
+        }
+        delete mesh_vtp;
+    }
 }
 
 void JointMechanicsTool::writeAttachedGeometryVTPFiles(bool isDynamic) {
@@ -1156,39 +1172,42 @@ void JointMechanicsTool::writeAttachedGeometryVTPFiles(bool isDynamic) {
     std::string frame = split_string(get_vtp_frame(), "/").back();
     std::string origin = split_string(get_vtp_origin(), "/").back();
 
-	for (int i = 0; i < _attach_geo_names.size(); ++i) {
-		//Face Connectivity
-		const SimTK::PolygonalMesh& mesh = _attach_geo_meshes[i];
+    for (int i = 0; i < _attach_geo_names.size(); ++i) {
+        std::cout << "Writing .vtp files: " << file_path << "/" 
+            << base_name << "_"<< _attach_geo_names[i] << std::endl;
 
-		SimTK::Matrix mesh_faces(mesh.getNumFaces(), mesh.getNumVerticesForFace(0));
+        //Face Connectivity
+        const SimTK::PolygonalMesh& mesh = _attach_geo_meshes[i];
 
-		for (int j = 0; j < mesh.getNumFaces(); ++j) {
-			for (int k = 0; k < mesh.getNumVerticesForFace(0); ++k) {
-				mesh_faces(j, k) = mesh.getFaceVertex(j, k);
-			}
-		}
+        SimTK::Matrix mesh_faces(mesh.getNumFaces(), mesh.getNumVerticesForFace(0));
 
-		for (int frame_num = 0; frame_num < _n_frames; ++frame_num) {
+        for (int j = 0; j < mesh.getNumFaces(); ++j) {
+            for (int k = 0; k < mesh.getNumVerticesForFace(0); ++k) {
+                mesh_faces(j, k) = mesh.getFaceVertex(j, k);
+            }
+        }
 
-			//Write file
-			VTPFileAdapter* mesh_vtp = new VTPFileAdapter();
-			mesh_vtp->setDataFormat("binary");
+        for (int frame_num = 0; frame_num < _n_frames; ++frame_num) {
+
+            //Write file
+            VTPFileAdapter* mesh_vtp = new VTPFileAdapter();
+            mesh_vtp->setDataFormat("binary");
             
             if (isDynamic) {
-				mesh_vtp->setPointLocations(_attach_geo_vertex_locations[i][frame_num]);
-				mesh_vtp->setPolygonConnectivity(mesh_faces);
+                mesh_vtp->setPointLocations(_attach_geo_vertex_locations[i][frame_num]);
+                mesh_vtp->setPolygonConnectivity(mesh_faces);
 
-				mesh_vtp->write(base_name + "_mesh_" + _attach_geo_names[i] + "_dynamic_" +
-					frame + "_" + origin, file_path + "/", frame_num);
-			}
-			else { //static
-				mesh_vtp->setPolygonsFromMesh(mesh);
-				mesh_vtp->write(base_name + "_mesh_" + _attach_geo_names[i] + "_static_" +
-					frame + "_" + origin, file_path + "/", frame_num);
-			}
-			delete mesh_vtp;
-		}
-	}
+                mesh_vtp->write(base_name + "_mesh_" + _attach_geo_names[i] + "_dynamic_" +
+                    frame + "_" + origin, file_path + "/", frame_num);
+            }
+            else { //static
+                mesh_vtp->setPolygonsFromMesh(mesh);
+                mesh_vtp->write(base_name + "_mesh_" + _attach_geo_names[i] + "_static_" +
+                    frame + "_" + origin, file_path + "/", frame_num);
+            }
+            delete mesh_vtp;
+        }
+    }
 }
 
 void JointMechanicsTool::writeLineVTPFiles(std::string line_name,
@@ -1196,75 +1215,75 @@ void JointMechanicsTool::writeLineVTPFiles(std::string line_name,
     const std::vector<std::string>& output_double_names, const SimTK::Matrix& output_double_values) 
 {
     for (int i = 0; i < _n_frames; ++i) {
-	    int nPathPoints = nPoints.get(i);
-			
-	    VTPFileAdapter* mesh_vtp = new VTPFileAdapter();
-	    mesh_vtp->setDataFormat("binary");
+        int nPathPoints = nPoints.get(i);
+            
+        VTPFileAdapter* mesh_vtp = new VTPFileAdapter();
+        mesh_vtp->setDataFormat("binary");
        
 
-	    //Collect points
-	    SimTK::RowVector_<SimTK::Vec3> points(nPathPoints);
-	    SimTK::Vector lines(nPathPoints);
+        //Collect points
+        SimTK::RowVector_<SimTK::Vec3> points(nPathPoints);
+        SimTK::Vector lines(nPathPoints);
 
-	    for (int k = 0; k < nPathPoints; k++) {
-		    points(k) = path_points.get(i, k);
-		    lines(k) = k;
-	    }
-				
-	    mesh_vtp->setPointLocations(points);
-	    mesh_vtp->setLineConnectivity(lines);
+        for (int k = 0; k < nPathPoints; k++) {
+            points(k) = path_points.get(i, k);
+            lines(k) = k;
+        }
+                
+        mesh_vtp->setPointLocations(points);
+        mesh_vtp->setLineConnectivity(lines);
 
-	    //Collect Data
+        //Collect Data
         for (int k = 0; k < output_double_names.size(); ++k) {
             SimTK::Vector point_data(nPathPoints, output_double_values[i][k]);
-		    mesh_vtp->appendPointData(output_double_names[k], point_data);
-	    }
+            mesh_vtp->appendPointData(output_double_names[k], point_data);
+        }
 
         //Write File
         std::string frame = split_string(get_vtp_frame(), "/").back();
         std::string origin = split_string(get_vtp_origin(), "/").back();
 
-	    mesh_vtp->write(get_results_file_basename() + "_" + line_name + "_" + 
+        mesh_vtp->write(get_results_file_basename() + "_" + line_name + "_" + 
             frame + "_" + origin, get_results_directory() + "/", i);	
-	    delete mesh_vtp;
+        delete mesh_vtp;
     }
 }
 
 void JointMechanicsTool::writeH5File(
-	const std::string &aBaseName, const std::string &aDir)
+    const std::string &aBaseName, const std::string &aDir)
 {
-	H5FileAdapter h5_adapter;
+    H5FileAdapter h5_adapter;
 
-	const std::string h5_file{ aDir + "/" + aBaseName + ".h5" };
-	h5_adapter.open(h5_file);
+    const std::string h5_file{ aDir + "/" + aBaseName + ".h5" };
+    h5_adapter.open(h5_file);
     h5_adapter.writeTimeDataSet(_time);
 
-	//Write States Data
-	if (get_h5_states_data()) {
-		StatesReporter& states_analysis = dynamic_cast<StatesReporter&>(_model->updAnalysisSet().get("states_analysis"));
-		const TimeSeriesTable& states_table = states_analysis.getStatesStorage().exportToTable();
-		h5_adapter.writeStatesDataSet(states_table);
-	}
+    //Write States Data
+    if (get_h5_states_data()) {
+        StatesReporter& states_analysis = dynamic_cast<StatesReporter&>(_model->updAnalysisSet().get("states_analysis"));
+        const TimeSeriesTable& states_table = states_analysis.getStatesStorage().exportToTable();
+        h5_adapter.writeStatesDataSet(states_table);
+    }
 
     //Write coordinate data
-	if (get_h5_kinematics_data()) {
+    if (get_h5_kinematics_data()) {
         h5_adapter.writeComponentGroupDataSet("Coordinates", _coordinate_names, _coordinate_output_double_names, _coordinate_output_double_values);
-	}
+    }
 
-	//Write Muscle Data
-	if (get_h5_muscle_data()) {
-		h5_adapter.writeComponentGroupDataSet("Muscles",_muscle_names, _muscle_output_double_names, _muscle_output_double_values);		
-	}
+    //Write Muscle Data
+    if (get_h5_muscle_data()) {
+        h5_adapter.writeComponentGroupDataSet("Muscles",_muscle_names, _muscle_output_double_names, _muscle_output_double_values);		
+    }
 
-	//Write Ligament Data
-	if (get_h5_ligament_data()) {
+    //Write Ligament Data
+    if (get_h5_ligament_data()) {
         h5_adapter.writeComponentGroupDataSet("Ligaments",_ligament_names, _ligament_output_double_names, _ligament_output_double_values);
-	}
+    }
 
-	//Write Contact Data
+    //Write Contact Data
     /*if (get_h5_raw_contact_data() || get_h5_summary_contact_data()) {
         std::string cnt_group_name{ "/Contacts" };
-	    h5_adapter.createGroup(cnt_group_name);
+        h5_adapter.createGroup(cnt_group_name);
 
         //Contact Force
         for (int i = 0; i < _contact_force_paths.size(); ++i) {
@@ -1322,14 +1341,14 @@ void JointMechanicsTool::writeH5File(
         }
     }
 */
-	h5_adapter.close();
+    h5_adapter.close();
 
 }
 
 void JointMechanicsTool::loadModel(const std::string &aToolSetupFileName)
 {
     
-	OPENSIM_THROW_IF(get_model_file().empty(), Exception,
+    OPENSIM_THROW_IF(get_model_file().empty(), Exception,
             "No model file was specified (<model_file> element is empty) in "
             "the Setup file. ");
     std::string saveWorkingDirectory = IO::getCwd();
@@ -1338,11 +1357,11 @@ void JointMechanicsTool::loadModel(const std::string &aToolSetupFileName)
 
     std::cout<<"JointMechanicsTool "<< getName() <<" loading model '"<<get_model_file() <<"'"<< std::endl;
 
-	Model *model = 0;
+    Model *model = 0;
 
     try {
         model = new Model(get_model_file());
-		model->finalizeFromProperties();
+        model->finalizeFromProperties();
         
     } catch(...) { // Properly restore current directory if an exception is thrown
         IO::chDir(saveWorkingDirectory);

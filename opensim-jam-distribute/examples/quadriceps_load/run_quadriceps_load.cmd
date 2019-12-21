@@ -7,9 +7,9 @@ rem Let Windows know where the plugin and opensim libraries are
 set PATH=%BIN%;%OPENSIM%;%PATH%
 
 REM Perform Forward Simulation
-%BIN%\forsim %BIN%\jam_plugin.dll .\inputs\forsim_settings.xml
-move out.log results\forsim_out.log
-move err.log results\forsim_err.log
+rem %BIN%\forsim %BIN%\jam_plugin.dll .\inputs\forsim_settings.xml
+rem move out.log results\forsim_out.log
+rem move err.log results\forsim_err.log
 
 REM Analze results using joint-mechanics 
 %BIN%\joint-mechanics %BIN%\jam_plugin.dll .\inputs\joint_mechanics_settings.xml 

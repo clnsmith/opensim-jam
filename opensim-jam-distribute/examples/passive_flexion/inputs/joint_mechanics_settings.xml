@@ -4,7 +4,7 @@
         <!--Path to .osim file for analysis.-->
         <model_file>../../../models/lenhart2015/lenhart2015.osim</model_file>
         <!--Motion file (.mot) or storage file (.sto) containing the time history of the generalized coordinates for the model.-->
-        <coordinates_file>../results/forsim/passive_flexion_values.sto</coordinates_file>
+        <coordinates_file>../results/forsim/passive_flexion_states.sto</coordinates_file>
         <!--Folder where the results files are output.-->
         <results_directory>../results/joint-mechanics</results_directory>
         <!--Prefix to each results file name.-->
@@ -44,7 +44,7 @@
         <!--Output ligament lines of action, strain, and force data to .vtp files-->
         <vtp_ligaments>true</vtp_ligaments>
         <!--Output muscle lines of action, strain, and force data to .vtp files-->
-        <vtp_muscles>false</vtp_muscles>
+        <vtp_muscles>true</vtp_muscles>
         <!--Add cartilage thickness and material property maps to vtp files.Options: 'none','thickness','elastic modulus','poisson ratio' or 'all'-->
         <vtp_contact_properties>none</vtp_contact_properties>
         <!--Write detailed contact data to .h5 file-->

@@ -1,1 +1,3 @@
 *.log
+*.vtp
+/opensim-jam-distribute/examples/passive_flexion/results/joint-mechanics/*.h5

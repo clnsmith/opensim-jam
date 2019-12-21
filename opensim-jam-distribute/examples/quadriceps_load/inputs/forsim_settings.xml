@@ -2,7 +2,7 @@
 <OpenSimDocument Version="40000">
 	<ForsimTool>
 		<!--Path to .osim file for analysis.-->
-		<model_file>../../../models/lenhart2015/lenhart2015_test.osim</model_file>
+		<model_file>../../../models/lenhart2015/lenhart2015.osim</model_file>
 		<!--Storage file (.sto) containing the time varying actuator forces (MuscleName_frc)or actuator activations (MuscleName_act) to be applied during the simulation.-->
 		<actuator_input_file>./muscle_inputs.sto</actuator_input_file>
 		<!--External loads file (.xml) to apply to the model during the simulation.-->

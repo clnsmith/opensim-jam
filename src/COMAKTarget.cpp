@@ -21,7 +21,7 @@
 #include <OpenSim/Simulation/Model/Model.h>
 #include "ComakTarget.h"
 #include "Smith2018ArticularContactForce.h"
-#include "Blankevoort1991Ligament.h"
+//#include "Blankevoort1991Ligament.h"
 #include <OpenSim.h>
 using namespace OpenSim;
 
@@ -602,10 +602,7 @@ void ComakTarget::computeUnitUdot(SimTK::State s, const SimTK::Vector& parameter
     }
     
     //Current Ligament Forces
-    int nLig = 0;
-    for (Blankevoort1991Ligament& lig : _model->updComponentList<Blankevoort1991Ligament>()) {
-        nLig++;
-    }
+
 
 	//Compute Muscle Unit Udot
 	j = 0;

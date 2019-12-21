@@ -1,4 +1,4 @@
-set BIN=..\..\..\bin
+set BIN=..\..\bin
 set OPENSIM=..\..\opensim
 
 rem Let Windows know where the plugin and opensim libraries are

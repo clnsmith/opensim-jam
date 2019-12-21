@@ -41,134 +41,9 @@
 				<!--Deactivation time constant (in seconds).-->
 				<deactivation_time_constant>0.029999999999999999</deactivation_time_constant>
 			</Millard2012EquilibriumMuscle>
-			<Blankevoort1991Ligament>
-				<!--List of components that this component owns and serializes.-->
-				<components />
-				<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
-				<appliesForce>true</appliesForce>
-				<!--The set of points defining the path of the ligament-->
-				<GeometryPath>
-					<!--List of components that this component owns and serializes.-->
-					<components />
-					<!--The set of points defining the path-->
-					<PathPointSet>
-						<objects />
-						<groups />
-					</PathPointSet>
-					<!--The wrap objects that are associated with this path-->
-					<PathWrapSet>
-						<objects />
-						<groups />
-					</PathWrapSet>
-					<!--Default appearance attributes for this GeometryPath-->
-					<Appearance>
-						<!--Flag indicating whether the associated Geometry is visible or hidden.-->
-						<visible>true</visible>
-						<!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
-						<opacity>1</opacity>
-						<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
-						<color>0.5 0.5 0.5</color>
-						<!--Visuals applied to surfaces associated with this Appearance.-->
-						<SurfaceProperties>
-							<!--The representation (1:Points, 2:Wire, 3:Shaded) used to display the object.-->
-							<representation>3</representation>
-						</SurfaceProperties>
-					</Appearance>
-				</GeometryPath>
-				<!--Slope of the linear portion of the force-strain curve of ligament.Units of force/strain.-->
-				<linear_stiffness>0</linear_stiffness>
-				<!--Strain at which ligament force-strain curve transitions fromquadratic to linear. Default value of 0.06.-->
-				<transition_strain>0.059999999999999998</transition_strain>
-				<!--Coefficient for normalized damping of ligament.Units of seconds, default value of 0.003.-->
-				<normalized_damping_coefficient>0.0030000000000000001</normalized_damping_coefficient>
-				<!--Length at which ligament begins developing tension-->
-				<slack_length>0</slack_length>
-			</Blankevoort1991Ligament>
 		</defaults>
 		<!--List of components that this component owns and serializes.-->
-		<components>
-			<Smith2018ContactMesh name="femurMesh">
-				<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
-				<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
-				<!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: The frame whose scale factors are used to scale the mesh.).-->
-				<socket_scale_frame>/bodyset/femur_distal_r</socket_scale_frame>
-				<!--Path to mesh geometry file (supports .obj, .stl, .vtp). -->
-				<file_name>lenhart2015-R-femur-cartilage.stl</file_name>
-				<mesh_back_file>lenhart2015-R-femur-bone.stl</mesh_back_file>
-				<!--Local mesh frame to locate mesh in parent body.-->
-				<PhysicalOffsetFrame name="mesh_frame">
-					<!--The geometry used to display the axes of this Frame.-->
-					<FrameGeometry name="frame_geometry">
-						<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
-						<socket_frame>..</socket_frame>
-						<!--Path to an output (channel) to satisfy the one-value Input 'transform' of type SimTK::Transform (description: The transform that positions the Geometry in Ground so it can be positioned. Note, either the Geometry is attached to a Frame OR the input transform can be supplied, but not both. ).-->
-						<input_transform></input_transform>
-						<!--Scale factors in X, Y, Z directions respectively.-->
-						<scale_factors>0.20000000000000001 0.20000000000000001 0.20000000000000001</scale_factors>
-					</FrameGeometry>
-					<!--Path to a Component that satisfies the Socket 'parent' of type C (description: The parent frame to this frame.).-->
-					<socket_parent>/bodyset/femur_distal_r</socket_parent>
-					<!--Translational offset (in meters) of this frame's origin from the parent frame's origin, expressed in the parent frame.-->
-					<translation>0 0 0</translation>
-					<!--Orientation offset (in radians) of this frame in its parent frame, expressed as a frame-fixed x-y-z rotation sequence.-->
-					<orientation>0 0 0</orientation>
-				</PhysicalOffsetFrame>
-			</Smith2018ContactMesh>
-			<Smith2018ContactMesh name="tibiaMesh">
-				<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
-				<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
-				<!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: The frame whose scale factors are used to scale the mesh.).-->
-				<socket_scale_frame>/bodyset/femur_distal_r</socket_scale_frame>
-				<!--Path to mesh geometry file (supports .obj, .stl, .vtp). -->
-				<file_name>lenhart2015-R-tibia-cartilage.stl</file_name>
-				<mesh_back_file>lenhart2015-R-tibia-bone.stl</mesh_back_file>
-				<!--Local mesh frame to locate mesh in parent body.-->
-				<PhysicalOffsetFrame name="mesh_frame">
-					<!--The geometry used to display the axes of this Frame.-->
-					<FrameGeometry name="frame_geometry">
-						<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
-						<socket_frame>..</socket_frame>
-						<!--Path to an output (channel) to satisfy the one-value Input 'transform' of type SimTK::Transform (description: The transform that positions the Geometry in Ground so it can be positioned. Note, either the Geometry is attached to a Frame OR the input transform can be supplied, but not both. ).-->
-						<input_transform></input_transform>
-						<!--Scale factors in X, Y, Z directions respectively.-->
-						<scale_factors>0.20000000000000001 0.20000000000000001 0.20000000000000001</scale_factors>
-					</FrameGeometry>
-					<!--Path to a Component that satisfies the Socket 'parent' of type C (description: The parent frame to this frame.).-->
-					<socket_parent>/bodyset/tibia_proximal_r</socket_parent>
-					<!--Translational offset (in meters) of this frame's origin from the parent frame's origin, expressed in the parent frame.-->
-					<translation>0 0 0</translation>
-					<!--Orientation offset (in radians) of this frame in its parent frame, expressed as a frame-fixed x-y-z rotation sequence.-->
-					<orientation>0 0 0</orientation>
-				</PhysicalOffsetFrame>
-			</Smith2018ContactMesh>
-			<Smith2018ContactMesh name="patellaMesh">
-				<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
-				<socket_parent_frame>/bodyset/patella_r</socket_parent_frame>
-				<!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: The frame whose scale factors are used to scale the mesh.).-->
-				<socket_scale_frame>/bodyset/femur_distal_r</socket_scale_frame>
-				<!--Path to mesh geometry file (supports .obj, .stl, .vtp). -->
-				<file_name>lenhart2015-R-patella-cartilage.stl</file_name>
-				<mesh_back_file>lenhart2015-R-patella-bone.stl</mesh_back_file>
-				<!--Local mesh frame to locate mesh in parent body.-->
-				<PhysicalOffsetFrame name="mesh_frame">
-					<!--The geometry used to display the axes of this Frame.-->
-					<FrameGeometry name="frame_geometry">
-						<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
-						<socket_frame>..</socket_frame>
-						<!--Path to an output (channel) to satisfy the one-value Input 'transform' of type SimTK::Transform (description: The transform that positions the Geometry in Ground so it can be positioned. Note, either the Geometry is attached to a Frame OR the input transform can be supplied, but not both. ).-->
-						<input_transform></input_transform>
-						<!--Scale factors in X, Y, Z directions respectively.-->
-						<scale_factors>0.20000000000000001 0.20000000000000001 0.20000000000000001</scale_factors>
-					</FrameGeometry>
-					<!--Path to a Component that satisfies the Socket 'parent' of type C (description: The parent frame to this frame.).-->
-					<socket_parent>/bodyset/patella_r</socket_parent>
-					<!--Translational offset (in meters) of this frame's origin from the parent frame's origin, expressed in the parent frame.-->
-					<translation>0 0 0</translation>
-					<!--Orientation offset (in radians) of this frame in its parent frame, expressed as a frame-fixed x-y-z rotation sequence.-->
-					<orientation>0 0 0</orientation>
-				</PhysicalOffsetFrame>
-			</Smith2018ContactMesh>
-		</components>
+		<components />			
 		<!--The model's ground reference frame.-->
 		<Ground name="ground">
 			<!--The geometry used to display the axes of this Frame.-->
@@ -10316,7 +10191,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>16260.1685</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.03075</slack_length>
 				</Blankevoort1991Ligament>
@@ -10360,7 +10235,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>15300.7167</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0326782</slack_length>
 				</Blankevoort1991Ligament>
@@ -10404,7 +10279,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>13469.3331</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0371214</slack_length>
 				</Blankevoort1991Ligament>
@@ -10448,7 +10323,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>15040.1947</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0332443</slack_length>
 				</Blankevoort1991Ligament>
@@ -10492,7 +10367,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>13412.0875</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0372798</slack_length>
 				</Blankevoort1991Ligament>
@@ -10536,7 +10411,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>6913.7393</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0723198</slack_length>
 				</Blankevoort1991Ligament>
@@ -10580,7 +10455,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>5568.0407</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0897982</slack_length>
 				</Blankevoort1991Ligament>
@@ -10624,7 +10499,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>7006.9878</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0713573</slack_length>
 				</Blankevoort1991Ligament>
@@ -10668,7 +10543,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>6077.6082</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0822692</slack_length>
 				</Blankevoort1991Ligament>
@@ -10712,7 +10587,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>6398.9685</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0781376</slack_length>
 				</Blankevoort1991Ligament>
@@ -10756,7 +10631,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>6746.8596</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0741086</slack_length>
 				</Blankevoort1991Ligament>
@@ -10789,7 +10664,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>32657.5106</linear_stiffness>
+					<linear_stiffness>820</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0251091</slack_length>
 				</Blankevoort1991Ligament>
@@ -10822,7 +10697,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>35667.7802</linear_stiffness>
+					<linear_stiffness>820</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0229899</slack_length>
 				</Blankevoort1991Ligament>
@@ -10855,7 +10730,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>29359.5215</linear_stiffness>
+					<linear_stiffness>820</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0279296</slack_length>
 				</Blankevoort1991Ligament>
@@ -10888,7 +10763,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>32355.8723</linear_stiffness>
+					<linear_stiffness>820</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0253432</slack_length>
 				</Blankevoort1991Ligament>
@@ -10921,7 +10796,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>33523.2802</linear_stiffness>
+					<linear_stiffness>820</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0244606</slack_length>
 				</Blankevoort1991Ligament>
@@ -10954,7 +10829,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>32660.0730</linear_stiffness>
+					<linear_stiffness>820</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0251071</slack_length>
 				</Blankevoort1991Ligament>
@@ -10987,7 +10862,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>23996.9341</linear_stiffness>
+					<linear_stiffness>820</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.034171</slack_length>
 				</Blankevoort1991Ligament>
@@ -11020,7 +10895,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>27380.2339</linear_stiffness>
+					<linear_stiffness>820</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0299486</slack_length>
 				</Blankevoort1991Ligament>
@@ -11053,7 +10928,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>27119.8304</linear_stiffness>
+					<linear_stiffness>820</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0302362</slack_length>
 				</Blankevoort1991Ligament>
@@ -11086,7 +10961,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>23711.4061</linear_stiffness>
+					<linear_stiffness>820</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0345825</slack_length>
 				</Blankevoort1991Ligament>
@@ -11119,7 +10994,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>24244.5149</linear_stiffness>
+					<linear_stiffness>820</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0338221</slack_length>
 				</Blankevoort1991Ligament>
@@ -11152,7 +11027,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>24413.6233</linear_stiffness>
+					<linear_stiffness>820</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0335878</slack_length>
 				</Blankevoort1991Ligament>
@@ -11185,7 +11060,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>26316.2860</linear_stiffness>
+					<linear_stiffness>900</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0341994</slack_length>
 				</Blankevoort1991Ligament>
@@ -11218,7 +11093,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>28801.7566</linear_stiffness>
+					<linear_stiffness>900</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0312481</slack_length>
 				</Blankevoort1991Ligament>
@@ -11251,7 +11126,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>27650.8633</linear_stiffness>
+					<linear_stiffness>900</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0325487</slack_length>
 				</Blankevoort1991Ligament>
@@ -11284,7 +11159,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>26912.6357</linear_stiffness>
+					<linear_stiffness>900</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0334415</slack_length>
 				</Blankevoort1991Ligament>
@@ -11317,7 +11192,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>26952.7852</linear_stiffness>
+					<linear_stiffness>900</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0333917</slack_length>
 				</Blankevoort1991Ligament>
@@ -11350,7 +11225,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>8736.5876</linear_stiffness>
+					<linear_stiffness>300</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0343383</slack_length>
 				</Blankevoort1991Ligament>
@@ -11383,7 +11258,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>8397.2570</linear_stiffness>
+					<linear_stiffness>300</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.035726</slack_length>
 				</Blankevoort1991Ligament>
@@ -11416,7 +11291,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>9803.7511</linear_stiffness>
+					<linear_stiffness>300</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0306005</slack_length>
 				</Blankevoort1991Ligament>
@@ -11449,7 +11324,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>7565.9364</linear_stiffness>
+					<linear_stiffness>300</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0396514</slack_length>
 				</Blankevoort1991Ligament>
@@ -11482,7 +11357,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>8547.6819</linear_stiffness>
+					<linear_stiffness>300</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0350972</slack_length>
 				</Blankevoort1991Ligament>
@@ -11515,7 +11390,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>12203.8272</linear_stiffness>
+					<linear_stiffness>600</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0491649</slack_length>
 				</Blankevoort1991Ligament>
@@ -11548,7 +11423,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>10771.0713</linear_stiffness>
+					<linear_stiffness>600</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0557048</slack_length>
 				</Blankevoort1991Ligament>
@@ -11581,7 +11456,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>11257.7398</linear_stiffness>
+					<linear_stiffness>600</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0532967</slack_length>
 				</Blankevoort1991Ligament>
@@ -11614,7 +11489,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>10315.6243</linear_stiffness>
+					<linear_stiffness>600</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0581642</slack_length>
 				</Blankevoort1991Ligament>
@@ -11656,7 +11531,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>64113.8900</linear_stiffness>
+					<linear_stiffness>3000</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0467917</slack_length>
 				</Blankevoort1991Ligament>
@@ -11698,7 +11573,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>60566.2141</linear_stiffness>
+					<linear_stiffness>3000</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0495326</slack_length>
 				</Blankevoort1991Ligament>
@@ -11740,7 +11615,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>57826.7240</linear_stiffness>
+					<linear_stiffness>3000</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0518791</slack_length>
 				</Blankevoort1991Ligament>
@@ -11782,7 +11657,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>73802.1574</linear_stiffness>
+					<linear_stiffness>3000</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0406492</slack_length>
 				</Blankevoort1991Ligament>
@@ -11824,7 +11699,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>65301.5572</linear_stiffness>
+					<linear_stiffness>3000</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0459407</slack_length>
 				</Blankevoort1991Ligament>
@@ -11866,7 +11741,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>64188.9822</linear_stiffness>
+					<linear_stiffness>3000</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.046737</slack_length>
 				</Blankevoort1991Ligament>
@@ -11897,7 +11772,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>4394.1127</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0341366</slack_length>
 				</Blankevoort1991Ligament>
@@ -11928,7 +11803,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>4099.5560</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0365893</slack_length>
 				</Blankevoort1991Ligament>
@@ -11959,7 +11834,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>4446.7464</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0337325</slack_length>
 				</Blankevoort1991Ligament>
@@ -11990,7 +11865,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>4356.3497</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0329245</slack_length>
 				</Blankevoort1991Ligament>
@@ -12021,7 +11896,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>4555.8748</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0329245</slack_length>
 				</Blankevoort1991Ligament>
@@ -12052,7 +11927,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>4524.2492</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0331547</slack_length>
 				</Blankevoort1991Ligament>
@@ -12083,7 +11958,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>4482.8346</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.033461</slack_length>
 				</Blankevoort1991Ligament>
@@ -12114,7 +11989,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>4462.6592</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0336122</slack_length>
 				</Blankevoort1991Ligament>
@@ -12147,7 +12022,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>3179.5971</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0471758</slack_length>
 				</Blankevoort1991Ligament>
@@ -12178,7 +12053,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>3068.1534</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0488893</slack_length>
 				</Blankevoort1991Ligament>
@@ -12209,7 +12084,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>3126.4798</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0479773</slack_length>
 				</Blankevoort1991Ligament>
@@ -12240,7 +12115,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>3300.9179</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0454419</slack_length>
 				</Blankevoort1991Ligament>
@@ -12271,7 +12146,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>3273.3199</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.045825</slack_length>
 				</Blankevoort1991Ligament>
@@ -12302,7 +12177,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>3218.6404</linear_stiffness>
+					<linear_stiffness>150</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0466035</slack_length>
 				</Blankevoort1991Ligament>
@@ -12346,7 +12221,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>17097.2516</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0292445</slack_length>
 				</Blankevoort1991Ligament>
@@ -12390,7 +12265,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>16712.8907</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.029917</slack_length>
 				</Blankevoort1991Ligament>
@@ -12434,7 +12309,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>16862.3348</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0296519</slack_length>
 				</Blankevoort1991Ligament>
@@ -12478,7 +12353,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>16375.8193</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0305328</slack_length>
 				</Blankevoort1991Ligament>
@@ -12522,7 +12397,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>17183.3705</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0290979</slack_length>
 				</Blankevoort1991Ligament>
@@ -12555,7 +12430,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>10050.5776</linear_stiffness>
+					<linear_stiffness>440</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0437786</slack_length>
 				</Blankevoort1991Ligament>
@@ -12588,7 +12463,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>9947.1800</linear_stiffness>
+					<linear_stiffness>440</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0442336</slack_length>
 				</Blankevoort1991Ligament>
@@ -12621,7 +12496,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>8955.7318</linear_stiffness>
+					<linear_stiffness>440</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0491305</slack_length>
 				</Blankevoort1991Ligament>
@@ -12654,7 +12529,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>8863.7175</linear_stiffness>
+					<linear_stiffness>440</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0496406</slack_length>
 				</Blankevoort1991Ligament>
@@ -12687,7 +12562,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>9345.9709</linear_stiffness>
+					<linear_stiffness>440</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0470791</slack_length>
 				</Blankevoort1991Ligament>
@@ -12729,7 +12604,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>9441.2501</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0529591</slack_length>
 				</Blankevoort1991Ligament>
@@ -12771,7 +12646,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>9164.7031</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0545571</slack_length>
 				</Blankevoort1991Ligament>
@@ -12813,7 +12688,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>7235.0263</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0691082</slack_length>
 				</Blankevoort1991Ligament>
@@ -12855,7 +12730,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>7687.2602</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0650427</slack_length>
 				</Blankevoort1991Ligament>
@@ -12897,7 +12772,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>9449.9756</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0529102</slack_length>
 				</Blankevoort1991Ligament>
@@ -12939,7 +12814,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>9156.4796</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0546061</slack_length>
 				</Blankevoort1991Ligament>
@@ -12981,7 +12856,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>9458.5520</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0528622</slack_length>
 				</Blankevoort1991Ligament>
@@ -13023,7 +12898,7 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>9147.9846</linear_stiffness>
+					<linear_stiffness>500</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.0546568</slack_length>
 				</Blankevoort1991Ligament>
@@ -13062,70 +12937,90 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>17882.0533</linear_stiffness>
+					<linear_stiffness>10000</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
 					<slack_length>0.55922</slack_length>
 				</Blankevoort1991Ligament>
-				<Smith2018ArticularContactForce name="TF_contact">
-					<!--Path to a Component that satisfies the Socket 'target_mesh' of type Smith2018ContactMesh (description: Target mesh for collision detection.).-->
-					<socket_target_mesh>/femurMesh</socket_target_mesh>
-					<!--Path to a Component that satisfies the Socket 'casting_mesh' of type Smith2018ContactMesh (description: Ray casting mesh for collision detection.).-->
-					<socket_casting_mesh>/tibiaMesh</socket_casting_mesh>
-					<!--Minimum overlap depth between contacting meshes-->
-					<min_proximity>0</min_proximity>
-					<!--Maximum overlap depth between contacting meshes-->
-					<max_proximity>0.01</max_proximity>
-					<!--Level of reporting for debugging purposes (0-silent, 1-simple, 2-detailed)-->
-					<verbose>0</verbose>
-					<!--target_mesh Material Properties-->
-					<Smith2018ArticularContactForce::ContactParameters name="target_mesh_contact_params">
-						<!--Elastic Modulus-->
-						<elastic_modulus>5000000</elastic_modulus>
-						<!--Poissons Ratio-->
-						<poissons_ratio>0.45000000000000001</poissons_ratio>
-						<!--Uniform thickness of elastic layer-->
-						<thickness>0.0030000000000000001</thickness>
-					</Smith2018ArticularContactForce::ContactParameters>
-					<!--casting_mesh Material Properties-->
-					<Smith2018ArticularContactForce::ContactParameters name="casting_mesh_contact_params">
-						<!--Elastic Modulus-->
-						<elastic_modulus>5000000</elastic_modulus>
-						<!--Poissons Ratio-->
-						<poissons_ratio>0.45000000000000001</poissons_ratio>
-						<!--Uniform thickness of elastic layer-->
-						<thickness>0.0030000000000000001</thickness>
-					</Smith2018ArticularContactForce::ContactParameters>
-				</Smith2018ArticularContactForce>
-				<Smith2018ArticularContactForce name="PF_contact">
-					<!--Path to a Component that satisfies the Socket 'target_mesh' of type Smith2018ContactMesh (description: Target mesh for collision detection.).-->
-					<socket_target_mesh>/femurMesh</socket_target_mesh>
-					<!--Path to a Component that satisfies the Socket 'casting_mesh' of type Smith2018ContactMesh (description: Ray casting mesh for collision detection.).-->
-					<socket_casting_mesh>/patellaMesh</socket_casting_mesh>
-					<!--Minimum overlap depth between contacting meshes-->
-					<min_proximity>0</min_proximity>
-					<!--Maximum overlap depth between contacting meshes-->
-					<max_proximity>0.01</max_proximity>
-					<!--Level of reporting for debugging purposes (0-silent, 1-simple, 2-detailed)-->
-					<verbose>0</verbose>
-					<!--target_mesh Material Properties-->
-					<Smith2018ArticularContactForce::ContactParameters name="target_mesh_contact_params">
-						<!--Elastic Modulus-->
-						<elastic_modulus>5000000</elastic_modulus>
-						<!--Poissons Ratio-->
-						<poissons_ratio>0.45000000000000001</poissons_ratio>
-						<!--Uniform thickness of elastic layer-->
-						<thickness>0.0030000000000000001</thickness>
-					</Smith2018ArticularContactForce::ContactParameters>
-					<!--casting_mesh Material Properties-->
-					<Smith2018ArticularContactForce::ContactParameters name="casting_mesh_contact_params">
-						<!--Elastic Modulus-->
-						<elastic_modulus>5000000</elastic_modulus>
-						<!--Poissons Ratio-->
-						<poissons_ratio>0.45000000000000001</poissons_ratio>
-						<!--Uniform thickness of elastic layer-->
-						<thickness>0.0030000000000000001</thickness>
-					</Smith2018ArticularContactForce::ContactParameters>
-				</Smith2018ArticularContactForce>
+                <Smith2018ArticularContactForce name="tf_contact">
+                    <!--List of components that this component owns and serializes.-->
+                    <components />
+                    <!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+                    <appliesForce>true</appliesForce>
+                    <!--Path to a Component that satisfies the Socket 'target_mesh' of type Smith2018ContactMesh (description: Target mesh for collision detection.).-->
+                    <socket_target_mesh>/contactgeometryset/femur_cartilage</socket_target_mesh>
+                    <!--Path to a Component that satisfies the Socket 'casting_mesh' of type Smith2018ContactMesh (description: Ray casting mesh for collision detection.).-->
+                    <socket_casting_mesh>/contactgeometryset/tibia_cartilage</socket_casting_mesh>
+                    <!--Minimum overlap depthbetween contacting meshes-->
+                    <min_proximity>0</min_proximity>
+                    <!--Maximum overlap depthbetween contacting meshes-->
+                    <max_proximity>0.01</max_proximity>
+                    <!--Formulation for depth-pressure relationship: 'linear' or 'nonlinear'-->
+                    <elastic_foundation_formulation>linear</elastic_foundation_formulation>
+                    <!--Combine the thickness and average material properties between the ContactParams for both meshes and use Bei & Fregly 2003 lumped parameter Elastic Foundation model-->
+                    <use_lumped_contact_model>true</use_lumped_contact_model>
+                    <!--target_mesh material properties-->
+                    <Smith2018ArticularContactForce::ContactParameters name="target_mesh_contact_params">
+                        <!--Uniform Elastic Modulus value for entire mesh-->
+                        <elastic_modulus>5000000</elastic_modulus>
+                        <!--Uniform Poissons Ratio value for entire mesh-->
+                        <poissons_ratio>0.45</poissons_ratio>
+                        <!--Uniform thickness of elastic layer for entire mesh-->
+                        <thickness>0.003</thickness>
+                        <!--Flag to use variable thickness.Note: mesh_back_file must defined in Smith2018ContactMesh-->
+                        <use_variable_thickness>true</use_variable_thickness>
+                    </Smith2018ArticularContactForce::ContactParameters>
+                    <!--casting_mesh material properties-->
+                    <Smith2018ArticularContactForce::ContactParameters name="casting_mesh_contact_params">
+                        <!--Uniform Elastic Modulus value for entire mesh-->
+                        <elastic_modulus>5000000</elastic_modulus>
+                        <!--Uniform Poissons Ratio value for entire mesh-->
+                        <poissons_ratio>0.45</poissons_ratio>
+                        <!--Uniform thickness of elastic layer for entire mesh-->
+                        <thickness>0.003</thickness>
+                        <!--Flag to use variable thickness.Note: mesh_back_file must defined in Smith2018ContactMesh-->
+                        <use_variable_thickness>true</use_variable_thickness>
+                    </Smith2018ArticularContactForce::ContactParameters>
+                </Smith2018ArticularContactForce>
+                <Smith2018ArticularContactForce name="pf_contact">
+                    <!--List of components that this component owns and serializes.-->
+                    <components />
+                    <!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+                    <appliesForce>true</appliesForce>
+                    <!--Path to a Component that satisfies the Socket 'target_mesh' of type Smith2018ContactMesh (description: Target mesh for collision detection.).-->
+                    <socket_target_mesh>/contactgeometryset/femur_cartilage</socket_target_mesh>
+                    <!--Path to a Component that satisfies the Socket 'casting_mesh' of type Smith2018ContactMesh (description: Ray casting mesh for collision detection.).-->
+                    <socket_casting_mesh>/contactgeometryset/patella_cartilage</socket_casting_mesh>
+                    <!--Minimum overlap depthbetween contacting meshes-->
+                    <min_proximity>0</min_proximity>
+                    <!--Maximum overlap depthbetween contacting meshes-->
+                    <max_proximity>0.01</max_proximity>
+                    <!--Formulation for depth-pressure relationship: 'linear' or 'nonlinear'-->
+                    <elastic_foundation_formulation>linear</elastic_foundation_formulation>
+                    <!--Combine the thickness and average material properties between the ContactParams for both meshes and use Bei & Fregly 2003 lumped parameter Elastic Foundation model-->
+                    <use_lumped_contact_model>true</use_lumped_contact_model>
+                    <!--target_mesh material properties-->
+                    <Smith2018ArticularContactForce::ContactParameters name="target_mesh_contact_params">
+                        <!--Uniform Elastic Modulus value for entire mesh-->
+                        <elastic_modulus>5000000</elastic_modulus>
+                        <!--Uniform Poissons Ratio value for entire mesh-->
+                        <poissons_ratio>0.45</poissons_ratio>
+                        <!--Uniform thickness of elastic layer for entire mesh-->
+                        <thickness>0.003</thickness>
+                        <!--Flag to use variable thickness.Note: mesh_back_file must defined in Smith2018ContactMesh-->
+                        <use_variable_thickness>true</use_variable_thickness>
+                    </Smith2018ArticularContactForce::ContactParameters>
+                    <!--casting_mesh material properties-->
+                    <Smith2018ArticularContactForce::ContactParameters name="casting_mesh_contact_params">
+                        <!--Uniform Elastic Modulus value for entire mesh-->
+                        <elastic_modulus>5000000</elastic_modulus>
+                        <!--Uniform Poissons Ratio value for entire mesh-->
+                        <poissons_ratio>0.45</poissons_ratio>
+                        <!--Uniform thickness of elastic layer for entire mesh-->
+                        <thickness>0.003</thickness>
+                        <!--Flag to use variable thickness.Note: mesh_back_file must defined in Smith2018ContactMesh-->
+                        <use_variable_thickness>true</use_variable_thickness>
+                    </Smith2018ArticularContactForce::ContactParameters>
+                </Smith2018ArticularContactForce>
 				<SpringGeneralizedForce name="knee_flex_r">
 					<!--List of components that this component owns and serializes.-->
 					<components />
@@ -13222,7 +13117,7 @@
 					<!--Coordinate value at which spring produces no force.-->
 					<rest_length>0</rest_length>
 					<!--Damping constant.-->
-					<viscosity>2</viscosity>
+					<viscosity>0.1</viscosity>
 				</SpringGeneralizedForce>
 				<SpringGeneralizedForce name="pf_rot_r">
 					<!--List of components that this component owns and serializes.-->
@@ -13343,7 +13238,116 @@
 		</MarkerSet>
 		<!--Geometry to be used in contact forces.-->
 		<ContactGeometrySet name="contactgeometryset">
-			<objects />
+			<objects>
+				<Smith2018ContactMesh name="femur_cartilage">
+                    <!--List of components that this component owns and serializes.-->
+                    <components />
+                    <!--Path to a Component that satisfies the Socket 'frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
+                    <socket_frame>/bodyset/femur_distal_r</socket_frame>
+                    <!--Location of geometry center in the PhysicalFrame.-->
+                    <location>0 0 0</location>
+                    <!--Orientation of geometry in the PhysicalFrame (body-fixed XYZ Euler angles).-->
+                    <orientation>0 0 0</orientation>
+                    <!--Default appearance for this Geometry-->
+                    <Appearance>
+                    <!--Flag indicating whether the associated Geometry is visible or hidden.-->
+                    <visible>true</visible>
+                    <!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
+                    <opacity>1</opacity>
+                    <!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+                    <color>0 1 1</color>
+                    <!--Visuals applied to surfaces associated with this Appearance.-->
+                    <SurfaceProperties>
+                        <!--The representation (1:Points, 2:Wire, 3:Shaded) used to display the object.-->
+                        <representation>2</representation>
+                    </SurfaceProperties>
+                    </Appearance>
+                    <!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: The frame whose scale factors are used to scale the mesh.).-->
+                    <socket_scale_frame>/bodyset/femur_distal_r</socket_scale_frame>
+                    <!--Path to mesh geometry file (supports .obj, .stl, .vtp). -->
+                    <mesh_file>lenhart2015-R-femur-cartilage.stl</mesh_file>
+                    <!--Path to backside (bone) mesh geometry file (supports .obj, .stl, .vtp). -->
+                    <mesh_back_file>lenhart2015-R-femur-bone.stl</mesh_back_file>
+                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
+                    <min_thickness>0.001</min_thickness>
+                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
+                    <max_thickness>0.01</max_thickness>
+                    <!--[x,y,z] scale factors applied to mesh vertex locations.-->
+                    <scale_factors>1 1 1</scale_factors>
+                </Smith2018ContactMesh>
+                <Smith2018ContactMesh name="tibia_cartilage">
+                    <!--List of components that this component owns and serializes.-->
+                    <components />
+                    <!--Path to a Component that satisfies the Socket 'frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
+                    <socket_frame>/bodyset/tibia_proximal_r</socket_frame>
+                    <!--Location of geometry center in the PhysicalFrame.-->
+                    <location>0 0 0</location>
+                    <!--Orientation of geometry in the PhysicalFrame (body-fixed XYZ Euler angles).-->
+                    <orientation>0 0 0</orientation>
+                    <!--Default appearance for this Geometry-->
+                    <Appearance>
+                    <!--Flag indicating whether the associated Geometry is visible or hidden.-->
+                    <visible>true</visible>
+                    <!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
+                    <opacity>1</opacity>
+                    <!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+                    <color>0 1 1</color>
+                    <!--Visuals applied to surfaces associated with this Appearance.-->
+                    <SurfaceProperties>
+                        <!--The representation (1:Points, 2:Wire, 3:Shaded) used to display the object.-->
+                        <representation>2</representation>
+                    </SurfaceProperties>
+                    </Appearance>
+                    <!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: The frame whose scale factors are used to scale the mesh.).-->
+                    <socket_scale_frame>/bodyset/femur_distal_r</socket_scale_frame>
+                    <!--Path to mesh geometry file (supports .obj, .stl, .vtp). -->
+                    <mesh_file>lenhart2015-R-tibia-cartilage.stl</mesh_file>
+                    <!--Path to backside (bone) mesh geometry file (supports .obj, .stl, .vtp). -->
+                    <mesh_back_file>lenhart2015-R-tibia-bone.stl</mesh_back_file>
+                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
+                    <min_thickness>0.001</min_thickness>
+                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
+                    <max_thickness>0.01</max_thickness>
+                    <!--[x,y,z] scale factors applied to mesh vertex locations.-->
+                    <scale_factors>1 1 1</scale_factors>
+                </Smith2018ContactMesh>
+                <Smith2018ContactMesh name="patella_cartilage">
+                    <!--List of components that this component owns and serializes.-->
+                    <components />
+                    <!--Path to a Component that satisfies the Socket 'frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
+                    <socket_frame>/bodyset/patella_r</socket_frame>
+                    <!--Location of geometry center in the PhysicalFrame.-->
+                    <location>0 0 0</location>
+                    <!--Orientation of geometry in the PhysicalFrame (body-fixed XYZ Euler angles).-->
+                    <orientation>0 0 0</orientation>
+                    <!--Default appearance for this Geometry-->
+                    <Appearance>
+                    <!--Flag indicating whether the associated Geometry is visible or hidden.-->
+                    <visible>true</visible>
+                    <!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
+                    <opacity>1</opacity>
+                    <!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+                    <color>0 1 1</color>
+                    <!--Visuals applied to surfaces associated with this Appearance.-->
+                    <SurfaceProperties>
+                        <!--The representation (1:Points, 2:Wire, 3:Shaded) used to display the object.-->
+                        <representation>2</representation>
+                    </SurfaceProperties>
+                    </Appearance>
+                    <!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: The frame whose scale factors are used to scale the mesh.).-->
+                    <socket_scale_frame>/bodyset/femur_distal_r</socket_scale_frame>
+                    <!--Path to mesh geometry file (supports .obj, .stl, .vtp). -->
+                    <mesh_file>lenhart2015-R-patella-cartilage.stl</mesh_file>
+                    <!--Path to backside (bone) mesh geometry file (supports .obj, .stl, .vtp). -->
+                    <mesh_back_file>lenhart2015-R-patella-bone.stl</mesh_back_file>
+                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
+                    <min_thickness>0.001</min_thickness>
+                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
+                    <max_thickness>0.01</max_thickness>
+                    <!--[x,y,z] scale factors applied to mesh vertex locations.-->
+                    <scale_factors>1 1 1</scale_factors>
+                </Smith2018ContactMesh>
+			</objects>
 		</ContactGeometrySet>
 	</Model>
 </OpenSimDocument>

@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 		LoadOpenSimLibrary(plugin_file, true);
 	
 		//Run Forward Simulation
-		ForsimTool forsim = ForsimTool(settings_file);
+	    ForsimTool forsim = ForsimTool(settings_file);
 		
 		forsim.run();
 

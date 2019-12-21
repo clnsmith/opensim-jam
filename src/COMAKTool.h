@@ -32,36 +32,17 @@ namespace OpenSim {
  * @author Colin Smith
 
  */
-class OSIMPLUGIN_API COMAKTool : public Component{
-	OpenSim_DECLARE_CONCRETE_OBJECT(COMAKTool, Component)
+class OSIMPLUGIN_API COMAKTool : public Object{
+	OpenSim_DECLARE_CONCRETE_OBJECT(COMAKTool, Object)
 
 public:
-	OpenSim_DECLARE_PROPERTY(ik_motion_file, std::string, "Location of the inverse kinematics input .mot file.")
-		OpenSim_DECLARE_PROPERTY(results_dir, std::string, "Path to directory to write output results.")
-		OpenSim_DECLARE_PROPERTY(model_file, std::string, "Location of model to use in COMAK simulation.")
-		OpenSim_DECLARE_PROPERTY(comak_settings_file, std::string, "Path to .xml file to save comak settings")
+        OpenSim_DECLARE_PROPERTY(model_file, std::string, "Location of model to use in COMAK simulation.")
+	    OpenSim_DECLARE_PROPERTY(ik_motion_file, std::string, "Location of the inverse kinematics input .mot file.")
 		OpenSim_DECLARE_PROPERTY(external_loads_file, std::string, "External loads .xml file.")
+        OpenSim_DECLARE_PROPERTY(results_dir, std::string, "Path to directory to write output results.")		
 		OpenSim_DECLARE_PROPERTY(results_prefix, std::string, "Prefix to all results files names.")
 		OpenSim_DECLARE_PROPERTY(use_visualizer, bool, "Use SimTK visualizer to display simulations in progress.")
 		OpenSim_DECLARE_PROPERTY(print_input_kinematics, bool, "Print processed input q's, u's, and udots.")
-
-		OpenSim_DECLARE_PROPERTY(perform_secondary_constraint_sim, bool,
-			"Perform forward simulation where secondary_coupled_coord is prescribed and secondardy coordinates are unconstrained to find constraint functions for IK.")
-		OpenSim_DECLARE_OPTIONAL_PROPERTY(secondary_coupled_coord, std::string, "Name of coordinate to prescribe in simulation.")
-		//OpenSim_DECLARE_OPTIONAL_PROPERTY(secondary_coupled_coord_trajectory, Function, "Coordinate values vs time to prescribe during simulation, must start at time=0.0.")
-		OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_settle_time, double, "Initial settle period where secondary_coupled_coord is locked and secondary coords settle.")
-		OpenSim_DECLARE_PROPERTY(secondary_coupled_coord_start_value, double, "Initial value for secondary_coupled_coord. In degrees for rotational coordinates.")
-		OpenSim_DECLARE_PROPERTY(secondary_coupled_coord_stop_value, double, "Final value for secondary_coupled_coord. In degrees for rotational coordinates.")
-		OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_time, double, "Length of time to linearly prescribe secondary_couple_coord through the start and end value.")
-		OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_integrator_accuracy, double, "Integrator tolerance for forward simulation.")
-		OpenSim_DECLARE_PROPERTY(print_secondary_constraint_sim_results, bool, "Print results .sto file for secondary_constraint_sim")
-		OpenSim_DECLARE_PROPERTY(secondary_constraint_funcs, FunctionSet, "Functions constraining the secondary coordinates to the secondary_coupled_coord.")
-
-		OpenSim_DECLARE_PROPERTY(perform_inverse_kinematics, bool, "Perform Inverse Kinematics")
-		OpenSim_DECLARE_OPTIONAL_PROPERTY(trc_kinematics_file, std::string, "Path to .trc file with marker kinematics")
-		OpenSim_DECLARE_OPTIONAL_PROPERTY(ik_settings_file, std::string, "Path to Inverse Kinematics settings .xml file.")
-		OpenSim_DECLARE_OPTIONAL_PROPERTY(print_ik_model, bool, "Print model .osim file with kinematic coupler constraints.")
-		OpenSim_DECLARE_OPTIONAL_PROPERTY(ik_print_model_file, std::string, "Path to output .osim file.")
 
 		OpenSim_DECLARE_PROPERTY(verbose, int, "Level of debug information reported (0: low, 1: medium, 2: high)")
 		OpenSim_DECLARE_PROPERTY(start_time, double, "First time step of COMAK simulation.")
@@ -72,7 +53,6 @@ public:
 		OpenSim_DECLARE_LIST_PROPERTY(prescribed_coordinates, std::string, "List the Prescribed Coordinates in the model.")
 		OpenSim_DECLARE_LIST_PROPERTY(primary_coordinates, std::string, "List the Primary Coordinates in the model.")
 		OpenSim_DECLARE_LIST_PROPERTY(secondary_coordinates, std::string, "List the Secondary Coordinates in the model.")
-		OpenSim_DECLARE_LIST_PROPERTY(secondary_comak_damping, double, "List of damping values for each secondary coordinate to penalize frame to frame changes.")
 
 		OpenSim_DECLARE_PROPERTY(max_iterations, int, "Max number of iterations per time step for the COMAK optimization.")
 		OpenSim_DECLARE_PROPERTY(max_change_rotation, double, "Maximum change in rotational secondary coordinates between COMAK iterations")
@@ -112,8 +92,6 @@ private:
 public:
 	void initialize();
 	void run();
-	void performIKSecondaryConstraintSimulation();
-	void performIK();
 	SimTK::Vector equilibriateSecondaryCoordinates();
 	void performCOMAK();
 	void setModel(Model& model);
@@ -173,6 +151,8 @@ public:
 	SimTK::Vector _prev_parameters;
 	SimTK::Vector _parameter_scale;
     SimTK::Vector _muscle_volumes;
+
+    std::string _directoryOfSetupFile;
 //=============================================================================
 };  // END of class COMAK_TOOL
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <OpenSimDocument Version="40000">
-	<Model name="lenhart2015">
+	<Model name="visualize_kinematics">
 		<!--Credits (e.g., model author names) associated with the model.-->
 		<credits>Colin Smith. This model contains the femur and tibia bodies from the Lenhart 2015 model to be used to demonstrate the ability to visualize joint kinematics. The bone surface representing the subchondral bone was manually selected and copied into seperate .stl files to enable distance mapping. This model is only intended as an example and should not be used for simulations or research purposes.</credits>
 		<!--Publications and references associated with the model.-->
@@ -14,60 +14,7 @@
 		<!--List of bodies that make up this model.-->
 		<defaults />
 		<!--List of components that this component owns and serializes.-->
-		<components>
-			<Smith2018ContactMesh name="femurMesh">
-				<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
-				<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
-				<!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: The frame whose scale factors are used to scale the mesh.).-->
-				<socket_scale_frame>/bodyset/femur_distal_r</socket_scale_frame>
-				<!--Path to mesh geometry file (supports .obj, .stl, .vtp). -->
-				<file_name>lenhart2015-R-femur-subchonral-bone.stl</file_name>				
-				<!--Local mesh frame to locate mesh in parent body.-->
-				<PhysicalOffsetFrame name="mesh_frame">
-					<!--The geometry used to display the axes of this Frame.-->
-					<FrameGeometry name="frame_geometry">
-						<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
-						<socket_frame>..</socket_frame>
-						<!--Path to an output (channel) to satisfy the one-value Input 'transform' of type SimTK::Transform (description: The transform that positions the Geometry in Ground so it can be positioned. Note, either the Geometry is attached to a Frame OR the input transform can be supplied, but not both. ).-->
-						<input_transform></input_transform>
-						<!--Scale factors in X, Y, Z directions respectively.-->
-						<scale_factors>0.20000000000000001 0.20000000000000001 0.20000000000000001</scale_factors>
-					</FrameGeometry>
-					<!--Path to a Component that satisfies the Socket 'parent' of type C (description: The parent frame to this frame.).-->
-					<socket_parent>/bodyset/femur_distal_r</socket_parent>
-					<!--Translational offset (in meters) of this frame's origin from the parent frame's origin, expressed in the parent frame.-->
-					<translation>0 0 0</translation>
-					<!--Orientation offset (in radians) of this frame in its parent frame, expressed as a frame-fixed x-y-z rotation sequence.-->
-					<orientation>0 0 0</orientation>
-				</PhysicalOffsetFrame>
-			</Smith2018ContactMesh>
-			<Smith2018ContactMesh name="tibiaMesh">
-				<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
-				<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
-				<!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: The frame whose scale factors are used to scale the mesh.).-->
-				<socket_scale_frame>/bodyset/femur_distal_r</socket_scale_frame>
-				<!--Path to mesh geometry file (supports .obj, .stl, .vtp). -->
-				<file_name>lenhart2015-R-tibia-subchondral-bone.stl</file_name>				
-				<!--Local mesh frame to locate mesh in parent body.-->
-				<PhysicalOffsetFrame name="mesh_frame">
-					<!--The geometry used to display the axes of this Frame.-->
-					<FrameGeometry name="frame_geometry">
-						<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
-						<socket_frame>..</socket_frame>
-						<!--Path to an output (channel) to satisfy the one-value Input 'transform' of type SimTK::Transform (description: The transform that positions the Geometry in Ground so it can be positioned. Note, either the Geometry is attached to a Frame OR the input transform can be supplied, but not both. ).-->
-						<input_transform></input_transform>
-						<!--Scale factors in X, Y, Z directions respectively.-->
-						<scale_factors>0.20000000000000001 0.20000000000000001 0.20000000000000001</scale_factors>
-					</FrameGeometry>
-					<!--Path to a Component that satisfies the Socket 'parent' of type C (description: The parent frame to this frame.).-->
-					<socket_parent>/bodyset/tibia_proximal_r</socket_parent>
-					<!--Translational offset (in meters) of this frame's origin from the parent frame's origin, expressed in the parent frame.-->
-					<translation>0 0 0</translation>
-					<!--Orientation offset (in radians) of this frame in its parent frame, expressed as a frame-fixed x-y-z rotation sequence.-->
-					<orientation>0 0 0</orientation>
-				</PhysicalOffsetFrame>
-			</Smith2018ContactMesh>			
-		</components>
+		<components />
 		<!--The model's ground reference frame.-->
 		<Ground name="ground">
 			<!--The geometry used to display the axes of this Frame.-->
@@ -114,23 +61,6 @@
 							</Appearance>
 							<!--Name of geometry file.-->
 							<mesh_file>lenhart2015-R-femur-bone.stl</mesh_file>
-						</Mesh>
-						<Mesh name="femur_cartilage">
-							<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
-							<socket_frame>..</socket_frame>
-							<!--Path to an output (channel) to satisfy the one-value Input 'transform' of type SimTK::Transform (description: The transform that positions the Geometry in Ground so it can be positioned. Note, either the Geometry is attached to a Frame OR the input transform can be supplied, but not both. ).-->
-							<input_transform></input_transform>
-							<!--Scale factors in X, Y, Z directions respectively.-->
-							<scale_factors>1 1 1</scale_factors>
-							<!--Default appearance attributes for this Geometry-->
-							<Appearance>
-								<!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
-								<opacity>1</opacity>
-								<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
-								<color>1 1 1</color>
-							</Appearance>
-							<!--Name of geometry file.-->
-							<mesh_file>lenhart2015-R-femur-cartilage.stl</mesh_file>
 						</Mesh>
 					</attached_geometry>
 					<!--Set of wrap objects fixed to this body that GeometryPaths can wrap over.This property used to be a member of Body but was moved up with the introduction of Frames.-->
@@ -202,23 +132,6 @@
 							<!--Name of geometry file.-->
 							<mesh_file>lenhart2015-R-tibia-bone.stl</mesh_file>
 						</Mesh>
-						<Mesh name="tibia_cartilage">
-							<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
-							<socket_frame>..</socket_frame>
-							<!--Path to an output (channel) to satisfy the one-value Input 'transform' of type SimTK::Transform (description: The transform that positions the Geometry in Ground so it can be positioned. Note, either the Geometry is attached to a Frame OR the input transform can be supplied, but not both. ).-->
-							<input_transform></input_transform>
-							<!--Scale factors in X, Y, Z directions respectively.-->
-							<scale_factors>1 1 1</scale_factors>
-							<!--Default appearance attributes for this Geometry-->
-							<Appearance>
-								<!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
-								<opacity>1</opacity>
-								<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
-								<color>1 1 1</color>
-							</Appearance>
-							<!--Name of geometry file.-->
-							<mesh_file>lenhart2015-R-tibia-cartilage.stl</mesh_file>
-						</Mesh>
 						<Mesh name="fibula_bone">
 							<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
 							<socket_frame>..</socket_frame>
@@ -251,17 +164,6 @@
 								<quadrant>all</quadrant>
 								<dimensions> 0.03 0.018 0.012</dimensions>
 							</WrapEllipsoid>
-							<WrapEllipsoid name="Med_LigP_r">
-								<!--Whether or not the WrapObject is considered active in computing paths-->
-								<active>true</active>
-								<!--Body-fixed Euler angle sequence for the orientation of the WrapObject-->
-								<xyz_body_rotation>-0.13981299999999999 0.34906599999999999 0.181613</xyz_body_rotation>
-								<!--Translation of the WrapObject.-->
-								<translation>-0.0104 -0.031399999999999997 -0.022700000000000001</translation>
-								<!--The name of quadrant over which the wrap object is active. For example, '+x' or '-y' to set the sidedness of the wrapping.-->
-								<quadrant>all</quadrant>
-								<dimensions> 0.025 0.0054 0.0053</dimensions>
-							</WrapEllipsoid>
 						</objects>
 					</WrapObjectSet>
 					<!--The mass of the body (kg)-->
@@ -280,10 +182,10 @@
 					<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The parent frame for the joint.).-->
 					<socket_parent_frame>/ground</socket_parent_frame>
 					<!--Path to a Component that satisfies the Socket 'child_frame' of type PhysicalFrame (description: The child frame for the joint.).-->
-					<socket_child_frame>/bodyset/pelvis</socket_child_frame>
+					<socket_child_frame>/bodyset/femur_distal_r</socket_child_frame>
 					<!--List containing the generalized coordinates (q's) that parameterize this joint.-->
 					<coordinates>
-						<Coordinate name="pelvis_tilt">
+						<Coordinate name="gnd_femur_rx">
 							<!--The value of this coordinate before any value has been set. Rotational coordinate value is in radians and Translational in meters.-->
 							<default_value>0</default_value>
 							<!--The minimum and maximum values that the coordinate can range between. Rotational coordinate range in radians and Translational in meters.-->
@@ -295,7 +197,7 @@
 							<!--Flag indicating whether or not the values of the coordinates should be prescribed according to the function above. It is ignored if the no prescribed function is specified.-->
 							<prescribed>false</prescribed>
 						</Coordinate>
-						<Coordinate name="pelvis_list">
+						<Coordinate name="gnd_femur_ry">
 							<!--The value of this coordinate before any value has been set. Rotational coordinate value is in radians and Translational in meters.-->
 							<default_value>0</default_value>
 							<!--The minimum and maximum values that the coordinate can range between. Rotational coordinate range in radians and Translational in meters.-->
@@ -307,7 +209,7 @@
 							<!--Flag indicating whether or not the values of the coordinates should be prescribed according to the function above. It is ignored if the no prescribed function is specified.-->
 							<prescribed>false</prescribed>
 						</Coordinate>
-						<Coordinate name="pelvis_rot">
+						<Coordinate name="gnd_femur_rz">
 							<!--The value of this coordinate before any value has been set. Rotational coordinate value is in radians and Translational in meters.-->
 							<default_value>0</default_value>
 							<!--The minimum and maximum values that the coordinate can range between. Rotational coordinate range in radians and Translational in meters.-->
@@ -319,7 +221,7 @@
 							<!--Flag indicating whether or not the values of the coordinates should be prescribed according to the function above. It is ignored if the no prescribed function is specified.-->
 							<prescribed>false</prescribed>
 						</Coordinate>
-						<Coordinate name="pelvis_tx">
+						<Coordinate name="gnd_femur_tx">
 							<!--The value of this coordinate before any value has been set. Rotational coordinate value is in radians and Translational in meters.-->
 							<default_value>0</default_value>
 							<!--The minimum and maximum values that the coordinate can range between. Rotational coordinate range in radians and Translational in meters.-->
@@ -331,9 +233,9 @@
 							<!--Flag indicating whether or not the values of the coordinates should be prescribed according to the function above. It is ignored if the no prescribed function is specified.-->
 							<prescribed>false</prescribed>
 						</Coordinate>
-						<Coordinate name="pelvis_ty">
+						<Coordinate name="gnd_femur_ty">
 							<!--The value of this coordinate before any value has been set. Rotational coordinate value is in radians and Translational in meters.-->
-							<default_value>0.96899999999999997</default_value>
+							<default_value>1.0</default_value>
 							<!--The minimum and maximum values that the coordinate can range between. Rotational coordinate range in radians and Translational in meters.-->
 							<range>-10 10</range>
 							<!--Flag indicating whether or not the values of the coordinates should be limited to the range, above.-->
@@ -343,7 +245,7 @@
 							<!--Flag indicating whether or not the values of the coordinates should be prescribed according to the function above. It is ignored if the no prescribed function is specified.-->
 							<prescribed>false</prescribed>
 						</Coordinate>
-						<Coordinate name="pelvis_tz">
+						<Coordinate name="gnd_femur_tz">
 							<!--The value of this coordinate before any value has been set. Rotational coordinate value is in radians and Translational in meters.-->
 							<default_value>0</default_value>
 							<!--The minimum and maximum values that the coordinate can range between. Rotational coordinate range in radians and Translational in meters.-->
@@ -361,17 +263,7 @@
 						<!--3 Axes for rotations are listed first.-->
 						<TransformAxis name="rotation1">
 							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
-							<coordinates>pelvis_tilt</coordinates>
-							<!--Rotation or translation axis for the transform.-->
-							<axis>0 0 1</axis>
-							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
-							<LinearFunction name="function">
-								<coefficients> 1 0</coefficients>
-							</LinearFunction>
-						</TransformAxis>
-						<TransformAxis name="rotation2">
-							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
-							<coordinates>pelvis_list</coordinates>
+							<coordinates>gnd_femur_rx</coordinates>
 							<!--Rotation or translation axis for the transform.-->
 							<axis>1 0 0</axis>
 							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
@@ -379,11 +271,21 @@
 								<coefficients> 1 0</coefficients>
 							</LinearFunction>
 						</TransformAxis>
-						<TransformAxis name="rotation3">
+						<TransformAxis name="rotation2">
 							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
-							<coordinates>pelvis_rot</coordinates>
+							<coordinates>gnd_femur_ry</coordinates>
 							<!--Rotation or translation axis for the transform.-->
 							<axis>0 1 0</axis>
+							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
+							<LinearFunction name="function">
+								<coefficients> 1 0</coefficients>
+							</LinearFunction>
+						</TransformAxis>
+						<TransformAxis name="rotation3">
+							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
+							<coordinates>gnd_femur_rz</coordinates>
+							<!--Rotation or translation axis for the transform.-->
+							<axis>0 0 1</axis>
 							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
 							<LinearFunction name="function">
 								<coefficients> 1 0</coefficients>
@@ -392,7 +294,7 @@
 						<!--3 Axes for translations are listed next.-->
 						<TransformAxis name="translation1">
 							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
-							<coordinates>pelvis_tx</coordinates>
+							<coordinates>gnd_femur_tx</coordinates>
 							<!--Rotation or translation axis for the transform.-->
 							<axis>1 0 0</axis>
 							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
@@ -402,7 +304,7 @@
 						</TransformAxis>
 						<TransformAxis name="translation2">
 							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
-							<coordinates>pelvis_ty</coordinates>
+							<coordinates>gnd_femur_ty</coordinates>
 							<!--Rotation or translation axis for the transform.-->
 							<axis>0 1 0</axis>
 							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
@@ -412,7 +314,7 @@
 						</TransformAxis>
 						<TransformAxis name="translation3">
 							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
-							<coordinates>pelvis_tz</coordinates>
+							<coordinates>gnd_femur_tz</coordinates>
 							<!--Rotation or translation axis for the transform.-->
 							<axis>0 0 1</axis>
 							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
@@ -582,7 +484,7 @@
 		<!--Forces in the model (includes Actuators).-->
 		<ForceSet name="forceset">
 			<objects>				
-				<Blankevoort1991Ligament name="MCLs1">
+				<Blankevoort1991Ligament name="MCL1">
 					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
 					<appliesForce>true</appliesForce>
 					<!--The set of points defining the path of the ligament-->
@@ -594,13 +496,13 @@
 									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
 									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
 									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>0.0053708999999999996 0.0083394000000000003 -0.040649999999999999</location>
+									<location>0.0052254067155753231 0.0083394002914428719 -0.040650001525878908</location>
 								</PathPoint>
 								<PathPoint name="MCLs1-P2">
 									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
 									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
 									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>0.014323000000000001 -0.061130999999999998 -0.015466000000000001</location>
+									<location>0.0076867942810058595 -0.061131000518798828 -0.019071743587953934</location>
 								</PathPoint>
 							</objects>
 						</PathPointSet>
@@ -622,11 +524,11 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>6913.7393</linear_stiffness>
+					<linear_stiffness>1000</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
-					<slack_length>0.0723198</slack_length>
+					<slack_length>0.05</slack_length>
 				</Blankevoort1991Ligament>
-				<Blankevoort1991Ligament name="MCLs2">
+				<Blankevoort1991Ligament name="MCL2">
 					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
 					<appliesForce>true</appliesForce>
 					<!--The set of points defining the path of the ligament-->
@@ -638,13 +540,13 @@
 									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
 									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
 									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>0.0056325999999999998 0.015275 -0.040594999999999999</location>
+									<location>0.011513666127893967 0.0072286944389343263 -0.040595001220703128</location>
 								</PathPoint>
 								<PathPoint name="MCLs2-P2">
 									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
 									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
 									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>0.019234000000000001 -0.071438000000000001 -0.010942</location>
+									<location>0.01498914623260498 -0.061850105285644531 -0.015355074363163169</location>
 								</PathPoint>
 							</objects>
 						</PathPointSet>
@@ -666,11 +568,11 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>5568.0407</linear_stiffness>
+					<linear_stiffness>1000</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
-					<slack_length>0.0897982</slack_length>
+					<slack_length>0.05</slack_length>
 				</Blankevoort1991Ligament>
-				<Blankevoort1991Ligament name="MCLs3">
+				<Blankevoort1991Ligament name="MCL3">
 					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
 					<appliesForce>true</appliesForce>
 					<!--The set of points defining the path of the ligament-->
@@ -682,13 +584,13 @@
 									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
 									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
 									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>-0.00040512000000000002 0.016541 -0.038878000000000003</location>
+									<location>-0.00040511998534202575 0.0072668327259489164 -0.038877998352050781</location>
 								</PathPoint>
 								<PathPoint name="MCLs3-P2">
 									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
 									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
 									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>0.0011834 -0.055469999999999998 -0.021541999999999999</location>
+									<location>0.0011834000349044799 -0.061950351715087892 -0.018794294295054911</location>
 								</PathPoint>
 							</objects>
 						</PathPointSet>
@@ -710,172 +612,50 @@
 						</Appearance>
 					</GeometryPath>
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>7006.9878</linear_stiffness>
+					<linear_stiffness>1000</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
-					<slack_length>0.0713573</slack_length>
-				</Blankevoort1991Ligament>
-				<Blankevoort1991Ligament name="MCLs4">
-					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
-					<appliesForce>true</appliesForce>
-					<!--The set of points defining the path of the ligament-->
-					<GeometryPath name="geometrypath">
-						<!--The set of points defining the path-->
-						<PathPointSet>
-							<objects>
-								<PathPoint name="MCLs4-P1">
-									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
-									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
-									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>-0.0011506999999999999 0.0080931000000000006 -0.039482000000000003</location>
-								</PathPoint>
-								<PathPoint name="MCLs4-P2">
-									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
-									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
-									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>0.0065167999999999997 -0.074829000000000007 -0.017340999999999999</location>
-								</PathPoint>
-							</objects>
-						</PathPointSet>
-						<!--The wrap objects that are associated with this path-->
-						<PathWrapSet>
-							<objects>
-								<PathWrap name="pathwrap_">
-									<!--A WrapObject that this PathWrap interacts with.-->
-									<wrap_object>Med_Lig_r</wrap_object>
-									<!--The wrapping method used to solve the path around the wrap object.-->
-									<method>hybrid</method>
-								</PathWrap>
-							</objects>
-						</PathWrapSet>
-						<!--Default appearance attributes for this GeometryPath-->
-						<Appearance>
-							<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
-							<color>0.90000000000000002 0.90000000000000002 0.90000000000000002</color>
-						</Appearance>
-					</GeometryPath>
-					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>6077.6082</linear_stiffness>
-					<!--Strain of ligament when model is posed a default coordinates.-->
-					<slack_length>0.0822692</slack_length>
-				</Blankevoort1991Ligament>
-				<Blankevoort1991Ligament name="MCLs5">
-					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
-					<appliesForce>true</appliesForce>
-					<!--The set of points defining the path of the ligament-->
-					<GeometryPath name="geometrypath">
-						<!--The set of points defining the path-->
-						<PathPointSet>
-							<objects>
-								<PathPoint name="MCLs5-P1">
-									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
-									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
-									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>0.0025006999999999998 0.011534000000000001 -0.040624</location>
-								</PathPoint>
-								<PathPoint name="MCLs5-P2">
-									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
-									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
-									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>0.011919000000000001 -0.065762000000000001 -0.016444</location>
-								</PathPoint>
-							</objects>
-						</PathPointSet>
-						<!--The wrap objects that are associated with this path-->
-						<PathWrapSet>
-							<objects>
-								<PathWrap name="pathwrap_">
-									<!--A WrapObject that this PathWrap interacts with.-->
-									<wrap_object>Med_Lig_r</wrap_object>
-									<!--The wrapping method used to solve the path around the wrap object.-->
-									<method>hybrid</method>
-								</PathWrap>
-							</objects>
-						</PathWrapSet>
-						<!--Default appearance attributes for this GeometryPath-->
-						<Appearance>
-							<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
-							<color>0.90000000000000002 0.90000000000000002 0.90000000000000002</color>
-						</Appearance>
-					</GeometryPath>
-					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>6398.9685</linear_stiffness>
-					<!--Strain of ligament when model is posed a default coordinates.-->
-					<slack_length>0.0781376</slack_length>
-				</Blankevoort1991Ligament>
-				<Blankevoort1991Ligament name="MCLs6">
-					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
-					<appliesForce>true</appliesForce>
-					<!--The set of points defining the path of the ligament-->
-					<GeometryPath name="geometrypath">
-						<!--The set of points defining the path-->
-						<PathPointSet>
-							<objects>
-								<PathPoint name="MCLs6-P1">
-									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
-									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
-									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>0.00092051999999999998 0.013422999999999999 -0.040266000000000003</location>
-								</PathPoint>
-								<PathPoint name="MCLs6-P2">
-									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
-									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
-									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>0.0071678999999999996 -0.060749999999999998 -0.019480999999999998</location>
-								</PathPoint>
-							</objects>
-						</PathPointSet>
-						<!--The wrap objects that are associated with this path-->
-						<PathWrapSet>
-							<objects>
-								<PathWrap name="pathwrap_">
-									<!--A WrapObject that this PathWrap interacts with.-->
-									<wrap_object>Med_Lig_r</wrap_object>
-									<!--The wrapping method used to solve the path around the wrap object.-->
-									<method>hybrid</method>
-								</PathWrap>
-							</objects>
-						</PathWrapSet>
-						<!--Default appearance attributes for this GeometryPath-->
-						<Appearance>
-							<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
-							<color>0.90000000000000002 0.90000000000000002 0.90000000000000002</color>
-						</Appearance>
-					</GeometryPath>
-					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>6746.8596</linear_stiffness>
-					<!--Strain of ligament when model is posed a default coordinates.-->
-					<slack_length>0.0741086</slack_length>
-				</Blankevoort1991Ligament>				
-				<Smith2018ArticularContactForce name="TF_contact">
-					<!--Path to a Component that satisfies the Socket 'target_mesh' of type Smith2018ContactMesh (description: Target mesh for collision detection.).-->
-					<socket_target_mesh>/femurMesh</socket_target_mesh>
-					<!--Path to a Component that satisfies the Socket 'casting_mesh' of type Smith2018ContactMesh (description: Ray casting mesh for collision detection.).-->
-					<socket_casting_mesh>/tibiaMesh</socket_casting_mesh>
-					<!--Minimum overlap depth between contacting meshes-->
-					<min_proximity>-0.01</min_proximity>
-					<!--Maximum overlap depth between contacting meshes-->
-					<max_proximity>0.01</max_proximity>
-					<!--Level of reporting for debugging purposes (0-silent, 1-simple, 2-detailed)-->
-					<verbose>0</verbose>
-					<!--target_mesh Material Properties-->
-					<Smith2018ArticularContactForce::ContactParameters name="target_mesh_contact_params">
-						<!--Elastic Modulus-->
-						<elastic_modulus>1</elastic_modulus>
-						<!--Poissons Ratio-->
-						<poissons_ratio>1</poissons_ratio>
-						<!--Uniform thickness of elastic layer-->
-						<thickness>0.005</thickness>
-					</Smith2018ArticularContactForce::ContactParameters>
-					<!--casting_mesh Material Properties-->
-					<Smith2018ArticularContactForce::ContactParameters name="casting_mesh_contact_params">
-						<!--Elastic Modulus-->
-						<elastic_modulus>1</elastic_modulus>
-						<!--Poissons Ratio-->
-						<poissons_ratio>1</poissons_ratio>
-						<!--Uniform thickness of elastic layer-->
-						<thickness>0.005</thickness>
-					</Smith2018ArticularContactForce::ContactParameters>
-				</Smith2018ArticularContactForce>
+					<slack_length>0.05</slack_length>
+				</Blankevoort1991Ligament>			
+				<Smith2018ArticularContactForce name="tf_contact">
+                    <!--List of components that this component owns and serializes.-->
+                    <components />
+                    <!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+                    <appliesForce>true</appliesForce>
+                    <!--Path to a Component that satisfies the Socket 'target_mesh' of type Smith2018ContactMesh (description: Target mesh for collision detection.).-->
+                    <socket_target_mesh>/contactgeometryset/femur_cartilage</socket_target_mesh>
+                    <!--Path to a Component that satisfies the Socket 'casting_mesh' of type Smith2018ContactMesh (description: Ray casting mesh for collision detection.).-->
+                    <socket_casting_mesh>/contactgeometryset/tibia_cartilage</socket_casting_mesh>
+                    <!--Minimum overlap depthbetween contacting meshes-->
+                    <min_proximity>-0.01</min_proximity>
+                    <!--Maximum overlap depthbetween contacting meshes-->
+                    <max_proximity>0.01</max_proximity>
+                    <!--Formulation for depth-pressure relationship: 'linear' or 'nonlinear'-->
+                    <elastic_foundation_formulation>linear</elastic_foundation_formulation>
+                    <!--Combine the thickness and average material properties between the ContactParams for both meshes and use Bei & Fregly 2003 lumped parameter Elastic Foundation model-->
+                    <use_lumped_contact_model>true</use_lumped_contact_model>
+                    <!--target_mesh material properties-->
+                    <Smith2018ArticularContactForce::ContactParameters name="target_mesh_contact_params">
+                        <!--Uniform Elastic Modulus value for entire mesh-->
+                        <elastic_modulus>1</elastic_modulus>
+                        <!--Uniform Poissons Ratio value for entire mesh-->
+                        <poissons_ratio>0.5</poissons_ratio>
+                        <!--Uniform thickness of elastic layer for entire mesh-->
+                        <thickness>0.005</thickness>
+                        <!--Flag to use variable thickness.Note: mesh_back_file must defined in Smith2018ContactMesh-->
+                        <use_variable_thickness>false</use_variable_thickness>
+                    </Smith2018ArticularContactForce::ContactParameters>
+                    <!--casting_mesh material properties-->
+                    <Smith2018ArticularContactForce::ContactParameters name="casting_mesh_contact_params">
+                        <!--Uniform Elastic Modulus value for entire mesh-->
+                        <elastic_modulus>1</elastic_modulus>
+                        <!--Uniform Poissons Ratio value for entire mesh-->
+                        <poissons_ratio>0.5</poissons_ratio>
+                        <!--Uniform thickness of elastic layer for entire mesh-->
+                        <thickness>0.005</thickness>
+                        <!--Flag to use variable thickness.Note: mesh_back_file must defined in Smith2018ContactMesh-->
+                        <use_variable_thickness>false</use_variable_thickness>
+                    </Smith2018ArticularContactForce::ContactParameters>
+                </Smith2018ArticularContactForce>
 			</objects>
 			<groups>
 			</groups>
@@ -886,7 +666,76 @@
 		</MarkerSet>
 		<!--Geometry to be used in contact forces.-->
 		<ContactGeometrySet name="contactgeometryset">
-			<objects />
+			<objects>
+				<Smith2018ContactMesh name="femur_cartilage">
+                    <!--List of components that this component owns and serializes.-->
+                    <components />
+                    <!--Path to a Component that satisfies the Socket 'frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
+                    <socket_frame>/bodyset/femur_distal_r</socket_frame>
+                    <!--Location of geometry center in the PhysicalFrame.-->
+                    <location>0 0 0</location>
+                    <!--Orientation of geometry in the PhysicalFrame (body-fixed XYZ Euler angles).-->
+                    <orientation>0 0 0</orientation>
+                    <!--Default appearance for this Geometry-->
+                    <Appearance>
+                    <!--Flag indicating whether the associated Geometry is visible or hidden.-->
+                    <visible>true</visible>
+                    <!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
+                    <opacity>1</opacity>
+                    <!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+                    <color>0 1 1</color>
+                    <!--Visuals applied to surfaces associated with this Appearance.-->
+                    <SurfaceProperties>
+                        <!--The representation (1:Points, 2:Wire, 3:Shaded) used to display the object.-->
+                        <representation>2</representation>
+                    </SurfaceProperties>
+                    </Appearance>
+                    <!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: The frame whose scale factors are used to scale the mesh.).-->
+                    <socket_scale_frame>/bodyset/femur_distal_r</socket_scale_frame>
+                    <!--Path to mesh geometry file (supports .obj, .stl, .vtp). -->
+                    <mesh_file>lenhart2015-R-femur-subchondral-bone.stl</mesh_file>
+                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
+                    <min_thickness>0.001</min_thickness>
+                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
+                    <max_thickness>0.01</max_thickness>
+                    <!--[x,y,z] scale factors applied to mesh vertex locations.-->
+                    <scale_factors>1 1 1</scale_factors>
+                </Smith2018ContactMesh>
+                <Smith2018ContactMesh name="tibia_cartilage">
+                    <!--List of components that this component owns and serializes.-->
+                    <components />
+                    <!--Path to a Component that satisfies the Socket 'frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
+                    <socket_frame>/bodyset/tibia_proximal_r</socket_frame>
+                    <!--Location of geometry center in the PhysicalFrame.-->
+                    <location>0 0 0</location>
+                    <!--Orientation of geometry in the PhysicalFrame (body-fixed XYZ Euler angles).-->
+                    <orientation>0 0 0</orientation>
+                    <!--Default appearance for this Geometry-->
+                    <Appearance>
+                    <!--Flag indicating whether the associated Geometry is visible or hidden.-->
+                    <visible>true</visible>
+                    <!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
+                    <opacity>1</opacity>
+                    <!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+                    <color>0 1 1</color>
+                    <!--Visuals applied to surfaces associated with this Appearance.-->
+                    <SurfaceProperties>
+                        <!--The representation (1:Points, 2:Wire, 3:Shaded) used to display the object.-->
+                        <representation>2</representation>
+                    </SurfaceProperties>
+                    </Appearance>
+                    <!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: The frame whose scale factors are used to scale the mesh.).-->
+                    <socket_scale_frame>/bodyset/femur_distal_r</socket_scale_frame>
+                    <!--Path to mesh geometry file (supports .obj, .stl, .vtp). -->
+                    <mesh_file>lenhart2015-R-tibia-subchondral-bone.stl</mesh_file>
+                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
+                    <min_thickness>0.001</min_thickness>
+                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
+                    <max_thickness>0.01</max_thickness>
+                    <!--[x,y,z] scale factors applied to mesh vertex locations.-->
+                    <scale_factors>1 1 1</scale_factors>
+                </Smith2018ContactMesh>			
+			</objects>
 		</ContactGeometrySet>
 	</Model>
 </OpenSimDocument>

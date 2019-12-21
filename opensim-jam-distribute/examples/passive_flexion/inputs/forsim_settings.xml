@@ -8,7 +8,7 @@
 		<!--External loads file (.xml) to apply to the model during the simulation.-->
 		<external_loads_file></external_loads_file>
 		<!--Storage file (.sto) containing the time varying trajectories for the prescribed coordinates.Columns labels are 'time' and '/Path/To/Coordinate'-->
-		<prescribed_coordinates_file>./knee_flexion.sto</prescribed_coordinates_file>
+		<prescribed_coordinates_file>./passive_flexion_prescribed_coordinates.sto</prescribed_coordinates_file>
 		<!--Folder where the results files are output.-->
 		<results_directory>../results/forsim</results_directory>
 		<!--Prefix to each results file name.-->
@@ -43,6 +43,7 @@
 		</unconstrained_coordinates>
 		<!--Use the SimTK visualizer.-->
 		<use_visualizer>true</use_visualizer>
+		<!--0 - silent, 1 - contact info, 2 - model force info-->
 		<verbose>0</verbose>
 		<!--Analyses to be performedduring forward simulation.-->
 		<AnalysisSet name="Analyses">
@@ -61,18 +62,6 @@
 					<!--Flag indicating whether to include forces due to constraints.-->
 					<include_constraint_forces>false</include_constraint_forces>
 				</ForceReporter>
-				<StatesReporter name = "StatesReporter">
-					<!--Flag (true or false) specifying whether on. True by default.-->
-					<on>true</on>
-					<!--Start time.-->
-					<start_time>-Inf</start_time>
-					<!--End time.-->
-					<end_time>Inf</end_time>
-					<!--Specifies how often to store results during a simulation. More specifically, the interval (a positive integer) specifies how many successful integration steps should be taken before results are recorded again.-->
-					<step_interval>1</step_interval>
-					<!--Flag (true or false) indicating whether the results are in degrees or not.-->
-					<in_degrees>true</in_degrees>
-				</StatesReporter>
 			</objects>
 			<groups />
 		</AnalysisSet>

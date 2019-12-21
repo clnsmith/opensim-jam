@@ -24,7 +24,7 @@
 #include "COMAKTarget.h"
 #include "HelperFunctions.h"
 #include "Smith2018ArticularContactForce.h"
-#include "Blankevoort1991Ligament.h"
+//#include "Blankevoort1991Ligament.h"
 
 using namespace OpenSim;
 using namespace SimTK;
@@ -72,12 +72,14 @@ private:
 COMAKTool::COMAKTool() 
 {
 	constructProperties();
+    _directoryOfSetupFile = "";
 }
 
-COMAKTool::COMAKTool(const std::string file) : Component(file) {
+COMAKTool::COMAKTool(const std::string file) : Object(file) {
 	constructProperties();
 	updateFromXMLDocument();
-	finalizeFromProperties();
+    _directoryOfSetupFile = IO::getParentDirectory(file);
+    IO::chDir(_directoryOfSetupFile);
 }
 
 //_____________________________________________________________________________
@@ -87,31 +89,13 @@ COMAKTool::COMAKTool(const std::string file) : Component(file) {
 void COMAKTool::constructProperties()
 {
 	constructProperty_model_file("");
-	constructProperty_results_dir("");
-	constructProperty_comak_settings_file("");
-	constructProperty_external_loads_file("");
+    constructProperty_ik_motion_file("");
+    constructProperty_external_loads_file("");
+    constructProperty_results_dir("");
 	constructProperty_results_prefix("");
 	constructProperty_use_visualizer(false);
 	constructProperty_print_input_kinematics(false);
-	
-	constructProperty_perform_secondary_constraint_sim(false);
-	constructProperty_secondary_coupled_coord("");
-	constructProperty_secondary_constraint_sim_settle_time(1.0);
-	constructProperty_secondary_constraint_sim_time(1.0);
-	constructProperty_secondary_coupled_coord_start_value(0.0);
-	constructProperty_secondary_coupled_coord_stop_value(0.0);
-	constructProperty_secondary_constraint_sim_integrator_accuracy(0.0001);
-	constructProperty_print_secondary_constraint_sim_results(false);
-	constructProperty_secondary_constraint_funcs(FunctionSet());
-
-	constructProperty_perform_inverse_kinematics(false);
-	constructProperty_ik_settings_file("");
-	constructProperty_trc_kinematics_file("");
-	constructProperty_ik_motion_file("");
-	constructProperty_print_ik_model(false);
-	constructProperty_ik_print_model_file("");
-
-	constructProperty_verbose(0);
+    constructProperty_verbose(0);
 	constructProperty_start_time(-1);
 	constructProperty_stop_time(-1);
 	constructProperty_time_step(-1);
@@ -120,7 +104,6 @@ void COMAKTool::constructProperties()
 	constructProperty_prescribed_coordinates();
 	constructProperty_primary_coordinates();
 	constructProperty_secondary_coordinates();
-	constructProperty_secondary_comak_damping();
 
 	constructProperty_max_iterations(50);
 	constructProperty_max_change_rotation(0.05);
@@ -155,17 +138,7 @@ void COMAKTool::initialize()
 {
 	setModel(Model(get_model_file()));
 
-	if (get_use_visualizer()) {
-		_model.setUseVisualizer(true);
-	}
 	_model.initSystem();
-	//if (get_verbose() > 3) {
-		for (auto& ef : _model.updComponentList<Smith2018ArticularContactForce>()) {
-			//ef.set_verbose(0);
-		}
-	//}
-
-
 
 	//Verfiy Coordinate Properties
 	
@@ -174,9 +147,6 @@ void COMAKTool::initialize()
 		std::string path = coord.getAbsolutePathString();
 
 		//Reset to full path
-		if (get_secondary_coupled_coord() == name) {
-			set_secondary_coupled_coord(path);
-		}
 
 		int ind = getProperty_prescribed_coordinates().findIndex(name);
 		if (ind > -1) {
@@ -219,11 +189,6 @@ void COMAKTool::initialize()
 	}
 
 	//Make sure Coordinate exists in model and no duplicates	
-	std::string name = get_secondary_coupled_coord();
-	try { _model.getComponent<Coordinate>(name); }
-	catch (Exception) {
-		OPENSIM_THROW(Exception, "secondary_coupled_coord: " + name + " not found in model.")
-	}
 	
 	for (int i = 0; i < getProperty_prescribed_coordinates().size(); ++i) {
 		std::string name = get_prescribed_coordinates(i);
@@ -421,304 +386,10 @@ void COMAKTool::initialize()
 
 void COMAKTool::run()
 {
-	//Secondary Constraint Simulation
-	if (get_perform_secondary_constraint_sim()) {
-		performIKSecondaryConstraintSimulation();
-	}
-
-	//Inverse Kinematics 
-	if (get_perform_inverse_kinematics()) {
-		performIK();
-	}
-
-
-
 	//COMAK
 	performCOMAK();
 }
 
-/** ===================================================================
-* performIKSecondaryConstraintSimulation
-* =====================================================================
-*
-*/
-
-void COMAKTool::performIKSecondaryConstraintSimulation() {
-	std::cout << "Performing IK Secondary Constraint Simulation..." << std::endl;
-	
-	Model model = _model;
-	model.initSystem();
-
-	//Setup Prescribed Function
-	double start_time = get_secondary_constraint_sim_settle_time();
-	double stop_time = start_time + get_secondary_constraint_sim_time();
-	double t[] = { 0, start_time, stop_time };
-
-	double start_value;
-	double stop_value;
-
-	if (model.getComponent<Coordinate>(get_secondary_coupled_coord()).getMotionType() == Coordinate::MotionType::Rotational) {
-		start_value = get_secondary_coupled_coord_start_value() * SimTK::Pi / 180;
-		stop_value = get_secondary_coupled_coord_stop_value() * SimTK::Pi / 180;
-	}
-	else {
-		start_value = get_secondary_coupled_coord_start_value();
-		stop_value = get_secondary_coupled_coord_stop_value();
-	}
-	
-	double x[] = { start_value, start_value, stop_value };
-	PiecewiseLinearFunction func(3, t, x);
-
-	//Set coordinate Types
-	for (auto& coord : model.updComponentList<Coordinate>()) {
-		if (getProperty_secondary_coordinates().findIndex(coord.getAbsolutePathString()) > -1) {
-			coord.set_locked(false);
-		}
-		else if (coord.getAbsolutePathString() == get_secondary_coupled_coord()){
-			coord.set_locked(false);
-			coord.set_prescribed(true);
-			coord.set_prescribed_function(func);
-			//coord.set_prescribed_function(get_secondary_coupled_coord_trajectory());
-		}
-		else {
-			coord.set_locked(true);
-		}		
-	}
-
-	for(auto& cc_const : model.updComponentList<CoordinateCouplerConstraint>()){
-		std::string cc_coord_name = cc_const.getDependentCoordinateName();
-		Coordinate& coord = model.updCoordinateSet().get(cc_coord_name);
-		coord.set_locked(false);
-	}
-
-	// Set Muscle Properties
-	//Add 2% muscle activation
-/*	PrescribedController* msl_control = new PrescribedController();
-	msl_control->setActuators(model.updActuators());
-
-	for (Muscle& msl : model.updComponentList<Muscle>()) {
-		msl_control->prescribeControlForActuator(msl.getName(), new Constant(0.05));
-		if (msl.getConcreteClassName() == "Millard2012EquilibriumMuscle") {
-			msl.set_ignore_activation_dynamics(true);
-			msl.set_ignore_tendon_compliance(true);
-		}
-	}
-	model.addComponent(msl_control);*/
-	
-		//Apply secondary damping multiplier
-	if (get_settle_sim_viscosity_multiplier() != -1) {
-		for (int i = 0; i < _n_secondary_coord; ++i) {
-			bool found = false;
-			for (SpringGeneralizedForce& sgf : model.updComponentList<SpringGeneralizedForce>()) {
-				if (_secondary_coord_name[i] == sgf.get_coordinate()) {
-					sgf.set_viscosity(sgf.get_viscosity()*get_settle_sim_viscosity_multiplier());
-					found = true;
-				}				
-			}
-			if (found ==false) {
-				std::cout << "Warning:: secondary_coord (" << _secondary_coord_name[i] <<
-					") has no SpringGeneralizedForce, no damping applied!" << std::endl;
-			}
-		}
-	}
-
-	//Initialize Model
-	SimTK::State state = model.initSystem();
-	model.equilibrateMuscles(state);
-
-	//Prescribe Muscle Force
-	for (Muscle& msl : model.updComponentList<Muscle>()) {
-		msl.overrideActuation(state, true);
-		double value = msl.getMaxIsometricForce()*0.01;
-		msl.setOverrideActuation(state, value);
-	}
-
-	if (get_use_visualizer()) {
-		SimTK::Visualizer& viz = model.updVisualizer().updSimbodyVisualizer();
-		viz.setBackgroundColor(SimTK::White);
-		viz.setShowSimTime(true);
-	}
-
-	//Simulate
-	double initialTime = 0.0;
-	double finalTime = stop_time;
-
-	TimeSeriesTable q_table;
-	TimeSeriesTable u_table;
-
-	SimTK::RowVector q_row(model.getNumCoordinates());
-	SimTK::RowVector u_row(model.getNumCoordinates());
-
-	std::vector<std::string> q_names;
-	std::vector<std::string> u_names;
-
-	for (Coordinate& coord : _model.updComponentList<Coordinate>()) {
-		q_names.push_back(coord.getAbsolutePathString() + "/value");
-		u_names.push_back(coord.getAbsolutePathString() + "/speed");
-	}
-
-	q_table.setColumnLabels(q_names);
-	u_table.setColumnLabels(u_names);
-
-	SimTK::CPodesIntegrator integrator(model.getSystem(), SimTK::CPodes::BDF, SimTK::CPodes::Newton);
-	integrator.setAccuracy(get_secondary_constraint_sim_integrator_accuracy());
-	
-	SimTK::TimeStepper timestepper(model.getSystem(), integrator);
-
-	timestepper.initialize(state);
-
-	double dt = 0.01;
-
-	int nSteps = round((finalTime - initialTime) / dt);
-
-	for (int i = 0; i <= nSteps; ++i) {
-
-		timestepper.stepTo(i*dt);
-		state = timestepper.getState();
-
-		int j = 0;
-		for (const auto& coord : model.getComponentList<Coordinate>()) {
-			q_row(j) = coord.getValue(state);
-			u_row(j) = coord.getSpeedValue(state);
-			j++;
-		}
-		q_table.appendRow(state.getTime(), q_row);
-		u_table.appendRow(state.getTime(), u_row);
-	}
-
-	//Compute Coupled Constraint Functions
-	std::vector<double> time = q_table.getIndependentColumn();
-	int start_frame = round((start_time - initialTime) / dt);
-	int nCutFrames = nSteps - start_frame;
-
-	SimTK::Vector ind_data = q_table.getDependentColumn(get_secondary_coupled_coord() + "/value");
-	SimTK::Vector cut_ind_data(nCutFrames);
-	SimTK::Matrix cut_data(nCutFrames, _n_secondary_coord);
-
-	int k = 0;
-	for (int i = start_frame; i < nSteps; ++i) {
-		cut_ind_data(k) = ind_data(i);
-		k++;
-	}
-
-	for (int j = 0; j < _n_secondary_coord; ++j) {
-		std::string path = _secondary_coord_path[j];
-		SimTK::Vector data = q_table.getDependentColumn(path + "/value");
-
-		k = 0;
-		for (int i = start_frame; i < nSteps; ++i) {
-			cut_data(k, j) = data(i);
-			k++;
-		}
-	}
-		
-	
-	
-	double ind_max = SimTK::max(cut_ind_data);
-	double ind_min = SimTK::min(cut_ind_data);
-	
-	int npts = 15;
-	double step = (ind_max - ind_min) / npts;
-	
-	SimTK::Vector ind_pt_data(npts);
-
-	for (int i = 0; i < npts; ++i) {
-		ind_pt_data(i) = ind_min + i * step;
-	}
-
-
-	upd_secondary_constraint_funcs().clearAndDestroy();
-
-	for (int j=0; j < _n_secondary_coord; ++j){
-		std::string path = _secondary_coord_path[j];
-		
-		SimTK::Vector data = cut_data(j);
-
-		//GCVSpline data_fit = GCVSpline(5, data.size(), &ind_data[0], &data[0]);
-		SimmSpline data_fit = SimmSpline(data.size(), &cut_ind_data[0], &data[0]);
-
-		
-		SimmSpline* spline = new SimmSpline();
-		spline->setName(path);		
-
-		for (int i = 0; i < npts; ++i) {
-			spline->addPoint(ind_pt_data(i), data_fit.calcValue(SimTK::Vector(1, ind_pt_data(i))));
-		}
-		
-		upd_secondary_constraint_funcs().adoptAndAppend(spline);
-	}
-
-	//Write Outputs
-	if (get_print_secondary_constraint_sim_results()) {
-		q_table.addTableMetaData("inDegrees", std::string("no"));
-		u_table.addTableMetaData("inDegrees", std::string("no"));
-		_model.getSimbodyEngine().convertRadiansToDegrees(q_table);
-		_model.getSimbodyEngine().convertRadiansToDegrees(u_table);
-		
-		std::string name = "secondary_constraint_sim_values";
-		q_table.addTableMetaData("header", name);
-		q_table.addTableMetaData("nRows", std::to_string(q_table.getNumRows()));
-		q_table.addTableMetaData("nColumns", std::to_string(q_table.getNumColumns()+1));
-
-		name = "secondary_constraint_sim_speeds";
-		u_table.addTableMetaData("header", name);
-		u_table.addTableMetaData("nRows", std::to_string(u_table.getNumRows()));
-		u_table.addTableMetaData("nColumns", std::to_string(u_table.getNumColumns()+1));
-
-		static const std::string q_mot_file{ get_results_dir() + "/secondary_constraint_sim_values.sto" };
-		static const std::string u_mot_file{ get_results_dir() + "/secondary_constraint_sim_speeds.sto" };
-
-		STOFileAdapter sto_file_adapt;
-		sto_file_adapt.write(q_table, q_mot_file);
-		sto_file_adapt.write(u_table, u_mot_file);
-	}
-
-	print(get_comak_settings_file());
-}
-/** ===================================================================
-* PERFORM IK
-* =====================================================================
-*
-*/
-void COMAKTool::performIK() 
-{
-	Model model = _model;
-	model.initSystem();
-
-	for (int i = 0; i < getProperty_secondary_coordinates().size(); ++i) {
-		std::string name = get_secondary_coordinates(i);
-		std::string coord_name = model.getComponent<Coordinate>(name).getName();
-		std::string ind_coord_name = model.getComponent<Coordinate>(get_secondary_coupled_coord()).getName();
-
-		CoordinateCouplerConstraint* cc_constraint = new CoordinateCouplerConstraint();
-
-		cc_constraint->setIndependentCoordinateNames(Array<std::string>(ind_coord_name, 1, 2));
-		cc_constraint->setDependentCoordinateName(coord_name);
-		cc_constraint->setFunction(get_secondary_constraint_funcs().get(name));
-		cc_constraint->setName(coord_name + "_function");
-
-		model.addComponent(cc_constraint);
-	}
-	if (get_print_ik_model()) {
-		model.print(get_ik_print_model_file());
-	}
-
-	//SimTK::State state = model.initSystem();
-
-	InverseKinematicsTool ik_tool(get_ik_settings_file(), false);
-	ik_tool.setModel(model);
-	ik_tool.setMarkerDataFileName(get_trc_kinematics_file());
-	ik_tool.setOutputMotionFileName(get_ik_motion_file());
-	ik_tool.setResultsDir(get_results_dir());
-
-	/*if (get_use_visualizer()) {
-		SimTK::Visualizer& viz = model.updVisualizer().updSimbodyVisualizer();
-		viz.setBackgroundColor(SimTK::White);
-		viz.setShowSimTime(true);
-	}*/
-
-	ik_tool.run();
-}
 /** ===================================================================
 * equilibriateSecondaryCoordinates
 * =====================================================================
@@ -736,13 +407,6 @@ SimTK::Vector COMAKTool::equilibriateSecondaryCoordinates()
 	std::cout << "------------------------------------------------------------------" << std::endl;
 	std::cout << "Secondary Damping Multiplier: " << get_settle_sim_viscosity_multiplier() << std::endl;
 
-	if (get_use_visualizer()) {
-		SimTK::Visualizer& viz = model.updVisualizer().updSimbodyVisualizer();
-		viz.setBackgroundColor(SimTK::White);
-		viz.setShowSimTime(true);
-	}
-	
-	
 	//Apply secondary damping multiplier
 	if (get_settle_sim_viscosity_multiplier() != -1) {
 		for (int i = 0; i < _n_secondary_coord; ++i) {
@@ -771,11 +435,18 @@ SimTK::Vector COMAKTool::equilibriateSecondaryCoordinates()
 			msl.set_ignore_tendon_compliance(true);
 		}
 	}
-	//model.addComponent(msl_control);*/
 
+    if (get_use_visualizer()) {
+        model.setUseVisualizer(true);
+    }
+    
 	state = model.initSystem();
 	
-
+    if (get_use_visualizer()) {
+		SimTK::Visualizer& viz = model.updVisualizer().updSimbodyVisualizer();
+		viz.setBackgroundColor(SimTK::White);
+		viz.setShowSimTime(true);
+	}
 
 	//Set initial pose and Lock all coordinates except secondary 
 	int nCoord = 0;
@@ -995,6 +666,9 @@ void COMAKTool::performCOMAK()
 		coord.set_prescribed(false);
 	}
 
+    if (get_use_visualizer()) {
+        _model.setUseVisualizer(true);
+    }
 	state = _model.initSystem();
 
 	//Results Storage

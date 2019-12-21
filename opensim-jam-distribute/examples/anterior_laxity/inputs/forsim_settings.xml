@@ -16,7 +16,7 @@
 		<!--Time to start analysis. Set to -1 to use initial frame in coordinates_file-->
 		<start_time>-1</start_time>
 		<!--Time to stop analysis. Set to -1 to use last frame in coordinates_file-->
-		<stop_time>-1</stop_time>
+		<stop_time>0.05</stop_time>
 		<!--Accuracy setting for BDF integrator.-->
 		<integrator_accuracy>0.00001</integrator_accuracy>
 		<!--The timestep interval to report the results.-->
