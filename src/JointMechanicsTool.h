@@ -123,6 +123,8 @@ public:
 		"Write muscle analysis data to .h5 file")
 	OpenSim_DECLARE_PROPERTY(h5_ligament_data, bool,
 		"Write Blankevoort1991Ligament data to h5 file")
+   OpenSim_DECLARE_UNNAMED_PROPERTY(AnalysisSet,"Analyses to be performed"
+		"during forward simulation.")
 
 
 //=============================================================================

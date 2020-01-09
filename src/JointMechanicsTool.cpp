@@ -115,6 +115,7 @@ void JointMechanicsTool::constructProperties()
     constructProperty_h5_kinematics_data(true);
     constructProperty_h5_muscle_data(true);
     constructProperty_h5_ligament_data(true);
+    constructProperty_AnalysisSet(AnalysisSet());
 }
 
 void JointMechanicsTool::setModel(Model& aModel)
@@ -130,20 +131,31 @@ void JointMechanicsTool::run() {
     if (_model == NULL) {
         OPENSIM_THROW(Exception, "No model was set in JointMechanicsTool");
     }
-    
+
     _model->initSystem();	
-    
+
     //Get Coordinates and Speeds from file
     formQandUMatrixFromFile();
-    
+
     initializeSettings();
-    
+
+    //Add Analysis set
+    AnalysisSet aSet = get_AnalysisSet();
+    int size = aSet.getSize();
+
+    for(int i=0;i<size;i++) {
+        Analysis *analysis = aSet.get(i).clone();
+        _model->addAnalysis(analysis);
+    }
+
+    AnalysisSet& analysisSet = _model->updAnalysisSet();
+
     SimTK::State state = _model->initSystem();
     
     
     setModelingOptions(state);
     
-    AnalysisSet& analysisSet = _model->updAnalysisSet();
+
 
     //loop over each frame
     for (int i = 0; i < _n_frames; ++i) {
@@ -439,7 +451,6 @@ void JointMechanicsTool::setModelingOptions(SimTK::State& state) {
     }
 }
 
-                                                                
 void JointMechanicsTool::setupDynamicVertexLocationStorage() {
     std::string model_file = SimTK::Pathname::getAbsolutePathname(_model->getDocumentFileName());
     std::string model_dir, dummy1, dummy2;
@@ -906,6 +917,9 @@ int JointMechanicsTool::printResults(const std::string &aBaseName,const std::str
 {
     std::string file_path = get_results_directory();
     std::string base_name = get_results_file_basename();
+
+    //Analysis Results
+    _model->updAnalysisSet().printResults(get_results_file_basename(), get_results_directory());
     
     //Write VTP files
     if (get_write_vtp_files()) {        
@@ -1281,7 +1295,9 @@ void JointMechanicsTool::writeH5File(
     }
 
     //Write Contact Data
-    /*if (get_h5_raw_contact_data() || get_h5_summary_contact_data()) {
+    if (get_h5_raw_contact_data() || get_h5_summary_contact_data()) {
+        std::cout << "contact data cannot be written to H5 file yet. " << std::endl;
+        /*
         std::string cnt_group_name{ "/Contacts" };
         h5_adapter.createGroup(cnt_group_name);
 
@@ -1338,9 +1354,9 @@ void JointMechanicsTool::writeH5File(
                     
                 }
             }
-        }
+        }*/
     }
-*/
+
     h5_adapter.close();
 
 }

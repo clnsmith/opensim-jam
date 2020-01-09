@@ -1167,6 +1167,9 @@ void COMAKTool::performCOMAK()
 	//Print Results
     STOFileAdapter results_adapter;
     TimeSeriesTable states_table = states_trajectory.exportToTable(_model);
+    states_table.addTableMetaData("header", std::string("ModelStates"));
+	states_table.addTableMetaData("nRows", std::to_string(states_table.getNumRows()));
+    states_table.addTableMetaData("nColumns", std::to_string(states_table.getNumColumns()+1));
     results_adapter.write(states_table, get_results_dir() + get_results_prefix() + "_states.sto");
 
     activations_table.addTableMetaData("header", std::string("ModelActivations"));
