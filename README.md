@@ -105,7 +105,11 @@ You can use the joint-mechanics tool to analyze and visualize simulated or measu
 Perform a forward simulation of passive knee flexion where tibiofemoral flexion is prescribed and the other knee coordinates are unconstrained and thus are calculated based on the passive muscle, ligament, and articular contact forces. 
 
 ### [Anterior Laxity](opensim-jam-distribute/examples/anterior_laxity)
-Perform a forward simulation where the knee is flexed to 45* and an anterior force is applied to the tibia. The 
+<img src="https://pbs.twimg.com/media/DX1r43jX4AAl0dk?format=jpg&name=4096x4096" width="400">
+
+[image source](https://twitter.com/healthcrib_fdt/status/972051732414033920)
+
+Perform a forward simulation where the knee is flexed to 90* and an anterior force is applied to the tibia.
 
 ### [Quadriceps Load](opensim-jam-distribute/examples/quadriceps_load)
 Prescribe the tibiofemoral flexion from 0 -> 30*, then hold at 30* while the vastus medialis (), vastus lateralis (), and vastus intermedius inputs are presecribed. All other 11 knee DOFs are unconstrained and thus are predicted based on the contact, ligament, and muscle forces. The remaining model coordinates are all locked.
