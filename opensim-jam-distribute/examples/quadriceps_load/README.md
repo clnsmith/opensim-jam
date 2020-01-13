@@ -11,7 +11,11 @@ A forward simulation will be performed using the lenhart2015 model and forsim to
 ### Coordinates
 The hip_flex_r and knee_flex_r coordinates are prescribed to flex from 0<sup>o</sup> to 30<sup>o</sup> and are then held constant. Once the peak flexion angles are reached, the unconstrained coordinates are allowed to settle into equilibrium and then the quadriceps are activated. 
 
-_Unconstrained Coordinates_
+_Prescribed Coordinates_
+- hip_flex_r
+- knee_flex_r
+
+_Unlocked Coordinates_
 - knee_add_r
 - knee_rot_r
 - knee_tx_r
@@ -24,11 +28,9 @@ _Unconstrained Coordinates_
 - pf_ty_r
 - pf_tz_r
 
-_Prescribed Coordinates_
-- hip_flex_r
-- knee_flex_r
 
-_Fixed Coordinates_
+
+_Locked Coordinates_
 - All others
 
 ### Muscles 
