@@ -44,7 +44,7 @@ _Force Prescribed (0N to 25N)_
 - vasint_r (vastus intermedius)
 
 ## Workflow Steps
-1) Use MATLAB to run the [./inputs/generate_isometric_extension_input_files](./inputs/generate_isometric_extension_input_files) script to generate the [./inputs/prescribed_coordinates.sto](./inputs/prescribed_coordinates.sto) and [./inputs/prescribed_muscles.sto](./inputs/prescribed_muscles.sto) input files.
+1) Use MATLAB to run the [./inputs/generate_isometric_extension_input_files.m](./inputs/generate_isometric_extension_input_files.m) script to generate the [./inputs/prescribed_coordinates.sto](./inputs/prescribed_coordinates.sto) and [./inputs/prescribed_muscles.sto](./inputs/prescribed_muscles.sto) input files.
 
 2) Use a text editor to inspect the [./inputs/forsim_settings.xml](./inputs/forsim_settings.xml) and [./inputs/joint_mechanics_settings.xml](./inputs/joint_mechanics_settings.xml) files
 
