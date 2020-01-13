@@ -1,7 +1,7 @@
 # Example: Anterior Laxity
-[<img src="https://pbs.twimg.com/media/DX1r43jX4AAl0dk?format=jpg&name=small" width="400">](https://twitter.com/healthcrib_fdt/status/972051732414033920)
 
-[<img src="https://img.youtube.com/vi/IdnBKv38EEQ/0.jpg" width="400">](https://www.youtube.com/watch?v=IdnBKv38EEQ&t=7s)
+[<img src="https://pbs.twimg.com/media/DX1r43jX4AAl0dk?format=jpg&name=small" height="300" >](https://twitter.com/healthcrib_fdt/status/972051732414033920)
+[<img src="https://img.youtube.com/vi/IdnBKv38EEQ/0.jpg" height="300" align="right">](https://www.youtube.com/watch?v=IdnBKv38EEQ&t=7s)
 
 ## Simulation Description
 This simulation replicates an anterior laxity test to diagnose ACL deficiency. The hip_flex_r coordinate is prescribed to flex from 0<sup>o</sup> to 45<sup>o</sup>, and the knee_flex_r coordinate is prescribed to flex from 0<sup>o</sup> to 90<sup>o</sup>. Once peak flexion is reached, the hip and knee flexion are prescribed to be constant and a 100 N anterior force is applied to the tibia. The muscles are minimally activated (0.02) and thus only provide passive forces. The remaining knee coordinates (5 tibiofemoral DOFs and 6 patellofemoral DOFs) are unconstrained and thus their kinematics are predicted as a result of the muscle, ligament, and cartilage contact forces. 
