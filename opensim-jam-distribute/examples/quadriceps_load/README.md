@@ -1,7 +1,7 @@
 # Example: Isometric Extension
 In an isometric extention test, a clinician positions the hip and knee at 30<sup>o</sup> flexion and holds the thigh and ankle in place while the patient activates their quadriceps.
 
-[<img src="https://img.youtube.com/vi/F7LRQARxCpQ/0.jpg" height="300" align="center">](https://youtu.be/F7LRQARxCpQ?t=60)
+[<img src="https://img.youtube.com/vi/F7LRQARxCpQ/0.jpg" align="middle" height="300" >](https://youtu.be/F7LRQARxCpQ?t=60)
 
 
 
