@@ -51,20 +51,12 @@ ForsimTool::ForsimTool(std::string settings_file) : Object(settings_file) {
     IO::chDir(_directoryOfSetupFile); 
 }
 
-
-//_____________________________________________________________________________
-/**
- * Set all member variables to their null or default values.
- */
 void ForsimTool::setNull()
 {
     setAuthors("Colin Smith");
 
 }
-//_____________________________________________________________________________
-/**
- * Connect properties to local pointers.
- */
+
 void ForsimTool::constructProperties()
 {
     constructProperty_model_file("");
@@ -86,7 +78,6 @@ void ForsimTool::constructProperties()
     constructProperty_AnalysisSet(AnalysisSet());
 }
 
-
 void ForsimTool::setModel(Model& aModel)
 {
     _model = aModel;
@@ -95,11 +86,8 @@ void ForsimTool::setModel(Model& aModel)
 
 void ForsimTool::run() 
 {	
-    
     SimTK::State state = _model.initSystem();
-    
-    
-    
+        
     //Add Analysis set
     AnalysisSet aSet = get_AnalysisSet();
     int size = aSet.getSize();
@@ -108,14 +96,11 @@ void ForsimTool::run()
         Analysis *analysis = aSet.get(i).clone();
         _model.addAnalysis(analysis);
     }
-    
-    //Apply External Loads
+
     applyExternalLoads();
 
-    //Apply Muscle Forces
     initializeActuators(state);
-    
-    //Prescribe Coordinates in the Model
+
     initializeCoordinates();
 
     if (get_use_visualizer()) {
@@ -124,7 +109,6 @@ void ForsimTool::run()
 
     state = _model.initSystem();
 
-    //Set Start and Stop Times
     initializeStartStopTimes();
 
     //Allocate Results Storage
@@ -143,7 +127,7 @@ void ForsimTool::run()
         viz.setDesiredFrameRate(100);
     }
 
-    //Set Integrator
+    //Setup Integrator
     state.setTime(get_start_time());
     
     SimTK::CPodesIntegrator integrator(_model.getSystem(), SimTK::CPodes::BDF, SimTK::CPodes::Newton);
@@ -161,29 +145,33 @@ void ForsimTool::run()
 
     std::cout << std::endl;
     std::cout << std::endl;
-    std::cout << "Performing Forward Dynamic Simulation" << std::endl;
-    std::cout << "Start Time: " << get_start_time() << std::endl;
-    std::cout << "Stop Time: " << get_stop_time() << std::endl;
+    std::cout << "=====================================================" << std::endl;
+    std::cout << "| ForsimTool: Performing Forward Dynamic Simulation |" << std::endl;
+    std::cout << "=====================================================" << std::endl;
+    std::cout << "start time: " << get_start_time() << std::endl;
+    std::cout << "stop time: " << get_stop_time() << std::endl;
     std::cout << std::endl;
 
     for (int i = 0; i <= nSteps; ++i) {
         
         double t = get_start_time() + i * dt;
-        std::cout << "Time:" << t << std::endl;
+        std::cout << "time:" << t << std::endl;
 
         if (get_verbose() >= 2) {
             printDebugInfo(state);
         }
 
         //Set Prescribed Muscle Forces
-        for (int j = 0; j < _prescribed_frc_actuator_paths.size();++j) {           
-            std::string actuator_path = _prescribed_frc_actuator_paths[j];
-            ScalarActuator& actuator = _model.updComponent<ScalarActuator>(actuator_path);
-            double value = _frc_functions.get(actuator_path +"_frc").calcValue(SimTK::Vector(1,t));
-            actuator.setOverrideActuation(state, value);
+        if(_prescribed_frc_actuator_paths.size() > 0){
+            for (int j = 0; j < _prescribed_frc_actuator_paths.size();++j) {           
+                std::string actuator_path = _prescribed_frc_actuator_paths[j];
+                ScalarActuator& actuator = _model.updComponent<ScalarActuator>(actuator_path);
+                double value = _frc_functions.get(actuator_path +"_frc").calcValue(SimTK::Vector(1,t));
+                actuator.setOverrideActuation(state, value);
+            }
+            timestepper.initialize(state);
         }
-
-        timestepper.initialize(state);
+            
         timestepper.stepTo(t);
 
         state = timestepper.updIntegrator().updAdvancedState();
@@ -270,7 +258,7 @@ void ForsimTool::initializeStartStopTimes() {
 
 void ForsimTool::initializeActuators(SimTK::State& state) {
     PrescribedController* control = new PrescribedController();
-    if (!(get_actuator_input_file() == "")){
+    if (get_actuator_input_file() != ""){
         STOFileAdapter actuator_file;
         _actuator_table = TimeSeriesTable(get_actuator_input_file());
 
@@ -294,6 +282,7 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
                     _frc_functions.adoptAndAppend(frc_function); 
                 }
                 catch (ComponentNotFoundOnSpecifiedPath) {
+                    
                     OPENSIM_THROW(Exception,
                         "Actuator: " + actuator_path + " not found in model. "
                         "Did you use absolute path?")

@@ -6,9 +6,9 @@
 		<!--Storage file (.sto) containing the time varying actuator forces (MuscleName_frc)or actuator activations (MuscleName_act) to be applied during the simulation.-->
 		<actuator_input_file></actuator_input_file>
 		<!--External loads file (.xml) to apply to the model during the simulation.-->
-		<external_loads_file>./anterior_laxity_external_loads.xml</external_loads_file>
+		<external_loads_file>./external_loads.xml</external_loads_file>
 		<!--Storage file (.sto) containing the time varying trajectories for the prescribed coordinates.Columns labels are 'time' and '/Path/To/Coordinate'-->
-		<prescribed_coordinates_file>./anterior_laxity_prescribed_kinematics.sto</prescribed_coordinates_file>
+		<prescribed_coordinates_file>prescribed_coordinates.sto</prescribed_coordinates_file>
 		<!--Folder where the results files are output.-->
 		<results_directory>../results/forsim</results_directory>
 		<!--Prefix to each results file name.-->
@@ -16,7 +16,7 @@
 		<!--Time to start analysis. Set to -1 to use initial frame in coordinates_file-->
 		<start_time>-1</start_time>
 		<!--Time to stop analysis. Set to -1 to use last frame in coordinates_file-->
-		<stop_time>0.05</stop_time>
+		<stop_time>-1</stop_time>
 		<!--Accuracy setting for BDF integrator.-->
 		<integrator_accuracy>0.00001</integrator_accuracy>
 		<!--The timestep interval to report the results.-->
@@ -61,18 +61,6 @@
 					<!--Flag indicating whether to include forces due to constraints.-->
 					<include_constraint_forces>false</include_constraint_forces>
 				</ForceReporter>
-				<StatesReporter name = "StatesReporter">
-					<!--Flag (true or false) specifying whether on. True by default.-->
-					<on>true</on>
-					<!--Start time.-->
-					<start_time>-Inf</start_time>
-					<!--End time.-->
-					<end_time>Inf</end_time>
-					<!--Specifies how often to store results during a simulation. More specifically, the interval (a positive integer) specifies how many successful integration steps should be taken before results are recorded again.-->
-					<step_interval>1</step_interval>
-					<!--Flag (true or false) indicating whether the results are in degrees or not.-->
-					<in_degrees>true</in_degrees>
-				</StatesReporter>
 			</objects>
 			<groups />
 		</AnalysisSet>
