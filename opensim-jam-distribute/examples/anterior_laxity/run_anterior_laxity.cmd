@@ -1,6 +1,5 @@
-set BIN=..\..\bin
-set OPENSIM=..\..\opensim
-
+set BIN=%CD%\..\..\bin
+set OPENSIM=%CD%\..\..\opensim
 
 REM Let Windows know where the plugin and opensim libraries are
 set PATH=%BIN%;%OPENSIM%;%PATH%

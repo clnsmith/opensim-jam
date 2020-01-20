@@ -1,6 +1,5 @@
-set BIN=..\..\..\bin
-set BIN=C:\Users\csmith\github\opensim-jam\source\opensim-jam-distribute\bin
-set OPENSIM=..\..\opensim
+set BIN=%CD%\..\..\bin
+set OPENSIM=%CD%\..\..\opensim
 
 
 rem Let Windows know where the plugin and opensim libraries are
@@ -20,10 +19,10 @@ rem %BIN%\joint-mechanics %BIN%\jam_plugin.dll .\inputs\ik_constraint_sim_joint_
 rem move out.log results\joint_mechanics_out.log
 rem move err.log results\joint_mechanics_err.log
 
-rem COMAK
-REM %BIN%\comak %BIN%\jam_plugin.dll .\inputs\comak_settings.xml
-REM move out.log results\comak_out.log
-REM move err.log results\comak_err.log
+REM rem COMAK
+%BIN%\comak %BIN%\jam_plugin.dll .\inputs\comak_settings.xml
+move out.log results\comak_out.log
+move err.log results\comak_err.log
 
 REM Joint Mechanics Analysis
 %BIN%\joint-mechanics %BIN%\jam_plugin.dll .\inputs\joint_mechanics_settings.xml 

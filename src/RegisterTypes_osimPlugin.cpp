@@ -50,6 +50,10 @@ OSIMPLUGIN_API void RegisterTypes_osimPlugin()
     Object::registerType(JointMechanicsTool());
     Object::registerType(ForsimTool());
     Object::registerType(COMAKTool());
+    Object::registerType(COMAKSecondaryCoordinate());
+    Object::registerType(COMAKSecondaryCoordinateSet());
+    Object::registerType(COMAKCostFunctionParameter());
+    Object::registerType(COMAKCostFunctionParameterSet());
     Object::registerType(COMAKInverseKinematicsTool());
 }
 

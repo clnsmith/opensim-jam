@@ -26,6 +26,7 @@
 #include <OpenSim/Common/Constant.h>
 #include <OpenSim/Common/FunctionSet.h>
 #include <OpenSim\Actuators\Millard2012EquilibriumMuscle.h>
+#include <OpenSim/Common/IO.h>
 //#include <Blankevoort1991Ligament.h>
 
 using namespace OpenSim;
@@ -113,6 +114,7 @@ void ForsimTool::run()
 
     //Allocate Results Storage
     StatesTrajectory result_states;
+    AnalysisSet& analysisSet = _model.updAnalysisSet();
 
     _model.equilibrateMuscles(state);
 
@@ -141,7 +143,7 @@ void ForsimTool::run()
     //Integrate Forward in Time
     double dt = get_report_time_step();
     int nSteps = round((get_stop_time() - get_start_time()) / dt);
-    AnalysisSet& analysisSet = _model.updAnalysisSet();
+    
 
     std::cout << std::endl;
     std::cout << std::endl;
@@ -184,15 +186,17 @@ void ForsimTool::run()
             analysisSet.step(state, i);
         }
 
-        result_states.append(state);        
+        result_states.append(state);
     }
 
     //Print Results
     TimeSeriesTable states_table = result_states.exportToTable(_model);
-    states_table.addTableMetaData("header", std::string("CoordinateValues"));
+    states_table.addTableMetaData("header", std::string("States"));
     states_table.addTableMetaData("nRows", std::to_string(states_table.getNumRows()));
     states_table.addTableMetaData("nColumns", std::to_string(states_table.getNumColumns()+1));
     states_table.addTableMetaData("inDegrees", std::string("no"));
+
+    IO::makeDir(get_results_directory());
 
     STOFileAdapter sto;
     std::string basefile = get_results_directory() + "/" + get_results_file_basename();

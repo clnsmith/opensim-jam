@@ -5,14 +5,15 @@ import org.opensim.modeling.*
 
 line_width = 2;
 BW = 61*9.81;
+model = Model('../results/scale/lenhart2015_scaled_markers.osim');
 %% Force Reporter
 forces_table = TimeSeriesTable('../results/joint-mechanics/walking_ForceReporter_forces.sto');
 forces = osimTableToStruct(forces_table);
 
-% states_table = TimeSeriesTable('../results/comak/walking_states.sto');
-% states = osimTableToStruct(states_table);
 
-[states_data, states_labels, states_header] = read_opensim_mot('../results/comak/walking_states.sto');
+
+[states_data, states_labels, states_header] = read_opensim_mot('../results/comak/walking_activation.sto');
+states_time = states_data(:,1);
 %% Plot Contact Forces
 figure('name','Tibiofemoral Contact Forces')
 hold on
@@ -31,10 +32,42 @@ legend('Fx','Fy','Fz')
 %% Plot Muscle Activation
 figure('name','Muscle Activation - All')
 hold on;
-for m = 1:nMuscles 
-   
-end
+numMuscles = model.getMuscles().getSize();
+msl_names = cell(numMuscles,1);
 
+for m=0:numMuscles-1
+   msl_path = model.getMuscles().get(m).getAbsolutePathString();
+   
+   activation = states_data(:,strcmp(states_labels,msl_path));
+   plot(states_time,activation,'LineWidth',line_width)
+   
+   msl_names{m+1} = char(model.getMuscles().get(m).getName());
+end
+legend(msl_names)
+title('Muscle Activations')
+xlabel('Time [s]')
+ylabel('Activation')
+ylim([0 1]);
+
+
+if(true)
+    numMuscles = model.getMuscles().getSize();
+    msl_names = cell(numMuscles,1);
+
+    for m=0:numMuscles-1
+        msl_names{m+1} = char(model.getMuscles().get(m).getName());
+       figure('name',msl_names{m+1})
+       msl_path = model.getMuscles().get(m).getAbsolutePathString();
+
+       activation = states_data(:,strcmp(states_labels,msl_path));
+       plot(states_time,activation)
+           title(msl_names{m+1})
+        xlabel('Time [s]')
+        ylabel('Activation')
+        ylim([0 1]);
+    end
+
+end
 %% Plot Knee Kinematics
 tf_coords = {...
     '/jointset/knee_r/knee_flex_r/value';...

@@ -3,6 +3,13 @@
 /* -------------------------------------------------------------------------- *
  *                              ForsimTool.h                                  *
  * -------------------------------------------------------------------------- *
+ * The OpenSim API is a toolkit for musculoskeletal modeling and simulation.  *
+ * See http://opensim.stanford.edu and the NOTICE file for more information.  *
+ * OpenSim is developed at Stanford University and supported by the US        *
+ * National Institutes of Health (U54 GM072970, R24 HD065690) and by DARPA    *
+ * through the Warrior Web program.                                           *
+ *                                                                            *
+ * Copyright (c) 2005-2020 Stanford University and the Authors                *
  * Author(s): Colin Smith                                                     *
  *                                                                            *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may    *
