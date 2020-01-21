@@ -2,7 +2,7 @@
 <OpenSimDocument Version="40000">
 	<ForsimTool>
 		<!--Path to .osim model file to use in the forward simulation.-->
-		<model_file>lenhart2015_acld.osim</model_file>
+		<model_file>../../../models/lenhart2015/lenhart2015_acld.osim</model_file>
 		<!--Path to folder where all results files will be written.-->
 		<results_directory>../results/forsim_acld</results_directory>
 		<!--Prefix to each results file name.-->
@@ -48,7 +48,7 @@
 		<!--Path to storage file (.sto) containing the time varying values of the Coordinates that will be prescribed in the forward simulation. The locked and prescribed properties in the model will be overriden for any Coordinates listed in this file. The columns labels must be formatted as 'time' and '/Path/To/Coordinate'-->
 		<prescribed_coordinates_file>prescribed_coordinates.sto</prescribed_coordinates_file>
 		<!--Use the SimTK visualizer to display the simulation. The default value is false.-->
-		<use_visualizer>true</use_visualizer>
+		<use_visualizer>false</use_visualizer>
 		<!--Define how detailed the output to console should be. 0 - silent. The default value is 0.-->
 		<verbose>0</verbose>
 		<!--Analyses to be performed throughout the forward simulation.-->

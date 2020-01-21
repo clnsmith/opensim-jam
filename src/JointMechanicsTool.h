@@ -144,8 +144,6 @@ public:
     OpenSim_DECLARE_PROPERTY(write_vtp_files, bool,
         "Write .vtp files for visualization. The default value is true.")
 
-
-
     OpenSim_DECLARE_PROPERTY(write_h5_file, bool,
         "Write binary .h5 file")
 

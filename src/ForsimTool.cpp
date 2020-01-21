@@ -66,6 +66,8 @@ void ForsimTool::constructProperties()
     constructProperty_constant_muscle_control(0.02);
     constructProperty_ignore_activation_dynamics(false);
     constructProperty_ignore_tendon_compliance(false);
+    constructProperty_ignore_muscle_dynamics(false);
+    constructProperty_equilibrate_muscles(true);
     constructProperty_unconstrained_coordinates();
     constructProperty_actuator_input_file("");
     constructProperty_external_loads_file("");
@@ -112,7 +114,9 @@ void ForsimTool::run()
     StatesTrajectory result_states;
     AnalysisSet& analysisSet = _model.updAnalysisSet();
 
-    _model.equilibrateMuscles(state);
+    if (get_equilibrate_muscles()) {
+        _model.equilibrateMuscles(state);
+    }
 
     //Setup Visualizer
     if (get_use_visualizer()) {
@@ -132,7 +136,9 @@ void ForsimTool::run()
     integrator.setAccuracy(get_integrator_accuracy());
     integrator.setMinimumStepSize(get_minimum_time_step());
     integrator.setMaximumStepSize(get_maximum_time_step());
-    integrator.setInternalStepLimit(get_internal_step_limit());
+    if (get_internal_step_limit()>0) {
+        integrator.setInternalStepLimit(get_internal_step_limit());
+    }
     SimTK::TimeStepper timestepper(_model.getSystem(), integrator);
     timestepper.initialize(state);
     
@@ -161,7 +167,7 @@ void ForsimTool::run()
 
         //Set Prescribed Muscle Forces
         if(_prescribed_frc_actuator_paths.size() > 0){
-            for (int j = 0; j < _prescribed_frc_actuator_paths.size();++j) {           
+            for (int j = 0; j < _prescribed_frc_actuator_paths.size();++j) {
                 std::string actuator_path = _prescribed_frc_actuator_paths[j];
                 ScalarActuator& actuator = _model.updComponent<ScalarActuator>(actuator_path);
                 double value = _frc_functions.get(actuator_path +"_frc").calcValue(SimTK::Vector(1,t));
@@ -274,6 +280,13 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
             //Control Prescribed
             if (split_label.back() == "control") {
                 std::string actuator_path = erase_sub_string(labels[i], "_control");
+
+                for (const ScalarActuator& actuator : _model.updComponentList<ScalarActuator>()) {
+                    if (actuator.getName() == actuator_path) {
+                        actuator_path = actuator.getAbsolutePathString();
+                    }
+                }
+
                 try {
                     ScalarActuator& actuator = _model.updComponent<ScalarActuator>(actuator_path);
                     _prescribed_control_actuator_paths.push_back(actuator_path);
@@ -298,6 +311,13 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
             //Activation Prescribed
             if (split_label.back() == "activation") {
                 std::string actuator_path = erase_sub_string(labels[i], "_activation");
+                
+                for (const ScalarActuator& actuator : _model.updComponentList<ScalarActuator>()) {
+                    if (actuator.getName() == actuator_path) {
+                        actuator_path = actuator.getAbsolutePathString();
+                    }
+                }
+
                 try {
                     Millard2012EquilibriumMuscle& msl = _model.updComponent<Millard2012EquilibriumMuscle>(actuator_path);
 
@@ -322,6 +342,13 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
             //Force Prescribed
             if (split_label.back() == "force") {
                 std::string actuator_path = erase_sub_string(labels[i], "_force");
+
+                for (const ScalarActuator& actuator : _model.updComponentList<ScalarActuator>()) {
+                    if (actuator.getName() == actuator_path) {
+                        actuator_path = actuator.getAbsolutePathString();
+                    }
+                }
+
                 try {
                     ScalarActuator& actuator = _model.updComponent<ScalarActuator>(actuator_path);
                     actuator.overrideActuation(state, true);
@@ -402,23 +429,25 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
                     << std::endl;
             }
             
+            if (get_ignore_muscle_dynamics()) {
+                msl.overrideActuation(state, true);
+                msl.setOverrideActuation(state, get_constant_muscle_control() * msl.getMaxIsometricForce());
+            }
+            else {
+                _prescribed_control_actuator_paths.push_back(msl_path);
 
-            _prescribed_control_actuator_paths.push_back(msl_path);
+                Constant* control_function =
+                    new Constant(get_constant_muscle_control());
+                control_function->setName(msl_path + "_frc");
 
-            Constant* control_function = 
-                new Constant(get_constant_muscle_control());
-            control_function->setName(msl_path + "_frc");
+                control->addActuator(msl);
 
-            control->addActuator(msl);
-
-            control->prescribeControlForActuator(msl.getName(), control_function);
-            //_control_functions.adoptAndAppend(control_function);
-
+                control->prescribeControlForActuator(msl.getName(), control_function);
+            }
             std::cout << msl_path << std::endl;
         }
         std::cout << std::endl;
     }
-
     _model.addComponent(control);
     state = _model.initSystem();
 }

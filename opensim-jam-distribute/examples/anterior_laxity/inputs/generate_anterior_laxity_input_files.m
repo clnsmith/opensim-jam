@@ -130,7 +130,7 @@ ext_loads.print(external_loads_xml_file );
 plugin_file = '../../../bin/jam_plugin.dll';
 opensimCommon.LoadOpenSimLibrary(plugin_file)
 lenhart_model_file = '../../../models/lenhart2015/lenhart2015.osim';
-acld_model_file = 'lenhart2015_acld.osim';
+acld_model_file = '../../../models/lenhart2015/lenhart2015_acld.osim';
 model = Model(lenhart_model_file);
 
 %Remove ACL Ligaments

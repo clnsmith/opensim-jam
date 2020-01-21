@@ -98,6 +98,16 @@ public:
         "use_tendon_compliance property for all muscles not listed in "
         "actuator_input_file. The default value is false.")
 
+    OpenSim_DECLARE_PROPERTY(ignore_muscle_dynamics, bool, 
+        "Ignore muscle-tendon dynamics for all muscles not list in "
+        "actuator_input_file. The force in these muscles is calculated using "
+        "F = contastant_muscle_control * maxIsometricForce. "
+        "The default value is false.")
+
+    OpenSim_DECLARE_PROPERTY(equilibrate_muscles, bool, 
+        "Call equilibrateMuscles() before starting the simulation. "
+        "The default value is true.")
+
     OpenSim_DECLARE_LIST_PROPERTY(unconstrained_coordinates, std::string,
         "Paths to the Coordinates that will be unconstrained (unlocked and "
         "not prescribed) in the simulation. All Coordinates that are not " 
