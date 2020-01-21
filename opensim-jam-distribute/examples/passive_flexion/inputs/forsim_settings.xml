@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <OpenSimDocument Version="40000">
 	<ForsimTool>
-		<!--Path to .osim file for analysis.-->
+		<!--Path to .osim model file to use in the forward simulation.-->
 		<model_file>../../../models/lenhart2015/lenhart2015.osim</model_file>
-		<!--Storage file (.sto) containing the time varying actuator forces (MuscleName_frc)or actuator activations (MuscleName_act) to be applied during the simulation.-->
-		<actuator_input_file></actuator_input_file>
-		<!--External loads file (.xml) to apply to the model during the simulation.-->
-		<external_loads_file></external_loads_file>
-		<!--Storage file (.sto) containing the time varying trajectories for the prescribed coordinates.Columns labels are 'time' and '/Path/To/Coordinate'-->
-		<prescribed_coordinates_file>./passive_flexion_prescribed_coordinates.sto</prescribed_coordinates_file>
-		<!--Folder where the results files are output.-->
+		<!--Path to folder where all results files will be written.-->
 		<results_directory>../results/forsim</results_directory>
 		<!--Prefix to each results file name.-->
 		<results_file_basename>passive_flexion</results_file_basename>
-		<!--Time to start analysis. Set to -1 to use initial frame in coordinates_file-->
+		<!--Time to start simulation. Set to -1 to use initial frame in inputs files. The default value is 0.0.-->
 		<start_time>-1</start_time>
-		<!--Time to stop analysis. Set to -1 to use last frame in coordinates_file-->
+		<!--Time to stop simulation. Set to -1 to use last frame in input files. The default value is 1.0.-->
 		<stop_time>-1</stop_time>
-		<!--Accuracy setting for BDF integrator.-->
-		<integrator_accuracy>0.00001</integrator_accuracy>
-		<!--The timestep interval to report the results.-->
-		<report_time_step>0.01</report_time_step>
-		<!--The smallest timestep the integrator is allowed to take.-->
+		<!--The smallest internal timestep the integrator is allowed to take. The Default value is 0.0.-->
 		<minimum_time_step>-1</minimum_time_step>
-		<!--The largest timestep the integrator is allowed to take.-->
+		<!--The largest internal timestep the integrator is allowed to take. The Default value is 0.1.-->
 		<maximum_time_step>0.01</maximum_time_step>
-		<!--Constant muscle force applied for all muscles not listed in actuator_input_file.For each muscle, force=constant_muscle_frc*Max_Isometeric_Force. Set to -1 to ignore-->
-		<constant_muscle_frc>0.02</constant_muscle_frc>
-		<!--Paths to Coordinates that will be unconstrained in the simulation.All Coordinates not listed here or in the prescribed_coordinates_filewill be locked. Note coordinates listed here will override settingsin the .osim file.-->
+		<!--The timestep interval to report the results. Set to -1 to use step size in input files. The Default value is 0.01.-->
+		<report_time_step>0.01</report_time_step>
+		<!--Accuracy setting for BDF integrator. The Default value is 1e-6-->
+		<integrator_accuracy>1e-6</integrator_accuracy>
+		<!--Limit on the number of internal steps that can be taken by BDF integrator. If -1, then there is no limit. The Default value is -1-->
+		<internal_step_limit>10000</internal_step_limit>
+		<!--Constant value (between 0 and 1) input as control to all muscles not listed in the actuator_input_file. Set to -1 to ignore. Default is 0.01.-->
+		<constant_muscle_control>0.02</constant_muscle_control>
+		<!--Set the ignore_activation_dynamics property for all muscles not listed in actuator_input_file. The default value is false.-->
+		<ignore_activation_dynamics>true</ignore_activation_dynamics>
+		<!--Set the use_tendon_compliance property for all muscles not listed in actuator_input_file. The default value is false.-->
+		<ignore_tendon_compliance>true</ignore_tendon_compliance>
+		<!--Paths to the Coordinates that will be unconstrained (unlocked and not prescribed) in the simulation. All Coordinates that are not listed here or in the prescribed_coordinates_file will be locked. Note coordinates listed here will override the 'locked' and 'prescribed' properties in the .osim file.-->
 		<unconstrained_coordinates>
 			/jointset/knee_r/knee_add_r
 			/jointset/knee_r/knee_rot_r
@@ -41,11 +41,17 @@
 			/jointset/pf_r/pf_ty_r
 			/jointset/pf_r/pf_tz_r
 		</unconstrained_coordinates>
-		<!--Use the SimTK visualizer.-->
-		<use_visualizer>true</use_visualizer>
-		<!--0 - silent, 1 - contact info, 2 - model force info-->
+		<!--Path to storage file (.sto) containing the time varying actuator controls, activations and forces to be applied during the simulation. The column labels must be formatted as 'time' and 'ACTUATORNAME_control', 'ACTUATORNAME_activation', 'ACTUATORNAME_force'.-->
+		<actuator_input_file></actuator_input_file>
+		<!--Path to .xml file that defines the ExternalLoads to apply to the model during the simulation.-->
+		<external_loads_file></external_loads_file>
+		<!--Path to storage file (.sto) containing the time varying values of the Coordinates that will be prescribed in the forward simulation. The locked and prescribed properties in the model will be overriden for any Coordinates listed in this file. The columns labels must be formatted as 'time' and '/Path/To/Coordinate'-->
+		<prescribed_coordinates_file>prescribed_coordinates.sto</prescribed_coordinates_file>
+		<!--Use the SimTK visualizer to display the simulation. The default value is false.-->
+		<use_visualizer>false</use_visualizer>
+		<!--Define how detailed the output to console should be. 0 - silent. The default value is 0.-->
 		<verbose>0</verbose>
-		<!--Analyses to be performedduring forward simulation.-->
+		<!--Analyses to be performed throughout the forward simulation.-->
 		<AnalysisSet name="Analyses">
 			<objects>
 				<ForceReporter name = "ForceReporter">
