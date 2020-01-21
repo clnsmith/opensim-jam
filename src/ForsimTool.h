@@ -3,6 +3,13 @@
 /* -------------------------------------------------------------------------- *
  *                              ForsimTool.h                                  *
  * -------------------------------------------------------------------------- *
+ * The OpenSim API is a toolkit for musculoskeletal modeling and simulation.  *
+ * See http://opensim.stanford.edu and the NOTICE file for more information.  *
+ * OpenSim is developed at Stanford University and supported by the US        *
+ * National Institutes of Health (U54 GM072970, R24 HD065690) and by DARPA    *
+ * through the Warrior Web program.                                           *
+ *                                                                            *
+ * Copyright (c) 2005-2020 Stanford University and the Authors                *
  * Author(s): Colin Smith                                                     *
  *                                                                            *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may    *
@@ -16,31 +23,24 @@
  * limitations under the License.                                             *
  * -------------------------------------------------------------------------- */
 
-
-//=============================================================================
-// INCLUDES
-//=============================================================================
+#include "osimPluginDLL.h"
 #include <OpenSim/Simulation/Model/Analysis.h>
 #include <OpenSim/Simulation/Model/AnalysisSet.h>
-#include <OpenSim/Simulation/Model/Model.h>
-#include "Smith2018ArticularContactForce.h"
-#include "H5FileAdapter.h"
-#include "OpenSim/Simulation/StatesTrajectory.h"
 #include "OpenSim/Simulation/Model/ExternalLoads.h"
 #include "OpenSim/Common/FunctionSet.h"
 
-
-//=============================================================================
-//=============================================================================
 namespace OpenSim { 
-
+//=============================================================================
+//                              Forsim Tool
+//=============================================================================
 /**
- * A class for recording the kinematics of the generalized coordinates
- * of a model during a simulation.
- *
- * @author Colin Smith
- * @version 1.0
- */
+This tool is facilitates forward dynamic simulations of joint mechanics.
+It is specifically designed for models that represent articular contact using
+Smith2018ArticularContactForce components, however, it can be used with all
+models. 
+
+
+*/
 class OSIMPLUGIN_API ForsimTool : public Object {
 
 OpenSim_DECLARE_CONCRETE_OBJECT(ForsimTool, Object);
@@ -49,80 +49,136 @@ OpenSim_DECLARE_CONCRETE_OBJECT(ForsimTool, Object);
 // PROPERTIES
 //=============================================================================
 public:
-	OpenSim_DECLARE_PROPERTY(model_file, std::string,
-		"Path to .osim file for analysis.")
-	OpenSim_DECLARE_PROPERTY(actuator_input_file, std::string,
-		"Storage file (.sto) containing the time varying actuator forces (MuscleName_frc)"  
-		"or actuator activations (MuscleName_act) to be applied during the simulation.")
-	OpenSim_DECLARE_PROPERTY(external_loads_file,std::string,
-		"External loads file (.xml) to apply to the model during the simulation.")
-	OpenSim_DECLARE_PROPERTY(prescribed_coordinates_file, std::string, 
-		"Storage file (.sto) containing the time varying trajectories for the prescribed coordinates." 
-		"Columns labels are 'time' and '/Path/To/Coordinate'")
-	OpenSim_DECLARE_PROPERTY(results_directory, std::string,
-		"Folder where the results files are output.")
-	OpenSim_DECLARE_PROPERTY(results_file_basename, std::string,
-		"Prefix to each results file name.")
-	OpenSim_DECLARE_PROPERTY(start_time, double,
-		"Time to start analysis. Set to -1 to use initial frame in coordinates_file")
-	OpenSim_DECLARE_PROPERTY(stop_time, double,
-		"Time to stop analysis. Set to -1 to use last frame in coordinates_file")
-	OpenSim_DECLARE_PROPERTY(report_time_step, double,
-		"The timestep interval to report the results.")
-	OpenSim_DECLARE_PROPERTY(minimum_time_step, double,
-		"The smallest timestep the integrator is allowed to take.")
-	OpenSim_DECLARE_PROPERTY(maximum_time_step, double,
-		"The largest timestep the integrator is allowed to take.")
-	OpenSim_DECLARE_PROPERTY(integrator_accuracy, double,
-		"Accuracy setting for BDF integrator.")
-	OpenSim_DECLARE_PROPERTY(constant_muscle_frc, double,
-		"Constant muscle force applied for all muscles not listed in actuator_input_file."
-		"For each muscle, force=constant_muscle_frc*Max_Isometeric_Force. Set to -1 to ignore")
-	OpenSim_DECLARE_LIST_PROPERTY(unconstrained_coordinates, std::string,
-		"Paths to Coordinates that will be unconstrained in the simulation." 
-		"All Coordinates not listed here or in the prescribed_coordinates_file"
-		"will be locked. Note coordinates listed here will override settings"
-		"in the .osim file.")
-	OpenSim_DECLARE_PROPERTY(use_visualizer,bool,"Use the SimTK visualizer.")
-	OpenSim_DECLARE_UNNAMED_PROPERTY(AnalysisSet,"Analyses to be performed"
-		"during forward simulation.")
+    OpenSim_DECLARE_PROPERTY(model_file, std::string,
+        "Path to .osim model file to use in the forward simulation.")
 
+    OpenSim_DECLARE_PROPERTY(results_directory, std::string,
+        "Path to folder where all results files will be written.")
+
+    OpenSim_DECLARE_PROPERTY(results_file_basename, std::string,
+        "Prefix to each results file name.")
+
+    OpenSim_DECLARE_PROPERTY(start_time, double,
+        "Time to start simulation. Set to -1 to use initial frame in inputs "
+        "files. The default value is 0.0.")
+
+    OpenSim_DECLARE_PROPERTY(stop_time, double,
+        "Time to stop simulation. Set to -1 to use last frame in input files. "
+        "The default value is 1.0.")
+
+    OpenSim_DECLARE_PROPERTY(report_time_step, double,
+        "The timestep interval to report the results. Set to -1 to use step "
+        "size in input files. The Default value is 0.01.")
+
+    OpenSim_DECLARE_PROPERTY(minimum_time_step, double,
+        "The smallest internal timestep the integrator is allowed to take. "
+        "The Default value is 0.0.")
+
+    OpenSim_DECLARE_PROPERTY(maximum_time_step, double,
+        "The largest internal timestep the integrator is allowed to take. "
+        "The Default value is 0.1.")
+
+    OpenSim_DECLARE_PROPERTY(integrator_accuracy, double,
+        "Accuracy setting for BDF integrator. The Default value is 1e-6")
+
+    OpenSim_DECLARE_PROPERTY(internal_step_limit, double,
+        "Limit on the number of internal steps that can be taken by BDF "
+        "integrator. If -1, then there is no limit. The Default value is -1")
+
+    OpenSim_DECLARE_PROPERTY(constant_muscle_control, double,
+        "Constant value (between 0 and 1) input as control to all muscles not "
+        "listed in the actuator_input_file. "
+        "Set to -1 to ignore. Default is 0.01.")
+
+    OpenSim_DECLARE_PROPERTY(ignore_activation_dynamics, bool, "Set the "
+        "ignore_activation_dynamics property for all muscles not listed in "
+        "actuator_input_file. The default value is false.")
+
+    OpenSim_DECLARE_PROPERTY(ignore_tendon_compliance, bool, "Set the "
+        "use_tendon_compliance property for all muscles not listed in "
+        "actuator_input_file. The default value is false.")
+
+    OpenSim_DECLARE_PROPERTY(ignore_muscle_dynamics, bool, 
+        "Ignore muscle-tendon dynamics for all muscles not list in "
+        "actuator_input_file. The force in these muscles is calculated using "
+        "F = contastant_muscle_control * maxIsometricForce. "
+        "The default value is false.")
+
+    OpenSim_DECLARE_PROPERTY(equilibrate_muscles, bool, 
+        "Call equilibrateMuscles() before starting the simulation. "
+        "The default value is true.")
+
+    OpenSim_DECLARE_LIST_PROPERTY(unconstrained_coordinates, std::string,
+        "Paths to the Coordinates that will be unconstrained (unlocked and "
+        "not prescribed) in the simulation. All Coordinates that are not " 
+        "listed here or in the prescribed_coordinates_file will be locked. "
+        "Note coordinates listed here will override the 'locked' and "
+        "'prescribed' properties in the .osim file.")
+
+    OpenSim_DECLARE_PROPERTY(actuator_input_file, std::string,
+        "Path to storage file (.sto) containing the time varying actuator "
+        "controls, activations and forces to be applied during the "
+        "simulation. The column labels must be formatted as 'time' and "
+        "'ACTUATORNAME_control', 'ACTUATORNAME_activation', "
+        "'ACTUATORNAME_force'.")
+
+    OpenSim_DECLARE_PROPERTY(external_loads_file,std::string,
+        "Path to .xml file that defines the ExternalLoads to apply to the "
+        "model during the simulation.")
+
+    OpenSim_DECLARE_PROPERTY(prescribed_coordinates_file, std::string, 
+        "Path to storage file (.sto) containing the time varying values "
+        "of the Coordinates that will be prescribed in the forward simulation."
+        " The locked and prescribed properties in the model will be overriden "
+        "for any Coordinates listed in this file. "
+        "The columns labels must be formatted as 'time' and "
+        "'/Path/To/Coordinate'")
+
+    OpenSim_DECLARE_PROPERTY(use_visualizer, bool, "Use the SimTK visualizer "
+        "to display the simulation. The default value is false.")
+
+    OpenSim_DECLARE_PROPERTY(verbose, int, "Define how detailed the output to "
+        "console should be. 0 - silent. The default value is 0.")
+
+    OpenSim_DECLARE_UNNAMED_PROPERTY(AnalysisSet,"Analyses to be performed "
+        "throughout the forward simulation.")
 
 //=============================================================================
 // METHODS
 //=============================================================================
+    
 public:
-	ForsimTool();
-	ForsimTool(std::string settings_file);
+    ForsimTool();
+    ForsimTool(std::string settings_file);
 
-	void setModel(Model& aModel);
-	void loadModel(const std::string &aToolSetupFileName);
-	void run();
-	
+    void setModel(Model& aModel);
+    void loadModel(const std::string &aToolSetupFileName);
+    void run();
+    
 private:
     void setNull();
     void constructProperties();
-	void initializeCoordinates();
-	void initializeActuators(SimTK::State& state);
-	void applyExternalLoads();
+    void initializeCoordinates();
+    void initializeActuators(SimTK::State& state);
+    void applyExternalLoads();
     void initializeStartStopTimes();
-	
-	
+    void printDebugInfo(const SimTK::State& state);
+    
 //=============================================================================
 // DATA
 //=============================================================================
 
-	
+    
 private:
-	Model _model;
-	ExternalLoads _external_loads;
+    Model _model;
+    ExternalLoads _external_loads;
 
-	std::vector<std::string> _prescribed_frc_actuator_paths;
-	std::vector<std::string> _prescribed_act_actuator_paths;
-	std::vector<std::string> _prescribed_control_actuator_paths;
-	std::vector<std::string> _constant_act_msl_paths;
-	FunctionSet _frc_functions;
-	FunctionSet _act_functions;
+    std::vector<std::string> _prescribed_frc_actuator_paths;
+    std::vector<std::string> _prescribed_act_actuator_paths;
+    std::vector<std::string> _prescribed_control_actuator_paths;
+
+    FunctionSet _frc_functions;
+    FunctionSet _act_functions;
 
     TimeSeriesTable _actuator_table;
     TimeSeriesTable _coord_table;
@@ -132,7 +188,5 @@ private:
 };  // END of class ForsimTool
 
 }; //namespace
-
-
 
 #endif // #ifndef OPENSIM_FORSIM_TOOL_H_

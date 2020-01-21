@@ -118,5 +118,4 @@ set_target_properties(
 install(TARGETS ${PLUGIN_NAME} DESTINATION plugin)
 
 
-add_subdirectory(dev_tools)
-add_subdirectory(cmd_tools)
+

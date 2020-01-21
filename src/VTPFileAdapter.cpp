@@ -73,7 +73,7 @@ namespace OpenSim {
 	//Write Using direct input of points and vertices
 	void VTPFileAdapter::write(const std::string& fileName, const std::string& filePath, const int frame_num) const {
 
-		std::cout << "Writing .vtp files to: " + filePath + fileName << std::endl;
+		//std::cout << "Writing .vtp files to: " + filePath + fileName << std::endl;
 
 		int nPoints = _points.nrow();
 		int nStrips = 0;

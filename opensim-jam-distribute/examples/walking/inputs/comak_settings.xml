@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<OpenSimDocument Version="40000">
+    <COMAKTool>
+        <!--Location of model to use in COMAK simulation.-->
+        <model_file>../results/scale/lenhart2015_scaled_markers.osim</model_file>
+        <!--Location of the inverse kinematics input .mot file.-->
+        <ik_motion_file>../results/comak-inverse-kinematics/overground_17_ik.mot</ik_motion_file>
+        <!--External loads .xml file.-->
+        <external_loads_file>../../../models/lenhart2015/motion_data/overground_17_ext_loads.xml</external_loads_file>
+        <!--Path to directory to write output results.-->
+        <results_dir>../results/comak/</results_dir>
+        <!--Prefix to all results files names.-->
+        <results_prefix>walking</results_prefix>
+        <!--Use SimTK visualizer to display simulations in progress.-->
+        <use_visualizer>true</use_visualizer>
+        <!--Print processed input q's, u's, and udots.-->
+        <print_input_kinematics>true</print_input_kinematics>
+        <!--Level of debug information reported (0: low, 1: medium, 2: high)-->
+        <verbose>0</verbose>
+        <!--First time step of COMAK simulation.-->
+        <start_time>1.21</start_time>
+        <!--Last time step of COMAK simulation.-->
+        <stop_time>2.32</stop_time>
+        <!--Time increment between steps in COMAK simulation.Set to -1 to use input kinematics time step.-->
+        <time_step>0.01</time_step>
+        <!--Lowpass filter frequency for input kinematics. Set to -1 to use raw data-->
+        <lowpass_filter_frequency>6</lowpass_filter_frequency>
+        <!--List the Prescribed Coordinates in the model.-->
+        <prescribed_coordinates>/jointset/gnd_pelvis/pelvis_tx /jointset/gnd_pelvis/pelvis_ty /jointset/gnd_pelvis/pelvis_tz /jointset/gnd_pelvis/pelvis_tilt /jointset/gnd_pelvis/pelvis_list /jointset/gnd_pelvis/pelvis_rot /jointset/subtalar_r/subt_angle_r /jointset/mtp_r/mtp_angle_r /jointset/hip_l/hip_flex_l /jointset/hip_l/hip_add_l /jointset/hip_l/hip_rot_l /jointset/pf_l/pf_l_r3 /jointset/pf_l/pf_l_tx /jointset/pf_l/pf_l_ty /jointset/knee_l/knee_flex_l /jointset/ankle_l/ankle_flex_l /jointset/subtalar_l/subt_angle_l /jointset/mtp_l/mtp_angle_l /jointset/pelvis_torso/lumbar_ext /jointset/pelvis_torso/lumbar_latbend /jointset/pelvis_torso/lumbar_rot /jointset/torso_neckhead/neck_ext /jointset/torso_neckhead/neck_latbend /jointset/torso_neckhead/neck_rot /jointset/acromial_r/arm_add_r /jointset/acromial_r/arm_flex_r /jointset/acromial_r/arm_rot_r /jointset/elbow_r/elbow_flex_r /jointset/radioulnar_r/pro_sup_r /jointset/radius_hand_r/wrist_flex_r /jointset/acromial_l/arm_add_l /jointset/acromial_l/arm_flex_l /jointset/acromial_l/arm_rot_l /jointset/elbow_l/elbow_flex_l /jointset/radioulnar_l/pro_sup_l /jointset/radius_hand_l/wrist_flex_l</prescribed_coordinates>
+        <!--List the Primary Coordinates in the model.-->
+        <primary_coordinates> /jointset/hip_r/hip_flex_r /jointset/hip_r/hip_add_r /jointset/hip_r/hip_rot_r /jointset/knee_r/knee_flex_r /jointset/ankle_r/ankle_flex_r</primary_coordinates>
+        <!--List the Secondary Coordinates in the model.-->
+        <secondary_coordinates>/jointset/knee_r/knee_tz_r /jointset/knee_r/knee_tx_r /jointset/knee_r/knee_ty_r /jointset/knee_r/knee_add_r /jointset/knee_r/knee_rot_r /jointset/pf_r/pf_tz_r /jointset/pf_r/pf_tx_r /jointset/pf_r/pf_ty_r /jointset/pf_r/pf_flex_r /jointset/pf_r/pf_rot_r /jointset/pf_r/pf_tilt_r</secondary_coordinates>
+        <!--List of COMAKSecondaryCoodinate objects.-->
+        <COMAKSecondaryCoordinateSet name="secondary_coordinate_set">
+            <objects>
+                <COMAKSecondaryCoordinate name = "knee_add_r">
+                    <!--Path to coordinate in model.-->
+                    <coordinate>/jointset/knee_r/knee_add_r </coordinate>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <comak_damping>5</comak_damping>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <max_change>0.0050000000000000001</max_change>
+                </COMAKSecondaryCoordinate>
+                <COMAKSecondaryCoordinate name = "knee_rot_r">
+                    <!--Path to coordinate in model.-->
+                    <coordinate>/jointset/knee_r/knee_rot_r </coordinate>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <comak_damping>5</comak_damping>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <max_change>0.0050000000000000001</max_change>
+                </COMAKSecondaryCoordinate>
+                <COMAKSecondaryCoordinate name = "knee_tx_r">
+                    <!--Path to coordinate in model.-->
+                    <coordinate>/jointset/knee_r/knee_tx_r </coordinate>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <comak_damping>200</comak_damping>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <max_change>0.0050000000000000001</max_change>
+                </COMAKSecondaryCoordinate>
+                <COMAKSecondaryCoordinate name = "knee_ty_r">
+                    <!--Path to coordinate in model.-->
+                    <coordinate>/jointset/knee_r/knee_ty_r </coordinate>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <comak_damping>200</comak_damping>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <max_change>0.0050000000000000001</max_change>
+                </COMAKSecondaryCoordinate>
+                <COMAKSecondaryCoordinate name = "knee_tz_r">
+                    <!--Path to coordinate in model.-->
+                    <coordinate>/jointset/knee_r/knee_tz_r </coordinate>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <comak_damping>200</comak_damping>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <max_change>0.0050000000000000001</max_change>
+                </COMAKSecondaryCoordinate>
+                <COMAKSecondaryCoordinate name = "pf_flex_r">
+                    <!--Path to coordinate in model.-->
+                    <coordinate>/jointset/pf_r/pf_flex_r </coordinate>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <comak_damping>0.1</comak_damping>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <max_change>0.0050000000000000001</max_change>
+                </COMAKSecondaryCoordinate>
+                <COMAKSecondaryCoordinate name = "pf_rot_r">
+                    <!--Path to coordinate in model.-->
+                    <coordinate>/jointset/pf_r/pf_rot_r </coordinate>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <comak_damping>2</comak_damping>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <max_change>0.0050000000000000001</max_change>
+                </COMAKSecondaryCoordinate>
+                <COMAKSecondaryCoordinate name = "pf_tilt_r">
+                    <!--Path to coordinate in model.-->
+                    <coordinate>/jointset/pf_r/pf_tilt_r </coordinate>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <comak_damping>2</comak_damping>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <max_change>0.0050000000000000001</max_change>
+                </COMAKSecondaryCoordinate>
+                <COMAKSecondaryCoordinate name = "pf_tx_r">
+                    <!--Path to coordinate in model.-->
+                    <coordinate>/jointset/pf_r/pf_tx_r </coordinate>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <comak_damping>30</comak_damping>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <max_change>0.0050000000000000001</max_change>
+                </COMAKSecondaryCoordinate>
+                <COMAKSecondaryCoordinate name = "pf_ty_r">
+                    <!--Path to coordinate in model.-->
+                    <coordinate>/jointset/pf_r/pf_ty_r </coordinate>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <comak_damping>30</comak_damping>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <max_change>0.0050000000000000001</max_change>
+                </COMAKSecondaryCoordinate>
+                <COMAKSecondaryCoordinate name = "pf_tz_r">
+                    <!--Path to coordinate in model.-->
+                    <coordinate>/jointset/pf_r/pf_tz_r </coordinate>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <comak_damping>30</comak_damping>
+                    <!--Coefficient to penalize frame-to-frame changes in predicted secondary kinematics.-->
+                    <max_change>0.0050000000000000001</max_change>
+                </COMAKSecondaryCoordinate> 
+            </objects>
+            <groups />
+        </COMAKSecondaryCoordinateSet>        
+        <replace_force_set>false</replace_force_set>
+        <force_set_file>../../../models/lenhart2015/lenhart2015_reserve_actuators.xml</force_set_file>
+        <!--Max number of iterations per time step for the COMAK optimization.-->
+        <max_iterations>25</max_iterations>
+        <!--Maximum change in rotational secondary coordinates between COMAK iterations-->
+        <max_change_rotation>0.050000000000000003</max_change_rotation>
+        <!--Maximum change in translational secondary coordinates between COMAK iterations-->
+        <max_change_translation>0.0050000000000000001</max_change_translation>
+        <!--Tolerance on achieving the desired udots.-->
+        <udot_tolerance>1</udot_tolerance>
+        <!--Max error in udot acceptable if no iterations converge, if max udot error > worse case tolerance the previous time step is used.-->
+        <udot_worse_case_tolerance>50</udot_worse_case_tolerance>
+        <!--Perturbation applied to secondary_coords when computing the linearized version of the COMAK acceleration constraints.-->
+        <unit_udot_epsilon>0.0000000005</unit_udot_epsilon>
+        <!--Multiplier applied to Spring Generalized Force viscosity in the model when computing COMAK damping-->
+        <comak_damping_multiplier>1</comak_damping_multiplier>
+        <!--Weighting term for contact energy in COMAK cost function-->
+        <contact_energy_weight>500</contact_energy_weight>
+        <!--List of COMAKCostFunctionWeight objects.-->
+        <COMAKCostFunctionParameterSet>
+            <objects>
+            </objects>
+            <groups />
+        </COMAKCostFunctionParameterSet>
+        <!--Set to -1 to ignore. Otherwise set value for optimal strength of idealized torque actuators added to primary coordinates. -->
+        <primary_reserve_actuator_strength>-1</primary_reserve_actuator_strength>
+        <!--Set to -1 to ignore. Otherwise set value for optimal strength of idealized torque actuators added to primary coordinates. -->
+        <secondary_reserve_actuator_strength>-1</secondary_reserve_actuator_strength>
+        <!--Perform a forward simulation to settle secondary coordinates into equilbrium at initial time step of COMAK.-->
+        <equilibriate_secondary_coordinates_at_start>true</equilibriate_secondary_coordinates_at_start>
+        <!--Maximum change in secondary coordinates between timesteps that defines equilibrium.-->
+        <settle_threshold>0.0001</settle_threshold>
+        <!--Integrator accuracy for initializing forward simulation.-->
+        <settle_accuracy>1e-05</settle_accuracy>
+        <!--Prefix to settle simulation results file names.-->
+        <settle_sim_results_prefix>walking</settle_sim_results_prefix>
+        <!--Path to results directory to print forward simulation results.-->
+        <settle_sim_results_dir>../results/comak</settle_sim_results_dir>
+        <!--Print the coordinate and speed values during the forward simulation to settle_sim_results_dir.-->
+        <print_settle_sim_results>true</print_settle_sim_results>
+        <!--Multiplier applied to SpringGeneralizedForce viscosity in the model during settle simulation. Set to -1 to ignore.-->
+        <settle_sim_viscosity_multiplier>1</settle_sim_viscosity_multiplier>
+    </COMAKTool>
+</OpenSimDocument>

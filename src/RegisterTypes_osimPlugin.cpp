@@ -30,12 +30,12 @@
 #include "JointMechanicsTool.h"
 #include "ForsimTool.h"
 #include "COMAKTool.h"
-
+#include "COMAKInverseKinematicsTool.h"
 using namespace OpenSim;
 using namespace std;
 
 static dllObjectInstantiator instantiator; 
-     
+
 //_____________________________________________________________________________
 /**
  * The purpose of this routine is to register all class types exported by
@@ -46,18 +46,22 @@ OSIMPLUGIN_API void RegisterTypes_osimPlugin()
     Object::registerType(Blankevoort1991Ligament());
     Object::registerType(Smith2018ContactMesh());
     Object::registerType(Smith2018ArticularContactForce());
-    Object::registerType(Smith2018ArticularContactForce::ContactParameters());
-	Object::registerType(JointMechanicsTool());
-	Object::registerType(ForsimTool());
-	Object::registerType(COMAKTool());
+    Object::registerType(JointMechanicsTool());
+    Object::registerType(ForsimTool());
+    Object::registerType(COMAKTool());
+    Object::registerType(COMAKSecondaryCoordinate());
+    Object::registerType(COMAKSecondaryCoordinateSet());
+    Object::registerType(COMAKCostFunctionParameter());
+    Object::registerType(COMAKCostFunctionParameterSet());
+    Object::registerType(COMAKInverseKinematicsTool());
 }
 
 dllObjectInstantiator::dllObjectInstantiator() 
-{ 
-        registerDllClasses(); 
-} 
-    
+{
+    registerDllClasses();
+}
+
 void dllObjectInstantiator::registerDllClasses() 
-{ 
+{
         RegisterTypes_osimPlugin(); 
-} 
+}

@@ -45,7 +45,6 @@ int main(int argc, char *argv[])
 	
 		
 		COMAKTool comak = COMAKTool(settings_file);
-		comak.initialize();
 
 		comak.run();
 		
