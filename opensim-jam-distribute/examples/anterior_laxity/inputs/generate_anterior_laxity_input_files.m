@@ -92,6 +92,7 @@ force_data.torque_y = zeros(num_steps,1);
 force_data.torque_z = zeros(num_steps,1);
 
 force_table = osimTableFromStruct(force_data); %% Function distributed in OpenSim 4.0 resources
+force_table.addTableMetaDataString('header','Anterior Tibial External Force')
 STOFileAdapter.write(force_table,external_loads_sto_file);
 
 % external loads plot
@@ -125,4 +126,27 @@ ext_loads.adoptAndAppend(ext_force);
 ext_loads.print(external_loads_xml_file );
 
 
+%% Write acld model file
+plugin_file = '../../../bin/jam_plugin.dll';
+opensimCommon.LoadOpenSimLibrary(plugin_file)
+lenhart_model_file = '../../../models/lenhart2015/lenhart2015.osim';
+acld_model_file = 'lenhart2015_acld.osim';
+model = Model(lenhart_model_file);
 
+%Remove ACL Ligaments
+n=1;
+for i = 0:model.getForceSet.getSize()-1
+    force = model.getForceSet.get(i);
+    if(contains(char(force.getName()),'ACL'))
+        ACL_names{n} = force.getName();
+        n=n+1;
+    end
+end
+
+for i = 1:length(ACL_names)
+    force = model.getForceSet.get(ACL_names{i});
+    model.getForceSet.remove(force);
+end
+
+model.initSystem();
+model.print(acld_model_file);

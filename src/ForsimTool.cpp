@@ -24,17 +24,11 @@
 #include <OpenSim/Common/STOFileAdapter.h>
 #include <OpenSim/OpenSim.h>
 #include <OpenSim/Common/Constant.h>
-#include <OpenSim/Common/FunctionSet.h>
 #include <OpenSim\Actuators\Millard2012EquilibriumMuscle.h>
 #include <OpenSim/Common/IO.h>
-//#include <Blankevoort1991Ligament.h>
+#include "Smith2018ArticularContactForce.h"
 
 using namespace OpenSim;
-
-
-//=============================================================================
-// CONSTRUCTOR(S)
-//=============================================================================
 
 ForsimTool::ForsimTool() : Object()
 {
@@ -55,25 +49,27 @@ ForsimTool::ForsimTool(std::string settings_file) : Object(settings_file) {
 void ForsimTool::setNull()
 {
     setAuthors("Colin Smith");
-
 }
 
 void ForsimTool::constructProperties()
 {
     constructProperty_model_file("");
-    constructProperty_actuator_input_file("");
-    constructProperty_external_loads_file("");
-    constructProperty_prescribed_coordinates_file("");	
     constructProperty_results_directory(".");
     constructProperty_results_file_basename("");
-    constructProperty_start_time(-1);
-    constructProperty_stop_time(-1);
-    constructProperty_integrator_accuracy(0.000001);
+    constructProperty_start_time(0.0);
+    constructProperty_stop_time(1.0);
+    constructProperty_minimum_time_step(0.0);
+    constructProperty_maximum_time_step(0.1);
     constructProperty_report_time_step(0.01);
-    constructProperty_minimum_time_step(0.00000001);
-    constructProperty_maximum_time_step(0.01);
-    constructProperty_constant_muscle_frc(-1);
+    constructProperty_integrator_accuracy(1e-6);
+    constructProperty_internal_step_limit(-1);
+    constructProperty_constant_muscle_control(0.02);
+    constructProperty_ignore_activation_dynamics(false);
+    constructProperty_ignore_tendon_compliance(false);
     constructProperty_unconstrained_coordinates();
+    constructProperty_actuator_input_file("");
+    constructProperty_external_loads_file("");
+    constructProperty_prescribed_coordinates_file("");
     constructProperty_use_visualizer(false);
     constructProperty_verbose(0);
     constructProperty_AnalysisSet(AnalysisSet());
@@ -86,7 +82,7 @@ void ForsimTool::setModel(Model& aModel)
 }
 
 void ForsimTool::run() 
-{	
+{
     SimTK::State state = _model.initSystem();
         
     //Add Analysis set
@@ -136,7 +132,7 @@ void ForsimTool::run()
     integrator.setAccuracy(get_integrator_accuracy());
     integrator.setMinimumStepSize(get_minimum_time_step());
     integrator.setMaximumStepSize(get_maximum_time_step());
-    
+    integrator.setInternalStepLimit(get_internal_step_limit());
     SimTK::TimeStepper timestepper(_model.getSystem(), integrator);
     timestepper.initialize(state);
     
@@ -262,6 +258,7 @@ void ForsimTool::initializeStartStopTimes() {
 
 void ForsimTool::initializeActuators(SimTK::State& state) {
     PrescribedController* control = new PrescribedController();
+
     if (get_actuator_input_file() != ""){
         STOFileAdapter actuator_file;
         _actuator_table = TimeSeriesTable(get_actuator_input_file());
@@ -270,52 +267,11 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
         std::vector<std::string> labels = _actuator_table.getColumnLabels();
         std::vector<double> time = _actuator_table.getIndependentColumn();
         
-        //Set minimum activation
+        
         for (int i = 0; i < labels.size(); ++i) {
             std::vector<std::string> split_label = split_string(labels[i], "_");
 
-            if (split_label.back() == "frc") {
-                std::string actuator_path = erase_sub_string(labels[i], "_frc");
-                try {
-                    ScalarActuator& actuator = _model.updComponent<ScalarActuator>(actuator_path);
-                    actuator.overrideActuation(state, true);
-                    _prescribed_frc_actuator_paths.push_back(actuator_path);
-                    SimTK::Vector values = _actuator_table.getDependentColumn(labels[i]);
-                    SimmSpline* frc_function = new SimmSpline(nDataPt, &time[0], &values[0], actuator_path + "_frc");
-
-                    _frc_functions.adoptAndAppend(frc_function); 
-                }
-                catch (ComponentNotFoundOnSpecifiedPath) {
-                    
-                    OPENSIM_THROW(Exception,
-                        "Actuator: " + actuator_path + " not found in model. "
-                        "Did you use absolute path?")
-                }
-            }
-
-            if (split_label.back() == "act") {
-                std::string actuator_path = erase_sub_string(labels[i], "_act");
-                try {
-                    Millard2012EquilibriumMuscle& msl = _model.updComponent<Millard2012EquilibriumMuscle>(actuator_path);
-
-                    _prescribed_act_actuator_paths.push_back(actuator_path);
-
-                    SimTK::Vector values = _actuator_table.getDependentColumn(labels[i]);
-                    SimmSpline* act_function = new SimmSpline(nDataPt, &time[0], &values[0], actuator_path + "_act");
-
-                    control->addActuator(msl);
-
-                    control->prescribeControlForActuator(msl.getName(), act_function);
-
-                    msl.set_ignore_activation_dynamics(true);
-                }
-                catch (ComponentNotFoundOnSpecifiedPath) {
-                    OPENSIM_THROW(Exception,
-                        "Muscle: " + actuator_path + " not found in model. "
-                        "Did you use absolute path? Is it a Millard2012EquilibriumMuscle?")
-                }
-            }
-
+            //Control Prescribed
             if (split_label.back() == "control") {
                 std::string actuator_path = erase_sub_string(labels[i], "_control");
                 try {
@@ -338,6 +294,52 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
                 }
 
             }
+
+            //Activation Prescribed
+            if (split_label.back() == "activation") {
+                std::string actuator_path = erase_sub_string(labels[i], "_activation");
+                try {
+                    Millard2012EquilibriumMuscle& msl = _model.updComponent<Millard2012EquilibriumMuscle>(actuator_path);
+
+                    _prescribed_act_actuator_paths.push_back(actuator_path);
+
+                    SimTK::Vector values = _actuator_table.getDependentColumn(labels[i]);
+                    SimmSpline* act_function = new SimmSpline(nDataPt, &time[0], &values[0], actuator_path + "_act");
+
+                    control->addActuator(msl);
+
+                    control->prescribeControlForActuator(msl.getName(), act_function);
+
+                    msl.set_ignore_activation_dynamics(true);
+                }
+                catch (ComponentNotFoundOnSpecifiedPath) {
+                    OPENSIM_THROW(Exception,
+                        "Muscle: " + actuator_path + " not found in model. "
+                        "Did you use absolute path? Is it a Millard2012EquilibriumMuscle?")
+                }
+            }
+
+            //Force Prescribed
+            if (split_label.back() == "force") {
+                std::string actuator_path = erase_sub_string(labels[i], "_force");
+                try {
+                    ScalarActuator& actuator = _model.updComponent<ScalarActuator>(actuator_path);
+                    actuator.overrideActuation(state, true);
+                    _prescribed_frc_actuator_paths.push_back(actuator_path);
+                    SimTK::Vector values = _actuator_table.getDependentColumn(labels[i]);
+                    SimmSpline* frc_function = new SimmSpline(nDataPt, &time[0], &values[0], actuator_path + "_frc");
+
+                    _frc_functions.adoptAndAppend(frc_function); 
+                }
+                catch (ComponentNotFoundOnSpecifiedPath) {
+                    
+                    OPENSIM_THROW(Exception,
+                        "Actuator: " + actuator_path + " not found in model. "
+                        "Did you use absolute path?")
+                }
+            }
+
+            
         }
 
         //Output to Screen
@@ -366,12 +368,13 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
             std::cout << std::endl;
         }
     }
-    _model.addComponent(control);
-    state = _model.initSystem();
+    
+    _model.initSystem();
 
-    //Set Constant Muscle Activation
-    if (get_constant_muscle_frc() > -1) {
-        std::cout << "Constant Muscle Force Multiplier: " << get_constant_muscle_frc() << std::endl;
+    //Setup Constant Muscle Control
+    if (get_constant_muscle_control() > -1) {
+        std::cout << "Constant Muscle Control : " << get_constant_muscle_control() << std::endl;
+
         for (Muscle& msl : _model.updComponentList<Muscle>()) {
             std::string msl_path = msl.getAbsolutePathString();
 
@@ -385,25 +388,39 @@ void ForsimTool::initializeActuators(SimTK::State& state) {
                 continue;
             }
 
-            _prescribed_frc_actuator_paths.push_back(msl_path);
+            if (msl.getConcreteClassName() == "Millard2012EquilibriumMuscle") {
+                msl.set_ignore_activation_dynamics(
+                    get_ignore_activation_dynamics());
 
-            double const_frc = get_constant_muscle_frc() * msl.getMaxIsometricForce();
-            Constant* frc_function = new Constant(const_frc);
-            frc_function->setName(msl_path + "_frc");
+                msl.set_ignore_tendon_compliance(
+                    get_ignore_tendon_compliance());
+            }
+            else {
+                std::cout << msl.getName() << " is not a "
+                    "Millard2012EquilibriumMuscle, ignore_activation_dynamics "
+                    "and ignore_tendon_compliance will have no effect." 
+                    << std::endl;
+            }
+            
 
-            _frc_functions.adoptAndAppend(frc_function);
+            _prescribed_control_actuator_paths.push_back(msl_path);
 
+            Constant* control_function = 
+                new Constant(get_constant_muscle_control());
+            control_function->setName(msl_path + "_frc");
+
+            control->addActuator(msl);
+
+            control->prescribeControlForActuator(msl.getName(), control_function);
+            //_control_functions.adoptAndAppend(control_function);
 
             std::cout << msl_path << std::endl;
         }
         std::cout << std::endl;
     }
 
-    for (int j = 0; j < _prescribed_frc_actuator_paths.size(); ++j) {
-        std::string actuator_path = _prescribed_frc_actuator_paths[j];
-        ScalarActuator& actuator = _model.updComponent<ScalarActuator>(actuator_path);
-        actuator.overrideActuation(state, true);
-    }
+    _model.addComponent(control);
+    state = _model.initSystem();
 }
 
 void ForsimTool::initializeCoordinates() {
@@ -564,7 +581,7 @@ void ForsimTool::printDebugInfo(const SimTK::State& state) {
     }
     std::cout << std::endl;
 
-    std::cout << std::setw(w) << "Ligament " 
+/*    std::cout << std::setw(w) << "Ligament " 
         << std::setw(w) << "Total Force" 
         << std::setw(w) << "Spring Force" 
         << std::setw(w) << "Damping Force" 
@@ -576,7 +593,7 @@ void ForsimTool::printDebugInfo(const SimTK::State& state) {
 
             
 
-/*    for (const Blankevoort1991Ligament& lig : _model.updComponentList<Blankevoort1991Ligament>()) {
+    for (const Blankevoort1991Ligament& lig : _model.updComponentList<Blankevoort1991Ligament>()) {
         std::cout << std::setw(w) << lig.getName()
             << std::setw(w) << lig.getOutputValue<double>(state, "force_total")
             << std::setw(w) << lig.getOutputValue<double>(state, "force_spring")
@@ -603,7 +620,7 @@ void ForsimTool::printDebugInfo(const SimTK::State& state) {
             << std::endl;
     }
     std::cout << std::endl;    
-    std::cin.ignore();
+    
     std::cout << "Press Any Key to Continue." << std::endl;
-     
+    std::cin.ignore();
 }

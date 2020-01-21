@@ -51,6 +51,10 @@ Smith2018ContactMesh::Smith2018ContactMesh(const std::string& name,
     const std::string& mesh_file, const PhysicalFrame& parent_frame) :
     ContactGeometry (parent_frame)
 {
+    setNull();
+    constructProperties();
+    _mesh_is_cached = false;
+
     setName(name);
     set_mesh_file(mesh_file);
     updSocket<PhysicalFrame>("scale_frame").connect(parent_frame);
@@ -67,11 +71,13 @@ Smith2018ContactMesh::Smith2018ContactMesh(const std::string& name,
 Smith2018ContactMesh::Smith2018ContactMesh(const std::string& name,
     const std::string& mesh_file, const PhysicalFrame& frame,
     const SimTK::Vec3& location, const SimTK::Vec3& orientation,
+    bool use_variable_thickness,
     const std::string& mesh_back_file, 
     double min_thickness, double max_thickness) :
     ContactGeometry(location, orientation, frame)
 {
     Smith2018ContactMesh(name, mesh_file, frame, location, orientation);
+    set_use_variable_thickness(use_variable_thickness);
     set_mesh_back_file(mesh_back_file);
     set_min_thickness(min_thickness);
     set_max_thickness(max_thickness);
@@ -89,7 +95,11 @@ void Smith2018ContactMesh::setNull()
 
 void Smith2018ContactMesh::constructProperties()
 {
-    constructProperty_mesh_file("");    
+    constructProperty_mesh_file("");
+    constructProperty_elastic_modulus(1000000.0);
+    constructProperty_poissons_ratio(0.5);
+    constructProperty_thickness(0.005);
+    constructProperty_use_variable_thickness(false);
     constructProperty_mesh_back_file("");
     constructProperty_min_thickness(0.001);
     constructProperty_max_thickness(0.01);
@@ -111,10 +121,6 @@ void Smith2018ContactMesh::extendFinalizeFromProperties() {
     Super::extendFinalizeFromProperties();
     if (!_mesh_is_cached) {
         initializeMesh();
-
-        if(!get_mesh_back_file().empty()){
-            computeVariableCartilageThickness();
-        }
     }
 }
 
@@ -222,9 +228,6 @@ void Smith2018ContactMesh::initializeMesh()
 {
     _mesh_is_cached = true;
 
-    // Initialize Reused Variables
- 
-
     // Load Mesh from file
     std::string file = findMeshFile(get_mesh_file());
     _mesh.loadFile(file);
@@ -249,10 +252,6 @@ void Smith2018ContactMesh::initializeMesh()
     _tri_elastic_modulus.resize(_mesh.getNumFaces());
     _tri_poissons_ratio.resize(_mesh.getNumFaces());
 
-    _tri_thickness=-1;
-    _tri_elastic_modulus=-1;
-    _tri_poissons_ratio=-1;
-
     _vertex_locations.resize(_mesh.getNumVertices());
     _face_vertex_locations.resize(_mesh.getNumFaces(), 3);
         
@@ -274,9 +273,7 @@ void Smith2018ContactMesh::initializeMesh()
         SimTK::Vec3 v3 = _mesh.getVertexPosition(v3_i);
 
         // Compute Triangle Center
-        _tri_center(i)(0) = (v1(0) + v2(0) + v3(0)) / 3.0;
-        _tri_center(i)(1) = (v1(1) + v2(1) + v3(1)) / 3.0;
-        _tri_center(i)(2) = (v1(2) + v2(2) + v3(2)) / 3.0;
+        _tri_center(i) = (v1 + v2 + v3) / 3.0;
 
         // Compute Triangle Normal
         SimTK::Vec3 e1 = v3 - v1;
@@ -284,8 +281,7 @@ void Smith2018ContactMesh::initializeMesh()
 
         SimTK::Vec3 cross = SimTK::cross(e1, e2);
 
-        double mag = sqrt(
-            cross[0] * cross[0] + cross[1] * cross[1] + cross[2] * cross[2]);
+        double mag = cross.norm();
 
         for (int j = 0; j < 3; ++j) {
             _tri_normal(i).set(j,-cross[j] / mag);
@@ -339,64 +335,33 @@ void Smith2018ContactMesh::initializeMesh()
     }
 
     //Vertex Connectivity
-    int max_ver_nTri = 20;
-    
-    SimTK::Matrix ver_tri_ind(_mesh.getNumVertices(), max_ver_nTri);
-    SimTK::Vector ver_nTri(_mesh.getNumVertices());
-    ver_tri_ind.setToZero();
-    ver_nTri.setToZero();
+    std::vector<std::vector<int>> ver_tri_ind(_mesh.getNumVertices());
+    std::vector<int> ver_nTri(_mesh.getNumVertices());
 
     for (int i = 0; i < _mesh.getNumFaces(); ++i) {
         for (int j = 0; j < 3; ++j) {
             int ver = _mesh.getFaceVertex(i, j);
-            ver_tri_ind(ver, ver_nTri(ver)) = i;
-            ver_nTri(ver)++;
-
-            if (ver_nTri(ver) == max_ver_nTri) {
-                max_ver_nTri +=5;
-                ver_tri_ind.resizeKeep(_mesh.getNumVertices(), max_ver_nTri);
-            }
+            ver_tri_ind[ver].push_back(i);
+            ver_nTri[ver]++;
         }
     }
 
-    int max_nNeighbors = 20; // Will increase automatically if necessary
+    //Triangle Neighbors
+    _tri_neighbors.resize(_mesh.getNumFaces());
 
-    _tri_neighbors.resize(_mesh.getNumFaces(), max_nNeighbors);
-    _tri_neighbors.setToZero();
-    _n_tri_neighbors.resize(_mesh.getNumFaces());
-    _n_tri_neighbors.setToZero();
-    
     for (int i = 0; i < _mesh.getNumFaces(); ++i) {
         for (int j = 0; j < 3; ++j) {
 
             int ver = _mesh.getFaceVertex(i, j);
 
-            for (int k = 0; k < ver_nTri(ver); ++k) {
-                bool repeat_tri = false;
-                int tri = ver_tri_ind(ver, k);
+            for (int k = 0; k < ver_nTri[ver]; ++k) {
+                int tri = ver_tri_ind[ver][k];
 
+                //triange can't be neighbor with itself
                 if (tri == i) {
                     continue;
                 }
-
-                for (int l = 0; l < _n_tri_neighbors(i); ++l) {
-                    if (tri == _tri_neighbors(i, l)){
-                        repeat_tri = true;
-                        break;
-                    }
-                }
-
-                if (repeat_tri)
-                    continue;
-
-                _tri_neighbors(i, _n_tri_neighbors(i)) = tri;
-                _n_tri_neighbors(i)++;
-
-                if (_n_tri_neighbors(i) == max_nNeighbors) {
-                    max_nNeighbors +=5;
-                    _tri_neighbors.resizeKeep(
-                        _mesh.getNumFaces(), max_nNeighbors);
-                }
+                _tri_neighbors[i].insert(tri);
             }
 
         }
@@ -412,9 +377,20 @@ void Smith2018ContactMesh::initializeMesh()
     //Create Decorative Mesh
     _decorative_mesh.reset(new SimTK::DecorativeMeshFile(file));
     _decorative_mesh->setScaleFactors(get_scale_factors());
+
+    //Triangle Material Properties
+    if(get_use_variable_thickness()){
+        computeVariableThickness();
+    }
+    else {
+        _tri_thickness = get_thickness();
+    }
+
+    _tri_elastic_modulus = get_elastic_modulus();
+    _tri_poissons_ratio = get_poissons_ratio();
 }
 
-void Smith2018ContactMesh::computeVariableCartilageThickness() {
+void Smith2018ContactMesh::computeVariableThickness() {
 
     // Get Mesh Properties
     double min_thickness = get_min_thickness();
@@ -470,20 +446,6 @@ void Smith2018ContactMesh::computeVariableCartilageThickness() {
         }
         _tri_thickness(i) = depth;
     }
-}
-
-SimTK::Vector Smith2018ContactMesh::getNeighborTris(
-    int tri, int& nNeighborTri) const
-{
-
-    nNeighborTri = _n_tri_neighbors(tri);
-
-    SimTK::Vector neighbor_tri_list(nNeighborTri);
-
-    for (int i = 0; i < nNeighborTri; ++i) {
-        neighbor_tri_list(i) = _tri_neighbors(tri,i);
-    }
-    return neighbor_tri_list;
 }
 
 void Smith2018ContactMesh::generateDecorations(
@@ -597,8 +559,8 @@ void Smith2018ContactMesh::createObbTree
             }
         }
     }
-    
-    // This is a leaf node.    
+
+    // This is a leaf node
     node._triangles.insert(node._triangles.begin(), faceIndices.begin(), 
                           faceIndices.end());
 }

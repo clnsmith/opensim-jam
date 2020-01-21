@@ -51,7 +51,6 @@ public:
         "force set. The default value is false.")
     OpenSim_DECLARE_PROPERTY(force_set_file,std::string,
         "Path to .xml file containing an additional ForceSet.")
-
     OpenSim_DECLARE_PROPERTY(start_time, double, 
         "First time step of COMAK simulation.")
     OpenSim_DECLARE_PROPERTY(stop_time, double, 
@@ -62,6 +61,7 @@ public:
     OpenSim_DECLARE_PROPERTY(lowpass_filter_frequency, double, 
         "Lowpass filter frequency for input kinematics. "
         "Set to -1 to use raw data")
+
     OpenSim_DECLARE_PROPERTY(print_input_kinematics, bool, "Print processed input q's, u's, and udots.")
 
     OpenSim_DECLARE_LIST_PROPERTY(prescribed_coordinates, std::string, "List the Prescribed Coordinates in the model.")

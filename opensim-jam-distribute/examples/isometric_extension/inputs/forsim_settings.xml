@@ -8,11 +8,11 @@
 		<!--External loads file (.xml) to apply to the model during the simulation.-->
 		<external_loads_file></external_loads_file>
 		<!--Storage file (.sto) containing the time varying trajectories for the prescribed coordinates.Columns labels are 'time' and '/Path/To/Coordinate'-->
-		<prescribed_coordinates_file>./quadriceps_load_prescribed_coordinates.sto</prescribed_coordinates_file>
+		<prescribed_coordinates_file>./prescribed_coordinates.sto</prescribed_coordinates_file>
 		<!--Folder where the results files are output.-->
 		<results_directory>../results/forsim</results_directory>
 		<!--Prefix to each results file name.-->
-		<results_file_basename>quadriceps_load</results_file_basename>
+		<results_file_basename>isometric_extension</results_file_basename>
 		<!--Time to start analysis. Set to -1 to use initial frame in coordinates_file-->
 		<start_time>-1</start_time>
 		<!--Time to stop analysis. Set to -1 to use last frame in coordinates_file-->

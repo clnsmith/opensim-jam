@@ -46,7 +46,6 @@ OSIMPLUGIN_API void RegisterTypes_osimPlugin()
     Object::registerType(Blankevoort1991Ligament());
     Object::registerType(Smith2018ContactMesh());
     Object::registerType(Smith2018ArticularContactForce());
-    Object::registerType(Smith2018ArticularContactForce::ContactParameters());
     Object::registerType(JointMechanicsTool());
     Object::registerType(ForsimTool());
     Object::registerType(COMAKTool());
