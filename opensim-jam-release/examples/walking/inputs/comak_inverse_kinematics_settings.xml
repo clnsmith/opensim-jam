@@ -2,7 +2,7 @@
 <OpenSimDocument Version="40000">
 	<COMAKInverseKinematicsTool>
 		<!--Location of model to use in COMAK simulation.-->
-		<model_file>../results/scale/lenhart2015_scaled_markers.osim</model_file>
+		<model_file>../../../models/lenhart2015/lenhart2015.osim</model_file>
 		<!--Path to directory to write output results.-->
 		<results_dir>../results/comak-inverse-kinematics</results_dir>
 		<!--Prefix to all results files names.-->
@@ -10,7 +10,7 @@
 		<!--Use SimTK visualizer to display simulations in progress.-->
 		<use_visualizer>true</use_visualizer>
 		<!--Perform forward simulation where secondary_coupled_coord is prescribed and secondardy coordinates are unconstrained to find constraint functions for IK.-->
-		<perform_secondary_constraint_sim>false</perform_secondary_constraint_sim>
+		<perform_secondary_constraint_sim>true</perform_secondary_constraint_sim>
 		<!--List the Secondary Coordinates in the model.-->
 		<secondary_coordinates>/jointset/knee_r/knee_add_r /jointset/knee_r/knee_rot_r /jointset/knee_r/knee_tx_r /jointset/knee_r/knee_ty_r /jointset/knee_r/knee_tz_r /jointset/pf_r/pf_flex_r /jointset/pf_r/pf_rot_r /jointset/pf_r/pf_tilt_r /jointset/pf_r/pf_tx_r /jointset/pf_r/pf_ty_r /jointset/pf_r/pf_tz_r</secondary_coordinates>
 		<!--Name of coordinate to prescribe in simulation.-->
