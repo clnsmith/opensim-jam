@@ -21,10 +21,6 @@
  * limitations under the License.                                             *
  * -------------------------------------------------------------------------- */
 
-
-//=============================================================================
-// INCLUDES
-//=============================================================================
 #include <OpenSim/Common/XMLDocument.h>
 #include <OpenSim.h>
 #include "COMAKTool.h"
@@ -36,14 +32,6 @@
 using namespace OpenSim;
 using namespace SimTK;
 
-//=============================================================================
-// CONSTRUCTOR(S) AND DESTRUCTOR
-//=============================================================================
-
-//_____________________________________________________________________________
-/**
- * Default constructor.
- */
 COMAKTool::COMAKTool()
 {
     constructProperties();
@@ -57,46 +45,45 @@ COMAKTool::COMAKTool(const std::string file) : Object(file) {
     IO::chDir(_directoryOfSetupFile);
 }
 
-//_____________________________________________________________________________
-/**
- * Connect properties to local pointers.
- */
 void COMAKTool::constructProperties()
 {
     constructProperty_model_file("");
-    constructProperty_ik_motion_file("");
+    constructProperty_coordinates_file("");
     constructProperty_external_loads_file("");
-    constructProperty_results_dir("");
+    constructProperty_results_directory("");
     constructProperty_results_prefix("");
-    constructProperty_use_visualizer(false);
-    constructProperty_print_input_kinematics(false);
-    constructProperty_verbose(0);
+
+    constructProperty_replace_force_set(false);
+    constructProperty_force_set_file("");
+
+
     constructProperty_start_time(-1);
     constructProperty_stop_time(-1);
     constructProperty_time_step(-1);
     constructProperty_lowpass_filter_frequency(-1);
+    constructProperty_print_processed_input_kinematics(false);
 
     constructProperty_prescribed_coordinates();
     constructProperty_primary_coordinates();
     constructProperty_COMAKSecondaryCoordinateSet(COMAKSecondaryCoordinateSet());
-    constructProperty_replace_force_set(false);
-    constructProperty_force_set_file("");
-    constructProperty_COMAKCostFunctionParameterSet(COMAKCostFunctionParameterSet());
+    
+    constructProperty_settle_secondary_coordinates_at_start(true);
+    constructProperty_settle_threshold(1e-5);
+    constructProperty_settle_accuracy(1e-6);
+    constructProperty_print_settle_sim_results(false);
+    constructProperty_settle_sim_results_directory("");
+    constructProperty_settle_sim_results_prefix("");
 
     constructProperty_max_iterations(50);
-    constructProperty_max_change_rotation(0.05);
-    constructProperty_max_change_translation(0.005);
     constructProperty_udot_tolerance(1.0);
     constructProperty_udot_worse_case_tolerance(50.0);
-    constructProperty_unit_udot_epsilon(0.000005);
+    constructProperty_unit_udot_epsilon(1e-8);
+    
     constructProperty_contact_energy_weight(0.0);
+    constructProperty_COMAKCostFunctionParameterSet(COMAKCostFunctionParameterSet());
 
-    constructProperty_equilibriate_secondary_coordinates_at_start(true);
-    constructProperty_settle_threshold(0.00001);
-    constructProperty_settle_accuracy(0.00001);
-    constructProperty_settle_sim_results_prefix("");
-    constructProperty_settle_sim_results_dir("");
-    constructProperty_print_settle_sim_results(false);
+    constructProperty_use_visualizer(false);    
+    constructProperty_verbose(0);
 
     constructProperty_AnalysisSet(AnalysisSet());
 }
@@ -279,11 +266,15 @@ void COMAKTool::initialize()
     _secondary_coord_damping.resize(_n_secondary_coord);
     _secondary_coord_damping = 0;
 
+    _secondary_coord_max_change.resize(_n_secondary_coord);
+    _secondary_coord_max_change = 0;
+
     for (int i = 0; i < _n_secondary_coord; ++i) {
         for (int j = 0; j < get_COMAKSecondaryCoordinateSet().getSize(); ++j) {
             COMAKSecondaryCoordinate sec_coord = get_COMAKSecondaryCoordinateSet().get(j);
             if (sec_coord.get_coordinate() == _secondary_coord_path[i]) {
-                _secondary_coord_damping[i] = sec_coord.get_comak_damping();                
+                _secondary_coord_damping[i] = sec_coord.get_comak_damping();
+                _secondary_coord_max_change[i] = sec_coord.get_max_change();
             }
         }
     }
@@ -300,8 +291,8 @@ void COMAKTool::initialize()
 
     int i = 0;
     for (const Muscle& msl : _model.updComponentList<Muscle>()) {
-        //_optimal_force[i] = msl.getMaxIsometricForce();
-        _optimal_force[i] = msl.getMaxIsometricForce()*cos(msl.getPennationAngleAtOptimalFiberLength()*SimTK::Pi/180);
+        _optimal_force[i] = msl.getMaxIsometricForce();
+        //_optimal_force[i] = msl.getMaxIsometricForce()*cos(msl.getPennationAngleAtOptimalFiberLength()*SimTK::Pi/180);
         i++;
         _n_muscles++;
         _muscle_path.append(msl.getAbsolutePathString());
@@ -429,7 +420,7 @@ void COMAKTool::performCOMAK()
     //Initialize Secondary Kinematics
     SimTK::Vector init_secondary_values(_n_secondary_coord);
 
-    if (get_equilibriate_secondary_coordinates_at_start()) {
+    if (get_settle_secondary_coordinates_at_start()) {
         init_secondary_values = equilibriateSecondaryCoordinates();
     }
     else {
@@ -458,7 +449,7 @@ void COMAKTool::performCOMAK()
             SimTK::Vector data = _q_matrix(nCoord);
             GCVSpline func = GCVSpline(5, _n_frames, &_time[0], &data[0], coord.getName());
             coord.set_prescribed_function(func);
-            coord.set_prescribed(true);			
+            coord.set_prescribed(true);
         }
         nCoord++;
     }
@@ -476,35 +467,8 @@ void COMAKTool::performCOMAK()
     state = _model.initSystem();
 
     //Setup Results Storage
-    StatesTrajectory states_trajectory;
+    initializeResultsStorage();
     AnalysisSet& analysisSet = _model.updAnalysisSet();
-
-    std::vector<std::string> actuator_names;
-    
-    for (int m = 0; m < _n_muscles; ++m) {
-        actuator_names.push_back(_muscle_path[m]);
-    }
-    for (int m = 0; m < _n_non_muscle_actuators; ++m) {
-        actuator_names.push_back(_non_muscle_actuator_path[m]);
-    }
-
-    TimeSeriesTable activations_table;
-    activations_table.setColumnLabels(actuator_names);
-
-    TimeSeriesTable forces_table;
-    forces_table.setColumnLabels(actuator_names);
-
-    std::vector<std::string> kinematics_names;
-
-    for (Coordinate &coord : _model.updComponentList<Coordinate>()) {
-        std::string name = coord.getAbsolutePathString();
-        kinematics_names.push_back(name + "/value");
-        kinematics_names.push_back(name + "/speed");
-        kinematics_names.push_back(name + "/acc");
-    }
-
-    TimeSeriesTable kinematics_table;
-    kinematics_table.setColumnLabels(kinematics_names);
 
     //Prepare for Optimization
     _model.setAllControllersEnabled(false);
@@ -617,8 +581,6 @@ void COMAKTool::performCOMAK()
             }
 
             target.setCostFunctionWeight(msl_weight);
-            target.setMaxChangeRotation(get_max_change_rotation());
-            target.setMaxChangeTranslation(get_max_change_translation());
             target.setUdotTolerance(get_udot_tolerance());
             target.setUnitUdotEpsilon(get_unit_udot_epsilon());
             target.setDT(_dt);
@@ -626,6 +588,7 @@ void COMAKTool::performCOMAK()
             target.setPrevSecondaryValues(_prev_secondary_value);
             target.setMuscleVolumes(_muscle_volumes);
             target.setSecondaryCoordinateDamping(_secondary_coord_damping);
+            target.setMaxChange(_secondary_coord_max_change);
             target.setContactEnergyWeight(get_contact_energy_weight());
             target.initialize();
 
@@ -783,37 +746,7 @@ void COMAKTool::performCOMAK()
         }
 
         //Save the results
-        //Record parameters
-        if (i == 0) {
-            analysisSet.begin(state);
-        }
-        else {
-            analysisSet.step(state, i);
-        }
-
-        states_trajectory.append(state);
-
-        SimTK::RowVector activations(_n_actuators);
-        SimTK::RowVector forces(_n_actuators);
-
-        for (int m = 0; m < _n_actuators; ++m) {
-            activations(m) = _optim_parameters(m);
-            forces(m) = _optim_parameters(m)*_optimal_force(m);
-        }
-
-        activations_table.appendRow(_time[i], activations);		
-        forces_table.appendRow(_time[i], forces);
-
-        SimTK::RowVector kinematics(_model.getNumCoordinates()*3);
-
-        int k = 0;
-        for (Coordinate& coord : _model.updComponentList<Coordinate>()) {
-            kinematics(k) = coord.getValue(state);
-            kinematics(k+1) = coord.getSpeedValue(state);
-            kinematics(k+2) = coord.getAccelerationValue(state);
-            k = k + 3;
-        }
-        kinematics_table.appendRow(_time[i], kinematics);
+        recordResultsStorage(state,i);        
 
         //Visualize the Results
         if (get_use_visualizer()) {
@@ -846,32 +779,7 @@ void COMAKTool::performCOMAK()
     }
 
     //Print Results
-    STOFileAdapter results_adapter;
-    TimeSeriesTable states_table = states_trajectory.exportToTable(_model);
-    states_table.addTableMetaData("header", std::string("ModelStates"));
-    states_table.addTableMetaData("nRows", std::to_string(states_table.getNumRows()));
-    states_table.addTableMetaData("nColumns", std::to_string(states_table.getNumColumns()+1));
-    results_adapter.write(states_table, get_results_dir() + get_results_prefix() + "_states.sto");
-
-    activations_table.addTableMetaData("header", std::string("ModelActivations"));
-    activations_table.addTableMetaData("nRows", std::to_string(_n_out_frames));
-    activations_table.addTableMetaData("nColumns", std::to_string(_n_actuators + 1));
-
-    results_adapter.write(activations_table, get_results_dir() + get_results_prefix() + "_activation.sto");
-
-    forces_table.addTableMetaData("header", std::string("ModelForces"));
-    forces_table.addTableMetaData("nRows", std::to_string(_n_out_frames));
-    forces_table.addTableMetaData("nColumns", std::to_string(_n_actuators + 1));
-
-    results_adapter.write(forces_table, get_results_dir() + get_results_prefix() + "_force.sto");
-
-    kinematics_table.addTableMetaData("inDegrees", std::string("no"));
-    _model.getSimbodyEngine().convertRadiansToDegrees(kinematics_table);
-    kinematics_table.addTableMetaData("header", std::string("ModelKinematics"));
-    kinematics_table.addTableMetaData("nRows", std::to_string(_n_out_frames));
-    kinematics_table.addTableMetaData("nColumns", std::to_string(_model.getNumCoordinates()*3 + 1));
-
-    results_adapter.write(kinematics_table, get_results_dir() + get_results_prefix() + "_kinematics.sto");
+    printResultsFiles();
 }
 
 void COMAKTool::setStateFromComakParameters(SimTK::State& state, const SimTK::Vector& parameters) {
@@ -913,15 +821,127 @@ void COMAKTool::setStateFromComakParameters(SimTK::State& state, const SimTK::Ve
     _model.assemble(state);
  }
 
+void COMAKTool::initializeResultsStorage() {
+
+    std::vector<std::string> actuator_names;
+    
+    for (int m = 0; m < _n_muscles; ++m) {
+        actuator_names.push_back(_muscle_path[m]);
+    }
+    for (int m = 0; m < _n_non_muscle_actuators; ++m) {
+        actuator_names.push_back(_non_muscle_actuator_path[m]);
+    }
+
+    _result_activations.setColumnLabels(actuator_names);
+    _result_forces.setColumnLabels(actuator_names);
+
+    std::vector<std::string> kinematics_names;
+    std::vector<std::string> values_names;
+
+    for (Coordinate &coord : _model.updComponentList<Coordinate>()) {
+        std::string name = coord.getAbsolutePathString();
+        kinematics_names.push_back(name + "/value");
+        kinematics_names.push_back(name + "/speed");
+        kinematics_names.push_back(name + "/acc");
+
+        values_names.push_back(coord.getName());
+    }
+    _result_kinematics.setColumnLabels(kinematics_names);
+    _result_values.setColumnLabels(values_names);
+}
+
+void COMAKTool::recordResultsStorage(const SimTK::State& state, int frame) {
+    if (frame == 0) {
+        _model.updAnalysisSet().begin(state);
+    }
+    else {
+        _model.updAnalysisSet().step(state, frame);
+    }
+
+    _result_states.append(state);
+
+    SimTK::RowVector activations(_n_actuators);
+    SimTK::RowVector forces(_n_actuators);
+
+    for (int m = 0; m < _n_actuators; ++m) {
+        activations(m) = _optim_parameters(m);
+        forces(m) = _optim_parameters(m)*_optimal_force(m);
+    }
+
+    _result_activations.appendRow(_time[frame], activations);
+    _result_forces.appendRow(_time[frame], forces);
+
+    SimTK::RowVector kinematics(_model.getNumCoordinates() * 3);
+    SimTK::RowVector values(_model.getNumCoordinates());
+
+    int k = 0;
+    int v = 0;
+    for (Coordinate& coord : _model.updComponentList<Coordinate>()) {
+        kinematics(k) = coord.getValue(state);
+        kinematics(k + 1) = coord.getSpeedValue(state);
+        kinematics(k + 2) = coord.getAccelerationValue(state);
+        k = k + 3;
+
+        values(v) = coord.getValue(state);
+        v++;
+    }
+    _result_kinematics.appendRow(_time[frame], kinematics);
+    _result_values.appendRow(_time[frame], values);
+
+}
+
+void COMAKTool::printResultsFiles() {
+    STOFileAdapter sto;
+    TimeSeriesTable states_table = _result_states.exportToTable(_model);
+    states_table.addTableMetaData("header", std::string("COMAK Model States"));
+    states_table.addTableMetaData("nRows", std::to_string(states_table.getNumRows()));
+    states_table.addTableMetaData("nColumns", std::to_string(states_table.getNumColumns() + 1));
+    sto.write(states_table, get_results_directory() + get_results_prefix() + "_states.sto");
+
+    _result_activations.addTableMetaData("header", std::string("COMAK Actuator Activations"));
+    _result_activations.addTableMetaData("nRows", std::to_string(_result_activations.getNumRows()));
+    _result_activations.addTableMetaData("nColumns", std::to_string( _result_activations.getNumColumns() + 1));
+
+    sto.write(_result_activations, get_results_directory() + get_results_prefix() + "_activation.sto");
+
+    _result_forces.addTableMetaData("header", std::string("COMAK Actuator Forces"));
+    _result_forces.addTableMetaData("nRows", std::to_string(_result_forces.getNumRows()));
+    _result_forces.addTableMetaData("nColumns", std::to_string(_result_forces.getNumColumns() + 1));
+
+    sto.write(_result_forces, get_results_directory() + get_results_prefix() + "_force.sto");
+
+    _result_kinematics.addTableMetaData("inDegrees", std::string("no"));
+    _model.getSimbodyEngine().convertRadiansToDegrees(_result_kinematics);
+    _result_kinematics.addTableMetaData("header", std::string("COMAK Model Kinematics"));
+    _result_kinematics.addTableMetaData("nRows", std::to_string(_result_kinematics.getNumRows()));
+    _result_kinematics.addTableMetaData("nColumns", std::to_string(_result_kinematics.getNumColumns() + 1));
+
+    sto.write(_result_kinematics, get_results_directory() + get_results_prefix() + "_kinematics.sto");
+
+    _result_values.addTableMetaData("inDegrees", std::string("no"));
+    _model.getSimbodyEngine().convertRadiansToDegrees(_result_values);
+    _result_values.addTableMetaData("header", std::string("COMAK Model Values"));
+    _result_values.addTableMetaData("nRows", std::to_string(_result_values.getNumRows()));
+    _result_values.addTableMetaData("nColumns", std::to_string(_result_values.getNumColumns() + 1));
+
+    sto.write(_result_values, get_results_directory() + get_results_prefix() + "_kinematics.sto");
+}
+
 SimTK::Vector COMAKTool::equilibriateSecondaryCoordinates() 
 {
     Model settle_model = _model;
     SimTK::State state = settle_model.initSystem();
 
     std::cout << std::endl;
-    std::cout << "------------------------------------------------------------------" << std::endl;
-    std::cout << "Performing forward simulation to equilibriate secondary kinematics" << std::endl;
-    std::cout << "------------------------------------------------------------------" << std::endl;
+    std::cout << 
+        "------------------------------------------------------------------" 
+        << std::endl;
+    std::cout << 
+        "Performing forward simulation to equilibriate secondary kinematics" 
+        << std::endl;
+    std::cout << 
+        "------------------------------------------------------------------"
+        << std::endl;
 
     for (Muscle& msl : settle_model.updComponentList<Muscle>()) {
         if (msl.getConcreteClassName() == "Millard2012EquilibriumMuscle") {
@@ -1030,15 +1050,20 @@ SimTK::Vector COMAKTool::equilibriateSecondaryCoordinates()
     
     //Print Results
     if (get_print_settle_sim_results()) {
-        TimeSeriesTable states_table = result_states.exportToTable(settle_model);
-        states_table.addTableMetaData("header", std::string("COMAK Settle Simulation States"));
-        states_table.addTableMetaData("nRows", std::to_string(states_table.getNumRows()));
-        states_table.addTableMetaData("nColumns", std::to_string(states_table.getNumColumns()+1));
+        TimeSeriesTable states_table = 
+            result_states.exportToTable(settle_model);
+        states_table.addTableMetaData(
+            "header", std::string("COMAK Settle Simulation States"));
+        states_table.addTableMetaData(
+            "nRows", std::to_string(states_table.getNumRows()));
+        states_table.addTableMetaData(
+            "nColumns", std::to_string(states_table.getNumColumns()+1));
         states_table.addTableMetaData("inDegrees", std::string("no"));
 
         STOFileAdapter sto;
-        IO::makeDir(get_settle_sim_results_dir());
-        std::string basefile = get_settle_sim_results_dir() + "/" + get_settle_sim_results_prefix();
+        IO::makeDir(get_settle_sim_results_directory());
+        std::string basefile = get_settle_sim_results_directory() + 
+            "/" + get_settle_sim_results_prefix();
         sto.write(states_table, basefile + "_states.sto");
     }
 
@@ -1071,7 +1096,7 @@ SimTK::Vector COMAKTool::equilibriateSecondaryCoordinates()
 
 void COMAKTool::extractKinematicsFromFile() {
 
-    Storage store(get_ik_motion_file());
+    Storage store(get_coordinates_file());
     Array<std::string> col_names = store.getColumnLabels();
 
     //Set Start and Stop Times
@@ -1157,7 +1182,8 @@ void COMAKTool::extractKinematicsFromFile() {
             }
         }
         else {
-            std::cout << "Coordinate Value: " << coord.getName() << " not found in coordinates_file, assuming 0." << std::endl;
+            std::cout << "Coordinate Value: " << coord.getName() << 
+                " not found in coordinates_file, assuming 0." << std::endl;
         }
 
         //GCVSpline q_spline;
@@ -1181,46 +1207,52 @@ void COMAKTool::extractKinematicsFromFile() {
         j++;
     }
 
-    if (get_print_input_kinematics()) {
-        STOFileAdapter sa;
-        
-        std::vector<double> t;
+    if (get_print_processed_input_kinematics()) {
+
+        std::vector<double> time_vec;
         for (int i = 0; i < _time.size(); ++i) {
-            t.push_back(_time[i]);
+            time_vec.push_back(_time[i]);
         }
         
         std::vector<std::string> labels;
-        int i = 0;
+        int numCoordinates = _model.countNumComponents<Coordinate>();
+
+        SimTK::Matrix processed_kinematics(_time.size(), numCoordinates * 3);
+
+        int nCol = 0;
         for (auto coord : _model.getComponentList<Coordinate>()) {
-            labels.push_back(coord.getName());
+            labels.push_back(coord.getAbsolutePathString() + "/value");
+            processed_kinematics(nCol) = _q_matrix(nCol);
+            nCol++;
         }
 
-        TimeSeriesTable q_table = TimeSeriesTable(t, _q_matrix, labels);
-        q_table.addTableMetaData("header", std::string("processed_input_q"));
-        q_table.addTableMetaData("inDegrees", std::string("no"));
-        q_table.addTableMetaData("nColumns", std::to_string(q_table.getNumColumns() + 1));
-        q_table.addTableMetaData("nRows", std::to_string(q_table.getNumRows()));
+        for (auto coord : _model.getComponentList<Coordinate>()) {
+            labels.push_back(coord.getAbsolutePathString() + "/speed");
+            processed_kinematics(nCol) = _u_matrix(nCol);
+            nCol++;
+        }
 
-        sa.write(q_table, get_results_dir() + "/" + get_results_prefix() + "processed_input_q.sto");
-
-        TimeSeriesTable u_table = TimeSeriesTable(t, _u_matrix, labels);
-        u_table.addTableMetaData("header", std::string("processed_input_u"));
-        u_table.addTableMetaData("inDegrees", std::string("no"));
-        u_table.addTableMetaData("nColumns", std::to_string(u_table.getNumColumns() + 1));
-        u_table.addTableMetaData("nRows", std::to_string(u_table.getNumRows()));
-
-        sa.write(u_table, get_results_dir() + "/" + get_results_prefix() + "processed_input_u.sto");
-
-        TimeSeriesTable udot_table = TimeSeriesTable(t, _udot_matrix, labels);
-        udot_table.addTableMetaData("header", std::string("processed_input_udot"));
-        udot_table.addTableMetaData("inDegrees", std::string("no"));
-        udot_table.addTableMetaData("nColumns", std::to_string(udot_table.getNumColumns() + 1));
-        udot_table.addTableMetaData("nRows", std::to_string(udot_table.getNumRows()));
-
-        sa.write(udot_table, get_results_dir() + "/" + get_results_prefix() + "processed_input_udot.sto");
+        for (auto coord : _model.getComponentList<Coordinate>()) {
+            labels.push_back(coord.getAbsolutePathString() + "/acceleration");
+            processed_kinematics(nCol) = _udot_matrix(nCol);
+            nCol++;
+        }
         
+        TimeSeriesTable kin_table = TimeSeriesTable(
+            time_vec, processed_kinematics, labels);
+
+        kin_table.addTableMetaData("header", std::string("processed_input_q"));
+        kin_table.addTableMetaData("inDegrees", std::string("no"));
+        kin_table.addTableMetaData("nColumns", std::to_string(kin_table.getNumColumns() + 1));
+        kin_table.addTableMetaData("nRows", std::to_string(kin_table.getNumRows()));
+
+        STOFileAdapter sto;
+        sto.write(kin_table, get_results_directory() + "/" + 
+            get_results_prefix() + "processed_input_kinematics.sto");
+       
         std::cout << std::endl;
-        std::cout << "Printed processed input kinematics to results_dir: " + get_results_dir() << std::endl;
+        std::cout << "Printed processed input kinematics to results_dir: " + 
+            get_results_directory() << std::endl;
     }
 }
 
@@ -1403,7 +1435,7 @@ void COMAKSecondaryCoordinate::constructProperties()
 {
     constructProperty_coordinate("");
     constructProperty_comak_damping(1.0);
-    constructProperty_max_change(0.005);
+    constructProperty_max_change(0.05);
 }
 
 COMAKSecondaryCoordinateSet::COMAKSecondaryCoordinateSet()
@@ -1425,7 +1457,6 @@ void COMAKCostFunctionParameter::constructProperties()
 {
     constructProperty_actuator("");
     constructProperty_weight(Constant(1.0));
-    constructProperty_desired_activation(Constant(0.0));
 }
 
 COMAKCostFunctionParameterSet::COMAKCostFunctionParameterSet()

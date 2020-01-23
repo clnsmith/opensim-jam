@@ -21,7 +21,6 @@
 #include <OpenSim/Simulation/Model/Model.h>
 #include "ComakTarget.h"
 #include "Smith2018ArticularContactForce.h"
-//#include "Blankevoort1991Ligament.h"
 #include <OpenSim.h>
 using namespace OpenSim;
 
@@ -589,6 +588,7 @@ void ComakTarget::setParameterBounds(double scale) {
         upper_bounds(p) = max_value;
         p++;
     }
+
     for (int i = 0; i < _nNonMuscleActuators; ++i) {
         ScalarActuator &actuator = _model->updComponent<ScalarActuator>(_non_muscle_actuator_path[i]);
 
@@ -602,18 +602,8 @@ void ComakTarget::setParameterBounds(double scale) {
 
     for (int j = 0; j < _nSecondaryCoord; j++) {
         Coordinate& coord = _model->updComponent<Coordinate>(_secondary_coords[j]);
-        if (coord.getMotionType() == Coordinate::MotionType::Rotational) {
-            lower_bounds(p) = _init_parameters[p] -_max_change_rotation*scale;
-            upper_bounds(p) = _init_parameters[p] + _max_change_rotation*scale;
-        }
-        else if (coord.getMotionType() == Coordinate::MotionType::Translational) {
-            lower_bounds(p) = _init_parameters[p] -_max_change_translation*scale;
-            upper_bounds(p) = _init_parameters[p] + _max_change_translation*scale;
-        }
-        else {
-            lower_bounds(p) = _init_parameters[p] -_max_change_translation*scale;
-            upper_bounds(p) = _init_parameters[p] + _max_change_translation*scale;
-        }
+            lower_bounds(p) = _init_parameters[p] - _max_change[j] * scale;
+            upper_bounds(p) = _init_parameters[p] + _max_change[j] * scale;
         p++;
     }
     setParameterLimits(lower_bounds, upper_bounds);

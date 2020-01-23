@@ -73,12 +73,8 @@ public:
 
     }
 
-    void  setMaxChangeRotation(double max_change_rotation) {
-        _max_change_rotation = max_change_rotation;
-    }
-        
-    void setMaxChangeTranslation(double max_change_translation) {
-        _max_change_translation = max_change_translation;
+    void setMaxChange(SimTK::Vector max_change) {
+        _max_change = max_change;
     }
         
     void setUdotTolerance(double udot_tolerance) {
@@ -185,8 +181,7 @@ private:
 
 
 
-    double _max_change_rotation;
-    double _max_change_translation;
+    SimTK::Vector _max_change;
     double _udot_tolerance;
     double _unit_udot_epsilon;
     double _dt;
