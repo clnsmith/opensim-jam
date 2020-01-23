@@ -1,40 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <OpenSimDocument Version="40000">
 	<COMAKInverseKinematicsTool>
-		<!--Location of model to use in COMAK simulation.-->
+		<!--Path to .osim model file.-->
 		<model_file>../../../models/lenhart2015/lenhart2015.osim</model_file>
 		<!--Path to directory to write output results.-->
-		<results_dir>../results/comak-inverse-kinematics</results_dir>
+		<results_directory>../results/comak-inverse-kinematics</results_directory>
 		<!--Prefix to all results files names.-->
 		<results_prefix>walking</results_prefix>
-		<!--Use SimTK visualizer to display simulations in progress.-->
-		<use_visualizer>true</use_visualizer>
-		<!--Perform forward simulation where secondary_coupled_coord is prescribed and secondardy coordinates are unconstrained to find constraint functions for IK.-->
+		<!--Perform forward simulation where secondary_coupled_coordinate is prescribed and secondardy coordinates are unconstrained to generate the coupled constraint functions for the seconday coordinates for inverse kinematics.The default value is true.-->
 		<perform_secondary_constraint_sim>true</perform_secondary_constraint_sim>
-		<!--List the Secondary Coordinates in the model.-->
+		<!--List of paths to the Secondary Coordinates in the model.-->
 		<secondary_coordinates>/jointset/knee_r/knee_add_r /jointset/knee_r/knee_rot_r /jointset/knee_r/knee_tx_r /jointset/knee_r/knee_ty_r /jointset/knee_r/knee_tz_r /jointset/pf_r/pf_flex_r /jointset/pf_r/pf_rot_r /jointset/pf_r/pf_tilt_r /jointset/pf_r/pf_tx_r /jointset/pf_r/pf_ty_r /jointset/pf_r/pf_tz_r</secondary_coordinates>
-		<!--Name of coordinate to prescribe in simulation.-->
-		<secondary_coupled_coord>/jointset/knee_r/knee_flex_r</secondary_coupled_coord>
-		<!--Initial settle period where secondary_coupled_coord is locked and secondary coords settle.-->
+		<!--Path to the coordinate to prescribe in secondary_constraint_simulation. In inverse kinematics, secondary_coupled_coord will be used as the independent_coordinate_name for the CoordinateCouplerConstraints for all secondary coordinates. -->
+		<secondary_coupled_coordinate>/jointset/knee_r/knee_flex_r</secondary_coupled_coordinate>
+		<!--Duration of the initial settle period where the secondary_coupled_coordinate is locked and secondary coordinates settle into equilibrium.The default value is 1.0 seconds.-->
 		<secondary_constraint_sim_settle_time>0.5</secondary_constraint_sim_settle_time>
-		<!--Length of time to linearly prescribe secondary_couple_coord through the start and end value.-->
+		<!--The duration of the simulation phase where the secondary_coupled_coord is linearly prescribed from the secondary_coupled_coordinate_start_value and secondary_coupled_coordinate_stop_value.-->
 		<secondary_constraint_sim_time>2.0</secondary_constraint_sim_time>
-		<!--Initial value for secondary_coupled_coord. In degrees for rotational coordinates.-->
-		<secondary_coupled_coord_start_value>0</secondary_coupled_coord_start_value>
-		<!--Final value for secondary_coupled_coord. In degrees for rotational coordinates.-->
-		<secondary_coupled_coord_stop_value>120</secondary_coupled_coord_stop_value>
-		<!--Integrator tolerance for forward simulation.-->
-		<secondary_constraint_sim_integrator_accuracy>0.00001</secondary_constraint_sim_integrator_accuracy>
-		<!--Integrator tolerance for forward simulation.-->
-		<secondary_constraint_sim_damping_multiplier>1</secondary_constraint_sim_damping_multiplier>
-		<!--Print results .sto file for secondary_constraint_sim-->
-		<print_secondary_constraint_sim_results>true</print_secondary_constraint_sim_results>
-		<!--Path to file where secondary constraint functions are saved.-->
-		<secondary_constraint_function_file>../results/comak-inverse-kinematics/secondary_constraint_functions.xml</secondary_constraint_function_file>
-		<!--Perform Inverse Kinematics-->
+		<!--Initial Coordinate value for the secondary_coupled_coordinate in the secondary_constraint_sim. The units are in meters for translational coordinates and degrees for rotational coordinates. The default value is 0.0.-->
+		<secondary_coupled_coordinate_start_value>0</secondary_coupled_coordinate_start_value>
+		<!--Initial Coordinate value for the secondary_coupled_coordinate in the secondary_constraint_sim. The units are in meters for translational coordinates and degrees for rotational coordinates. The default value is 0.0.-->
+		<secondary_coupled_coordinate_stop_value>120</secondary_coupled_coordinate_stop_value>
+		<!--Integrator tolerance for the forward simulation.The default value is 1e-6.-->
+		<secondary_constraint_sim_integrator_accuracy>1e-6</secondary_constraint_sim_integrator_accuracy>
+		<!--Name for .xml results file where secondary constraint functions will be saved. The default value is 'secondary_coordinate_constraint_functions.xml'.-->
+		<secondary_constraint_function_file>secondary_coordinate_constraint_functions.xml</secondary_constraint_function_file>
+		<!--Print model states to a .sto file for secondary_constraint_sim. The default value is false.-->
+		<print_secondary_constraint_sim_results>false</print_secondary_constraint_sim_results>
+		<!--Perform Inverse Kinematics where CoordinateCouplerConstraints are added to the model where the secondary_coordinates are coupled to the secondary_coupled_coordinate. The default value is true.-->
 		<perform_inverse_kinematics>true</perform_inverse_kinematics>
-		<!--InverseKinematicsTool that calculates the joint kinematics after secondary constraints are added to model.-->
-		<InverseKinematicsTool name="inverse_kinematics_tool">
+		<!--Print the .osim model file with added CoordinateCouplerConstraints that is used in the InverseKinematicsTool. If empty, no model file will be printed.-->
+		<constrained_model_file></constrained_model_file>
+		<!--The InverseKinematicsTool that is used to calculate the joint kinematics after CoordinateCouplerConstraints for the secondary constraints are added to model.-->
+		<InverseKinematicsTool>
 			<!--Directory used for writing results.-->
 			<results_directory>../results/comak-inverse-kinematics</results_directory>
 			<!--Directory for input files-->
@@ -340,9 +338,9 @@
 			<!--Flag indicating whether or not to report model marker locations. Note, model marker locations are expressed in Ground.-->
 			<report_marker_locations>false</report_marker_locations>
 		</InverseKinematicsTool>
-		<!--Path to output .osim file.-->
-		<ik_print_model_file></ik_print_model_file>
-		<!--Level of debug information reported (0: low, 1: medium, 2: high)-->
+		<!--Use SimTK visualizer to display the model during secondary_constraint_sim and inverse kinematics.The default value is false.-->
+		<use_visualizer>false</use_visualizer>
+		<!--Level of debug information written to the console. (0: silent). The default value is 0.-->
 		<verbose>0</verbose>
 	</COMAKInverseKinematicsTool>
 </OpenSimDocument>

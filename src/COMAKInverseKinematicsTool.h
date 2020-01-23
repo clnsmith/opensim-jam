@@ -41,30 +41,95 @@ class OSIMPLUGIN_API COMAKInverseKinematicsTool : public Object {
     OpenSim_DECLARE_CONCRETE_OBJECT(COMAKInverseKinematicsTool, Object)
 
 public:
-    OpenSim_DECLARE_PROPERTY(model_file, std::string, "Location of model to use in COMAK simulation.")
-    OpenSim_DECLARE_PROPERTY(results_dir, std::string, "Path to directory to write output results.")
-    OpenSim_DECLARE_PROPERTY(results_prefix, std::string, "Prefix to all results files names.")
-    OpenSim_DECLARE_PROPERTY(use_visualizer, bool, "Use SimTK visualizer to display simulations in progress.")
+    OpenSim_DECLARE_PROPERTY(model_file, std::string, 
+        "Path to .osim model file.")
 
+    OpenSim_DECLARE_PROPERTY(results_directory, std::string,
+        "Path to directory to write output results.")
+
+    OpenSim_DECLARE_PROPERTY(results_prefix, std::string, 
+        "Prefix to all results files names.")
 
     OpenSim_DECLARE_PROPERTY(perform_secondary_constraint_sim, bool,
-        "Perform forward simulation where secondary_coupled_coord is prescribed and secondardy coordinates are unconstrained to find constraint functions for IK.")
-    OpenSim_DECLARE_LIST_PROPERTY(secondary_coordinates, std::string, "List the Secondary Coordinates in the model.")
-    OpenSim_DECLARE_OPTIONAL_PROPERTY(secondary_coupled_coord, std::string, "Name of coordinate to prescribe in simulation.")
-    OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_settle_time, double, "Initial settle period where secondary_coupled_coord is locked and secondary coords settle.")
-    OpenSim_DECLARE_PROPERTY(secondary_coupled_coord_start_value, double, "Initial value for secondary_coupled_coord. In degrees for rotational coordinates.")
-    OpenSim_DECLARE_PROPERTY(secondary_coupled_coord_stop_value, double, "Final value for secondary_coupled_coord. In degrees for rotational coordinates.")
-    OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_time, double, "Length of time to linearly prescribe secondary_couple_coord through the start and end value.")
-    OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_integrator_accuracy, double, "Integrator tolerance for forward simulation.")
-    OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_damping_multiplier, double, "Integrator tolerance for forward simulation.")
-    OpenSim_DECLARE_PROPERTY(print_secondary_constraint_sim_results, bool, "Print results .sto file for secondary_constraint_sim")
-    OpenSim_DECLARE_PROPERTY(secondary_constraint_function_file, std::string, "Path to file where secondary constraint functions are saved.")
+        "Perform forward simulation where secondary_coupled_coordinate is "
+        "prescribed and secondardy coordinates are unconstrained to "
+        "generate the coupled constraint functions for the "
+        "seconday coordinates for inverse kinematics."
+        "The default value is true.")
+ 
+    OpenSim_DECLARE_LIST_PROPERTY(secondary_coordinates, std::string, 
+        "List of paths to the Secondary Coordinates in the model.")
 
-    OpenSim_DECLARE_PROPERTY(perform_inverse_kinematics, bool, "Perform Inverse Kinematics")
-    OpenSim_DECLARE_PROPERTY(inverse_kinematics_tool, InverseKinematicsTool, "InverseKinematicsTool that calculates the joint kinematics after secondary constraints are added to model.")
+    OpenSim_DECLARE_OPTIONAL_PROPERTY(secondary_coupled_coordinate, std::string, 
+        "Path to the coordinate to prescribe in "
+        "secondary_constraint_simulation. In inverse kinematics, "
+        "secondary_coupled_coord will be used as the "
+        "independent_coordinate_name for the CoordinateCouplerConstraints "
+        "for all secondary coordinates. ")
 
-    OpenSim_DECLARE_OPTIONAL_PROPERTY(ik_print_model_file, std::string, "Path to output .osim file.")
-    OpenSim_DECLARE_PROPERTY(verbose, int, "Level of debug information reported (0: low, 1: medium, 2: high)")
+    OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_settle_time, double, 
+        "Duration of the initial settle period where the "
+        "secondary_coupled_coordinate is locked and secondary coordinates "
+        "settle into equilibrium."
+        "The default value is 1.0 seconds.")
+
+    OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_time, double, 
+        "The duration of the simulation phase where the "
+        "secondary_coupled_coord is linearly prescribed from the "
+        "secondary_coupled_coordinate_start_value and "
+        "secondary_coupled_coordinate_stop_value.")
+
+    OpenSim_DECLARE_PROPERTY(secondary_coupled_coordinate_start_value, double, 
+        "Initial Coordinate value for the secondary_coupled_coordinate in the "
+        "secondary_constraint_sim. The units are in meters for translational "
+        "coordinates and degrees for rotational coordinates. "
+        "The default value is 0.0.")
+
+    OpenSim_DECLARE_PROPERTY(secondary_coupled_coordinate_stop_value, double, 
+        "Initial Coordinate value for the secondary_coupled_coordinate in the "
+        "secondary_constraint_sim. The units are in meters for translational "
+        "coordinates and degrees for rotational coordinates. "
+        "The default value is 0.0.")
+
+    OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_integrator_accuracy, double, 
+        "Integrator tolerance for the forward simulation."
+        "The default value is 1e-6.")
+
+     OpenSim_DECLARE_PROPERTY(secondary_constraint_function_file, std::string, 
+        "Name for .xml results file where secondary constraint functions "
+        "will be saved. "
+        "The default value is "
+        "'secondary_coordinate_constraint_functions.xml'.")
+
+    OpenSim_DECLARE_PROPERTY(print_secondary_constraint_sim_results, bool, 
+        "Print model states to a .sto file for secondary_constraint_sim. "
+        "The default value is false.")
+
+    OpenSim_DECLARE_PROPERTY(perform_inverse_kinematics, bool, 
+        "Perform Inverse Kinematics where CoordinateCouplerConstraints are "
+        "added to the model where the secondary_coordinates are coupled to "
+        "the secondary_coupled_coordinate. "
+        "The default value is true.")
+
+    OpenSim_DECLARE_UNNAMED_PROPERTY(InverseKinematicsTool, 
+        "The InverseKinematicsTool that is used to calculate the joint "
+        "kinematics after CoordinateCouplerConstraints for the secondary "
+        "constraints are added to model.")
+
+    OpenSim_DECLARE_PROPERTY(constrained_model_file, std::string, 
+        "Print the .osim model file with added CoordinateCouplerConstraints "
+        "that is used in the InverseKinematicsTool. If empty, no model file "
+        "will be printed.")
+    
+    OpenSim_DECLARE_PROPERTY(use_visualizer, bool,
+        "Use SimTK visualizer to display the model during "
+        "secondary_constraint_sim and inverse kinematics."
+        "The default value is false.")
+
+    OpenSim_DECLARE_PROPERTY(verbose, int, 
+        "Level of debug information written to the console. "
+        "(0: silent). "
+        "The default value is 0.")
 
 
 
