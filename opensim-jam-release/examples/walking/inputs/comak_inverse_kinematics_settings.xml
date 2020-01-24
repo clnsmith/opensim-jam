@@ -24,7 +24,7 @@
 		<!--Integrator tolerance for the forward simulation.The default value is 1e-6.-->
 		<secondary_constraint_sim_integrator_accuracy>1e-6</secondary_constraint_sim_integrator_accuracy>
 		<!--Name for .xml results file where secondary constraint functions will be saved. The default value is 'secondary_coordinate_constraint_functions.xml'.-->
-		<secondary_constraint_function_file>secondary_coordinate_constraint_functions.xml</secondary_constraint_function_file>
+		<secondary_constraint_function_file>../results/comak-inverse-kinematics/secondary_coordinate_constraint_functions.xml</secondary_constraint_function_file>
 		<!--Print model states to a .sto file for secondary_constraint_sim. The default value is false.-->
 		<print_secondary_constraint_sim_results>true</print_secondary_constraint_sim_results>
 		<!--Perform Inverse Kinematics where CoordinateCouplerConstraints are added to the model where the secondary_coordinates are coupled to the secondary_coupled_coordinate. The default value is true.-->
