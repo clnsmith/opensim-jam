@@ -16,7 +16,7 @@
 		<!--Duration of the initial settle period where the secondary_coupled_coordinate is locked and secondary coordinates settle into equilibrium.The default value is 1.0 seconds.-->
 		<secondary_constraint_sim_settle_time>0.5</secondary_constraint_sim_settle_time>
 		<!--The duration of the simulation phase where the secondary_coupled_coord is linearly prescribed from the secondary_coupled_coordinate_start_value and secondary_coupled_coordinate_stop_value.-->
-		<secondary_constraint_sim_time>2.0</secondary_constraint_sim_time>
+		<secondary_constraint_sim_sweep_time>2.0</secondary_constraint_sim_sweep_time>
 		<!--Initial Coordinate value for the secondary_coupled_coordinate in the secondary_constraint_sim. The units are in meters for translational coordinates and degrees for rotational coordinates. The default value is 0.0.-->
 		<secondary_coupled_coordinate_start_value>0</secondary_coupled_coordinate_start_value>
 		<!--Initial Coordinate value for the secondary_coupled_coordinate in the secondary_constraint_sim. The units are in meters for translational coordinates and degrees for rotational coordinates. The default value is 0.0.-->
@@ -26,7 +26,7 @@
 		<!--Name for .xml results file where secondary constraint functions will be saved. The default value is 'secondary_coordinate_constraint_functions.xml'.-->
 		<secondary_constraint_function_file>secondary_coordinate_constraint_functions.xml</secondary_constraint_function_file>
 		<!--Print model states to a .sto file for secondary_constraint_sim. The default value is false.-->
-		<print_secondary_constraint_sim_results>false</print_secondary_constraint_sim_results>
+		<print_secondary_constraint_sim_results>true</print_secondary_constraint_sim_results>
 		<!--Perform Inverse Kinematics where CoordinateCouplerConstraints are added to the model where the secondary_coordinates are coupled to the secondary_coupled_coordinate. The default value is true.-->
 		<perform_inverse_kinematics>true</perform_inverse_kinematics>
 		<!--Print the .osim model file with added CoordinateCouplerConstraints that is used in the InverseKinematicsTool. If empty, no model file will be printed.-->

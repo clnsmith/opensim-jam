@@ -62,10 +62,11 @@ void COMAKInverseKinematicsTool::constructProperties()
     constructProperty_secondary_coordinates();
     constructProperty_secondary_coupled_coordinate("");
     constructProperty_secondary_constraint_sim_settle_time(1.0);
-    constructProperty_secondary_constraint_sim_time(1.0);
+    constructProperty_secondary_constraint_sim_sweep_time(1.0);
     constructProperty_secondary_coupled_coordinate_start_value(0.0);
     constructProperty_secondary_coupled_coordinate_stop_value(0.0);
     constructProperty_secondary_constraint_sim_integrator_accuracy(1e-6);
+    constructProperty_secondary_constraint_sim_internal_step_limit(-1);
     constructProperty_secondary_constraint_function_file(
         "secondary_coordinate_constraint_functions.xml");
     constructProperty_print_secondary_constraint_sim_results(false);
@@ -80,6 +81,8 @@ void COMAKInverseKinematicsTool::constructProperties()
 void COMAKInverseKinematicsTool::initialize()
 {
     IO::makeDir(get_results_directory());
+    OPENSIM_THROW_IF(errno == ENOENT, Exception, "Could not create " + 
+        get_results_directory());
 
     _model = Model(get_model_file());
 
@@ -91,8 +94,7 @@ void COMAKInverseKinematicsTool::initialize()
     
     _model.initSystem();
 
-    //Verfiy Coordinate Properties
-    
+    //Verfiy Coordinate Properties    
     for (Coordinate& coord : _model.updComponentList<Coordinate>()) {
         std::string name = coord.getName();
         std::string path = coord.getAbsolutePathString();
@@ -168,7 +170,7 @@ void COMAKInverseKinematicsTool::initialize()
         get_secondary_constraint_sim_settle_time()<< std::endl;
 
     std::cout << "Sweep Time: " <<
-        get_secondary_constraint_sim_time() << std::endl;
+        get_secondary_constraint_sim_sweep_time() << std::endl;
 
     std::cout << "Sweep secondary_coupled_coordinate start value: " <<
         get_secondary_coupled_coordinate_start_value() << std::endl;
@@ -204,7 +206,7 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
 
     //Setup Prescribed Function
     double start_time = get_secondary_constraint_sim_settle_time();
-    double stop_time = start_time + get_secondary_constraint_sim_time();
+    double stop_time = start_time + get_secondary_constraint_sim_sweep_time();
     double t[] = { 0, start_time, stop_time };
 
     double start_value;
@@ -254,13 +256,13 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
     model.setUseVisualizer(get_use_visualizer());
     SimTK::State state = model.initSystem();
     model.equilibrateMuscles(state);
-        //Prescribe Muscle Force
+
+    //Prescribe Muscle Force
     for (Muscle& msl : model.updComponentList<Muscle>()) {
         msl.overrideActuation(state, true);
         double value = msl.getMaxIsometricForce()*0.01;
         msl.setOverrideActuation(state, value);
     }
-
 
     if (get_use_visualizer()) {
         SimTK::Visualizer& viz = model.updVisualizer().updSimbodyVisualizer();
@@ -287,7 +289,10 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
 
     SimTK::CPodesIntegrator integrator(model.getSystem(), SimTK::CPodes::BDF, SimTK::CPodes::Newton);
     integrator.setAccuracy(get_secondary_constraint_sim_integrator_accuracy());
-    
+    if (get_secondary_constraint_sim_internal_step_limit() != -1) {
+        integrator.setInternalStepLimit(
+            get_secondary_constraint_sim_internal_step_limit());
+    }
     SimTK::TimeStepper timestepper(model.getSystem(), integrator);
 
     timestepper.initialize(state);
@@ -372,7 +377,8 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
     }
 
     //Print Secondardy Constraint Functions to file
-    _secondary_constraint_functions.print(get_secondary_constraint_function_file());
+    _secondary_constraint_functions.print(
+        get_results_directory() + get_secondary_constraint_function_file());
 
     //Write Outputs
     if (get_print_secondary_constraint_sim_results()) {

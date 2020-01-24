@@ -27,8 +27,8 @@ namespace OpenSim {
 //=============================================================================
 //=============================================================================
 /**
- * This tool performs enables inverse kinematics to be performed for models 
- that include joints where some coordinates (degrees of freedom) can be 
+ This tool enables inverse kinematics to be performed for models 
+ that include joints where some Coordinates (degrees of freedom) can be 
  accurately determined from motion capture (marker_determined) and others 
  cannot (secondary). A forward dynamic simulation is performed to obstrain a 
  set of constraint functions to couple the secondary coordinates to specific 
@@ -73,11 +73,11 @@ public:
         "settle into equilibrium."
         "The default value is 1.0 seconds.")
 
-    OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_time, double, 
+    OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_sweep_time, double, 
         "The duration of the simulation phase where the "
-        "secondary_coupled_coord is linearly prescribed from the "
-        "secondary_coupled_coordinate_start_value and "
-        "secondary_coupled_coordinate_stop_value.")
+        "secondary_coupled_coord is swept (linearly prescribed) through the "
+        "range of motion from the  secondary_coupled_coordinate_start_value "
+        "to the secondary_coupled_coordinate_stop_value.")
 
     OpenSim_DECLARE_PROPERTY(secondary_coupled_coordinate_start_value, double, 
         "Initial Coordinate value for the secondary_coupled_coordinate in the "
@@ -91,9 +91,15 @@ public:
         "coordinates and degrees for rotational coordinates. "
         "The default value is 0.0.")
 
-    OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_integrator_accuracy, double, 
+    OpenSim_DECLARE_PROPERTY(
+        secondary_constraint_sim_integrator_accuracy, double, 
         "Integrator tolerance for the forward simulation."
         "The default value is 1e-6.")
+
+    OpenSim_DECLARE_PROPERTY(
+        secondary_constraint_sim_internal_step_limit, int,
+        "Limit on the number of internal steps that can be taken by BDF "
+        "integrator. If -1, then there is no limit. The Default value is -1")
 
      OpenSim_DECLARE_PROPERTY(secondary_constraint_function_file, std::string, 
         "Name for .xml results file where secondary constraint functions "

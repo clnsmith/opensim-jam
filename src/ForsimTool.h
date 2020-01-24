@@ -81,7 +81,7 @@ public:
     OpenSim_DECLARE_PROPERTY(integrator_accuracy, double,
         "Accuracy setting for BDF integrator. The Default value is 1e-6")
 
-    OpenSim_DECLARE_PROPERTY(internal_step_limit, double,
+    OpenSim_DECLARE_PROPERTY(internal_step_limit, int,
         "Limit on the number of internal steps that can be taken by BDF "
         "integrator. If -1, then there is no limit. The Default value is -1")
 
