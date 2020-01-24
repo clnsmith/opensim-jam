@@ -1,7 +1,10 @@
 # OpenSim-JAM
-Joint and Articular Mechanics (JAM)
+_A framework to simulate **J**oint and **A**rticular **M**echanics in OpenSim._
+
+_Author: Colin Smith_
+
 ## Overview
-This is a collection of force component plugins, models, and executables (tools) are designed to enable OpenSim musculoskeletal simulations that include 6 degree of freedom joint mechanics with explicit representations of articular contact and ligament structures. This repository contains the [source code](src), [build instructions](), and [documentation]() for this package. Additionally, [JAM_RELEASE]() provides a folder that is packaged for release for public use. This includes examples for visualizing measured kinematics, as well as simulating clinical evaluations, cadaver experiments, and functional movements such as walking. 
+This is a collection of force component plugins, models, and executables (tools) are designed to enable OpenSim musculoskeletal simulations that include 6 degree of freedom joint mechanics with explicit representations of articular contact and ligament structures.  This includes examples for visualizing measured kinematics, as well as simulating clinical evaluations, cadaver experiments, and functional movements such as walking. 
 
 ### Blankevoort1991Ligament
 This one dimensional path geometry acts as a spring-damper to represent ligament fibers. The force strain relationship includes a nonlinear toe region at low strains and a linear region at high strains to represent the uncrimping and stretching of collagen fibers within a ligament. [Blakevoort1991Ligament Description](documentation/doxygen/Blakevoort1991Ligament_doxygen.pdf)
@@ -33,12 +36,6 @@ Similar to the forward simulation tool in the OpenSim gui, but the interface is 
 ### COMAK
 The **C**oncurrent **O**ptimization of **M**uscle **A**ctivations and **K**inematics simulation tool enables the calculation of muscle forces and joint mechanics during dynamic movements. In early publications we also called this algorithim Enhanced Static Optimization before we came up with the clearly superior COMAK acronym. 
 
-**Relavent Publications**\
-Brandon, S. C., Smith, C. R., & Thelen, D. G. (2018). Simulation of soft tissue loading from observed movement dynamics. Handbook of Human Motion, 395-428.
-
-Smith, C. R., Brandon, S. C., & Thelen, D. G. (2019). Can altered neuromuscular coordination restore soft tissue loading patterns in anterior cruciate ligament and menisci deficient knees during walking?. Journal of biomechanics, 82, 124-133.
-
-
 ### Joint Mechanics
 This tool enables detailed post-hoc analysis of simulations involving joint mechanics. It can be used to generate .vtp files to visualize simulation results in Paraview, or .h5 files which are binary files that can store the large quantites of contact data (multiple calculated values for each triange face) in compact files that can be quickly read by MATLAB, Python, or HDF View (https://www.hdfgroup.org/downloads/hdfview/)
 
@@ -66,8 +63,8 @@ Use the COMAK tool to predict muscle forces, ligament forces, cartilage contact 
 
 ## Software:
 
-### [OpenSim 4.0](https://opensim.stanford.edu/)
-Needed for the executables to link against and to visualize models and simulation results.
+### [OpenSim 4.0 GUI](https://opensim.stanford.edu/)
+The OpenSim GUI is helpful for visualizing models and simulation results. The tool executables 
 
 ### MATLAB
 
