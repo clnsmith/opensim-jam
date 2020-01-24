@@ -378,7 +378,7 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
 
     //Print Secondardy Constraint Functions to file
     _secondary_constraint_functions.print(
-        get_results_directory() + get_secondary_constraint_function_file());
+        get_results_directory() + "/" + get_secondary_constraint_function_file());
 
     //Write Outputs
     if (get_print_secondary_constraint_sim_results()) {
