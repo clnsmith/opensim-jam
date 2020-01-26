@@ -5,6 +5,7 @@ The OpenSim GUI offers the easiest way to visualize models including OpenSim-JAM
 
 ## Load Plugin 
 [OpenSim Documentation](https://simtk-confluence.stanford.edu/display/OpenSim/Using+Plugins)
+
 Note: the distributed plugin can only be loaded into the OpenSim 4.0 GUI on windows. 
 
 1) Create a folder in the OpenSim 4.0 install directory (default C:\OpenSim 4.0) named 'plugins'. Copy the [jam_plugin.dll](../bin/jam_plugin.dll) file to this location. 
@@ -70,4 +71,4 @@ The JointMechanicsTool can read in simulation results (.sto) and generate .vtp f
 ## Saving screen shots and animiations
 
 # SimTK Visualizer
-
+In the .xml settings file for each of the OpenSim-Jam tools there is a <use_visualizer> property that will enable using the SimTK::Visualizer to view the model in realtime. 
