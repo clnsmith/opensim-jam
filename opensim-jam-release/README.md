@@ -7,11 +7,19 @@ _Author: Colin Smith_
 OpenSim JAM is a collection of force component plugins, models, and executables (tools) designed to enable OpenSim musculoskeletal simulations that include 6 degree of freedom joint mechanics with explicit representations of articular contact and ligament structures. A series of [examples](#examples) are available to demonstrate how to use these fools to perform forward simulations of joint mechanics, and simulate walking using the Concurrent Optimization of Muscle Activations and Kinematics (COMAK) algorithm. The new OpenSim Components, models, and simulation tools are described below: 
 
 ## Components
-### [Blankevoort1991Ligament](../src/Blankevoort1991Ligament.h)
-This one dimensional path geometry acts as a spring-damper to represent ligament fibers. The force strain relationship includes a nonlinear toe region at low strains and a linear region at high strains to represent the uncrimping and stretching of collagen fibers within a ligament. Further details of the implementation and how to use the component are available in the [Blakevoort1991Ligament Description](documentation/doxygen/Blakevoort1991Ligament_doxygen.pdf)
+### Blankevoort1991Ligament
+This one dimensional path geometry acts as a spring-damper to represent ligament fibers. The force strain relationship includes a nonlinear toe region at low strains and a linear region at high strains to represent the uncrimping and stretching of collagen fibers within a ligament. 
 
-### [Smith2018ArticularContactForce](../src/Smith2018ArticularContactForce.h) and [Smith2018ContactMesh](../src/Smith2018ContactMesh.h)
+The Blankevoort1991Ligament is implementated in [Blankevoort1991Ligament.h](../src/Blankevoort1991Ligament.h) and [Blankevoort1991Ligament.cpp](../src/Blankevoort1991Ligament.cpp). Further description is available in the [Blakevoort1991Ligament Description](./documentation/doxygen/Blakevoort1991Ligament_doxygen.pdf)
+
+
+
+### Smith2018ArticularContactForce and Smith2018ContactMesh
 This force component represents articular contact between cartilage, mensici, or artifical components using triangular mesh representations of the surface geometries and an elastic foundation model to compute local contact pressures. Further details on the implementation and how to use the component are available in the [Smith2018ArticularContactForce Description](documentation/doxygen/Smith2018ArticularContactForce_doxygen.pdf) and [Smith2018ContactMesh_Description](documentation/doxygen/Smith2018ContactMesh_doxygen.pdf)
+
+The Smith2018ArticularContactForce is implementated in [Smith2018ArticularContactForce.h](../src/Smith2018ArticularContactForce.h) and [Smith2018ArticularContactForce.cpp](../src/Smith2018ArticularContactForce.cpp). Further description is available in the [Smith2018ArticularContactForce Description](./documentation/doxygen/Smith2018ArticularContactForce_doxygen.pdf).
+
+The Smith2018ContactMesh is implementated in [Smith2018ContactMesh.h](../src/Smith2018ContactMesh.h) and [Smith2018ContactMesh.cpp](../src/Smith2018ContactMesh.cpp). Further description is available in the [Smith2018ContactMesh Description](./documentation/doxygen/Smith2018ContactMesh_doxygen.pdf).
 
 ## Models
 ### [Lenhart2015 Model](./models/lenhart2015)
@@ -19,17 +27,25 @@ This force component represents articular contact between cartilage, mensici, or
 
 <img src="https://github.com/clnsmith/opensim-jam/blob/master/graphics/lenhart2015_fullbody.JPG" height="400"><img src="https://github.com/clnsmith/opensim-jam/blob/master/graphics/lenhart2015_knee.JPG" height="400">
 
-A multibody knee model was constructed based on magnetic resonance images from a healthy young adult female. The bones, ligaments, and cartilage were segmented from different image sets that were optimized for the discerning the relavent structures and registered. This model includes the tibiofemoral and patellofemoral joints as 6 DOF joints. Tibiofemoral and patellofemoral contact are represented using the Smith2018SmithArticularContactForce. Knee ligaments and passive structures are represented using bundles of Blankevoort1991Ligaments. See publication for further details of model construction. 
+The Lenhart2015 model is an OpenSim implementation of the model described in the paper above. A multibody knee model was constructed based on magnetic resonance images from a healthy young adult female. The bones, ligaments, and cartilage were segmented from different image sets that were optimized for the discerning the relavent structures and registered together. The lenhart2015 model includes the tibiofemoral and patellofemoral joints as 6 DOF joints. Tibiofemoral and patellofemoral articular contact are represented using Smith2018SmithArticularContactForce components and damping is represented using SpringGeneralizedForce components acting on each knee coodinate. Knee ligaments and passive structures are represented using bundles of Blankevoort1991Ligaments. See publication for further details of model construction. 
 
 ## Simulation Tools
 ### Forsim 
 The ForsimTool enables forward dynamic simulations of joint mechanics to be performed. Practically, this allows simulations of cadaver experiments, passive clinical examinations, and simulations where the muscle forces or excitations are known inputs. Fundamentally, it is similar to the ForwardTool in the OpenSim GUI, but the interface is designed for performing forward simulations involving articular contact. The input files can define the muscle and actuator controls (excitations), activations, or forces vs time, external loads applied to the model, and the Coordinate values vs time for Prescribed Coordinates. The forsim tool uses an implicit integrator (SimTK::CPODES::BDF), which gives far superior performance for simulations that involve contact compared to the explicit integrators used by the existing OpenSim ForwardTool. 
 
-### COMAK
+The c++ implementation of the ForsimTool is located at [../src/ForsimTool.h](../src/ForsimTool.h) and [../src/ForsimTool.cpp](../src/ForsimTool.cpp). Further description is available in the [Smith2018ArticularContactForce Description](./documentation/doxygen/ForsimTool_doxygen.pdf).
+
+### COMAKInverseKinematics and COMAK
 The **C**oncurrent **O**ptimization of **M**uscle **A**ctivations and **K**inematics (COMAK) algorithm enables the calculation of muscle forces and detailed joint mechanics during dynamic movements. 
+
+The c++ implementation of the COMAKInverseKinematicsTool is located at [../src/COMAKInverseKinematicsTool.h](../src/COMAKInverseKinematicsTool.h) and [../src/COMAKInverseKinematicsTool.cpp](../src/COMAKInverseKinematicsTool.cpp). Further description is available in the [COMAKInverseKinematicsTool Description](./documentation/doxygen/COMAKInverseKinematicsTool_doxygen.pdf).
+
+The c++ implementation of the COMAKTool is located at [../src/COMAKTool.h](../src/COMAKTool.h) and [../src/COMAKTool.cpp](../src/COMAKTool.cpp). Further description is available in the [COMAKTool Description](./documentation/doxygen/COMAKTool_doxygen.pdf).
 
 ### Joint Mechanics
 The JointMechanicsTool enables detailed post-hoc analysis of simulations or measurments of joint mechanics. It can be used to generate .vtp files to visualize simulation results in Paraview, or .h5 files which are binary files that can store the large quantites of contact data (multiple calculated values for each triange face) in compact files that can be quickly read by MATLAB, Python, or [HDF View](https://www.hdfgroup.org/downloads/hdfview/)
+
+The c++ implementation of the JointMechanicsTool is located at [../src/JointMechanicsTool.h](../src/JointMechanicsTool.h) and [../src/JointMechanicsTool.cpp](../src/JointMechanicsTool.cpp). Further description is available in the [JointMechanicsTool Description](./documentation/doxygen/JointMechanicsToolTool_doxygen.pdf).
 
 ## Distribution
 ### OpenSim-JAM Plugin
@@ -38,7 +54,7 @@ An OpenSim Plugin containing the OpenSim-JAM Components and Tools has been compi
 The plugin can be used with the OpenSim 4.0 GUI, MATLAB/Python, and commmand line interfaces ([instructions](https://simtk-confluence.stanford.edu/display/OpenSim/Using+Plugins)).
 
 ### Executables 
-Each of the [Simulation Tools](#simulation-tools) have been compiled as command line executables (.exe) for windows. This allows users to define simulation settings in a .xml file and organize and perform simulations using windows .cmd files. The compiled executable files are located at [./bin/](./bin)
+Each of the [Simulation Tools](#simulation-tools) have been compiled as command line executables (.exe) for windows. This allows users to define simulation settings in a .xml file and organize and perform simulations using windows .cmd files. The compiled executable files are located at [./bin/](./bin) and the c++ source code is located at [../src/cmd_tools](../src/cmd_tools)
 
 Each executable can be called in the windows command line using the following syntax:
 
@@ -77,6 +93,9 @@ The OpenSim GUI is helpful for visualizing models and simulation results. Instru
 
 ### [MATLAB](https://www.mathworks.com/products/matlab.html)
 MATLAB is used in the examples to generate input files and process simulation results. You will need to have the [OpenSim 4.0 - MATLAB scripting interface](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+with+Matlab) setup in order to generate the example input files. [Python](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+in+Python) is an open-source alternative that can also be used for this purpose, but you will need to tranlsate the MATLAB scripts. 
+
+### Text Editor
+A text editor that is capable of syntax highlighting and code folding is nice for viewing the .osim model files, as well as the .cmd scripts and .xml settings files in the examples. [Visual Studio Code](https://code.visualstudio.com/) is my personal choice at the moment, but many OpenSim users also like [Notepad++](https://notepad-plus-plus.org/).
 
 ### [Paraview](https://www.paraview.org/)
 Paraview is used to for high quality rendering of simulation results, visualization of contact maps. The JointMechanicsTool provides the ability to generate .vtp files that can be directly read into Paraview. 
