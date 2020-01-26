@@ -1,88 +1,58 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <OpenSimDocument Version="40000">
-    <JointMechanicsTool>
-        <!--Path to .osim file for analysis.-->
-        <model_file>../results/scale/lenhart2015_scaled_markers.osim</model_file>
-        <!--Motion file (.mot) or storage file (.sto) containing the time history of the generalized coordinates for the model.-->
-        <coordinates_file>../results/comak/walking_states.sto</coordinates_file>
-        <!--Folder where the results files are output.-->
+<JointMechanicsTool>
+        <!--Path to .osim file to use in analysis.-->
+        <model_file>../../../models/lenhart2015/lenhart2015.osim</model_file>
+        <!--Path to storage file (.sto) containing the model states vs time for the simulation to be analyzed.-->
+        <states_file>../results/comak/walking_states.sto</states_file>
+        <!--Path to folder where the results files will be written.-->
         <results_directory>../results/joint-mechanics</results_directory>
         <!--Prefix to each results file name.-->
         <results_file_basename>walking</results_file_basename>
-        <!--Time to start analysis. Set to -1 to use initial frame in coordinates_file-->
+        <!--Time to start the analysis. Set to -1 to use initial frame in states_file. The default value is -1.-->
         <start_time>-1</start_time>
-        <!--Time to stop analysis. Set to -1 to use last frame in coordinates_file-->
+        <!--Time to stop the analysis. Set to -1 to use last frame in states_file. The default value is -1.-->
         <stop_time>-1</stop_time>
-        <!--Time step size to report results, set to -1 to use steps directly from coordinates_file-->
+        <!--Time step size to report results, set to -1 to use steps directly from the states_file. The default value is 0.01.-->
         <resample_step_size>-1</resample_step_size>
-        <!--Resample to 101 equally spaced time steps. Note: If true, this overrides resample_step_size.-->
+        <!--Resample to 101 equally spaced time steps (percentage of activity cycle). Note: If true, this overrides resample_step_size. The default value is false.-->
         <normalize_to_cycle>false</normalize_to_cycle>
-        <!--Apply a 5 order smoothing spline to input coordinates, set to -1 to use raw data.NOTE: lowpass filter is NOT applied if smoothing_spline_frequency > -1-->
-        <smoothing_spline_frequency>-1</smoothing_spline_frequency>
-        <!--Order of the smoothing spline.-->
-        <smoothing_spline_order>5</smoothing_spline_order>
-        <!--Apply IIR lowpass butterworth filter the input coordinates, set to -1 to use raw data-->
+        <!--Apply IIR lowpass butterworth filter to the input Coordinate values. If set to -1, no filtering is applied. The default value is -1.-->
         <lowpass_filter_frequency>-1</lowpass_filter_frequency>
-        <!--Print a .sto file with the processed kinematics used for posing the analysis.-->
-        <print_processed_kinematcs>false</print_processed_kinematcs>
-        <!--Names of WISCO_ElasticFoundation contacts to be recorded.-->
-        <contact_names>all</contact_names>
-        <!--Include face pressure values in .h5 and .vtp files-->
-        <output_pressure>true</output_pressure>
-        <!--Include face proximity values in .h5 and .vtp files-->
-        <output_proximity>true</output_proximity>
-        <!--Format of output data 'face', 'vertex' or 'both'.-->
-        <output_data_mesh_format>face</output_data_mesh_format>
-        <!--Write .vtp files visualization.-->
+        <!--Print a .sto file with the processed (cut, resampled, normalized, and filtered) kinematics used for posing the model through out the analysis.-->
+        <print_processed_kinematics>false</print_processed_kinematics>
+        <!--Paths to Smith2018ArticularContactForce components to be recorded. Options: 'none','all', or a list of Smith2018ArticularContactForce component paths. The default value is 'all'.-->
+        <contacts>all</contacts>
+        <!--Names of Smith2018ArticularContactForce outputs that will be written to the results files. Options: 'none','all', or list of individual output names.The default value is 'all'.-->
+        <contact_outputs>all</contact_outputs>
+        <!--Names of Smith2018ArticularContactForce properties whose value will be written for each triangle in the mesh to the results files. Options: 'none','thickness','elastic modulus','poisson ratio','area' or 'all'The default value is 'none'.-->
+        <contact_mesh_properties>none</contact_mesh_properties>
+        <!--Paths of Blankevoort1991Ligament components to be recorded. Options: 'none','all', or a list of Blankevoort1991Ligament component paths. The default value is 'none'.-->
+        <ligaments>all</ligaments>
+        <!--Names of Blankevoort1991Ligament outputs that will be written to the results files. Options: 'none','all', or list of individual output names. The default value is 'all'.-->
+        <ligament_outputs>all</ligament_outputs>
+        <!--Paths to Muscle components to be recorded. Options: 'none','all', or a list of Muscle component paths. The default value is 'none'.-->
+        <muscles>all</muscles>
+        <!--Names of Muscle component outputs that will be written to the results files. Options: 'none','all', or list of individual output names. The default value is 'all'.-->
+        <muscle_outputs>all</muscle_outputs>
+        <!--Paths to the Body components that contain attached geometry Mesh components (i.e. bone meshes) to be recorded. Options: 'none','all', or a list of Frame component paths. The default value is 'none'.-->
+        <attached_geometry_bodies>all</attached_geometry_bodies>
+        <!--Body or Frame to use as origin for model motion in results files. Options: 'ground' or '/path/to/Frame-->
+        <output_origin>ground</output_origin>
+        <!--Body or Frame to use as reference frame for model motion in results files. Options: 'ground' or '/path/to/Frame' -->
+        <output_frame>ground</output_frame>
+        <!--Write .vtp files for visualization. The default value is true.-->
         <write_vtp_files>true</write_vtp_files>
-        <!--Origin for mesh motion in .vtp files.Options: 'ground' or 'body_name' for dynamic files, 'static' for the contact meshes in local reference frame.-->
-        <vtp_origin>/bodyset/femur_distal_r</vtp_origin>
-        <!--Reference frame for mesh motion in .vtp files.Options: 'ground' or 'body_name' for dynamic files, 'static' for the contact meshes in local reference frame.-->
-        <vtp_frame>/bodyset/femur_distal_r</vtp_frame>
-        <!--Generate .vtk files for attached_geometry meshes for visualization.Options: 'none','all', or a list of frame names.-->
-        <vtp_attached_geometries>/bodyset/femur_distal_r /bodyset/tibia_proximal_r /bodyset/patella_r</vtp_attached_geometries>
-        <!--Output ligament lines of action, strain, and force data to .vtp files-->
-        <vtp_ligaments>true</vtp_ligaments>
-        <!--Output muscle lines of action, strain, and force data to .vtp files-->
-        <vtp_muscles>false</vtp_muscles>
-        <!--Add cartilage thickness and material property maps to vtp files.Options: 'none','thickness','elastic modulus','poisson ratio' or 'all'-->
-        <vtp_contact_properties>none</vtp_contact_properties>
-        <!--Write detailed contact data to .h5 file-->
-        <h5_raw_contact_data>true</h5_raw_contact_data>
-        <!--Write summary statistics of contact to .h5 file.-->
-        <h5_summary_contact_data>true</h5_summary_contact_data>
-        <!--Write medial-lateral regional summary statistics to .h5 file-->
-        <h5_medial_lateral_summary>true</h5_medial_lateral_summary>
         <!--Write binary .h5 file-->
         <write_h5_file>true</write_h5_file>
         <!--Write states data to .h5 file-->
         <h5_states_data>true</h5_states_data>
         <!--Write kinematics data to .h5 file-->
         <h5_kinematics_data>true</h5_kinematics_data>
-        <!--Write muscle analysis data to .h5 file-->
-        <h5_muscle_data>true</h5_muscle_data>
-        <!--Write Blankevoort1991_Ligament data to h5 file-->
-        <h5_ligament_data>true</h5_ligament_data>
-        <!--Write transformation matrix -->
-        <write_blender_csv>false</write_blender_csv>
-        <AnalysisSet name="Analyses">
-			<objects>
-				<ForceReporter name = "ForceReporter">
-					<!--Flag (true or false) specifying whether on. True by default.-->
-					<on>true</on>
-					<!--Start time.-->
-					<start_time>-Inf</start_time>
-					<!--End time.-->
-					<end_time>Inf</end_time>
-					<!--Specifies how often to store results during a simulation. More specifically, the interval (a positive integer) specifies how many successful integration steps should be taken before results are recorded again.-->
-					<step_interval>1</step_interval>
-					<!--Flag (true or false) indicating whether the results are in degrees or not.-->
-					<in_degrees>true</in_degrees>
-					<!--Flag indicating whether to include forces due to constraints.-->
-					<include_constraint_forces>false</include_constraint_forces>
-				</ForceReporter>
-			</objects>
-			<groups />
-		</AnalysisSet>
+        <!--Analyses to be performed during forward simulation.-->
+        <AnalysisSet>
+        <objects />
+        <groups />
+        </AnalysisSet>
     </JointMechanicsTool>
 </OpenSimDocument>

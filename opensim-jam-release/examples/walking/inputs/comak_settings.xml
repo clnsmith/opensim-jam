@@ -130,11 +130,11 @@
     <!--Set the integrator accuracy for initializing forward simulation. The default value is 1e-6.-->
     <settle_accuracy>1e-5</settle_accuracy>
     <!--Print the model states during the forward simulation to a .sto file in the settle_sim_results_dir.-->
-    <print_settle_sim_results>false</print_settle_sim_results>
+    <print_settle_sim_results>true</print_settle_sim_results>
     <!--Path to the directory where the settling forward simulation results will be printed.-->
     <settle_sim_results_directory>../results/comak</settle_sim_results_directory>
     <!--Prefix to settle simulation results file names.-->
-    <settle_sim_results_prefix></settle_sim_results_prefix>
+    <settle_sim_results_prefix>walking_settle_sim</settle_sim_results_prefix>
     <!--Maximum number of COMAK iterations per time step allowed for the the simulated model accelerations to converge to the input observed acceleration values. The default value is 25.-->
     <max_iterations>25</max_iterations>
     <!--Acceptable difference between the simulated accelerations (udots) and input observed accelerations to determine if the COMAK solution at each time step has converged. The default value is 1.0.-->

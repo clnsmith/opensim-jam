@@ -85,6 +85,14 @@ void ForsimTool::setModel(Model& aModel)
 
 void ForsimTool::run() 
 {
+    //Make results directory
+    int makeDir_out = IO::makeDir(get_results_directory());
+    if (errno == ENOENT && makeDir_out == -1) {
+        OPENSIM_THROW(Exception, "Could not create " +
+            get_results_directory() +
+            "Possible reason: This tool cannot make new folder with subfolder.");
+    }
+    
     SimTK::State state = _model.initSystem();
         
     //Add Analysis set
@@ -95,6 +103,7 @@ void ForsimTool::run()
         Analysis *analysis = aSet.get(i).clone();
         _model.addAnalysis(analysis);
     }
+
 
     applyExternalLoads();
 
@@ -197,10 +206,6 @@ void ForsimTool::run()
     states_table.addTableMetaData("nRows", std::to_string(states_table.getNumRows()));
     states_table.addTableMetaData("nColumns", std::to_string(states_table.getNumColumns()+1));
     states_table.addTableMetaData("inDegrees", std::string("no"));
-
-    IO::makeDir(get_results_directory());
-    OPENSIM_THROW_IF(errno == ENOENT, Exception, "Could not create " + 
-        get_results_directory());
 
     STOFileAdapter sto;
     std::string basefile = get_results_directory() + "/" + get_results_file_basename();

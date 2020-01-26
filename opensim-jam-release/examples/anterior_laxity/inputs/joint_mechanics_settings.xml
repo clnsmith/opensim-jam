@@ -12,7 +12,7 @@
         <!--Time to start the analysis. Set to -1 to use initial frame in states_file. The default value is -1.-->
         <start_time>-1</start_time>
         <!--Time to stop the analysis. Set to -1 to use last frame in states_file. The default value is -1.-->
-        <stop_time>0.1</stop_time>
+        <stop_time>-1</stop_time>
         <!--Time step size to report results, set to -1 to use steps directly from the states_file. The default value is 0.01.-->
         <resample_step_size>-1</resample_step_size>
         <!--Resample to 101 equally spaced time steps (percentage of activity cycle). Note: If true, this overrides resample_step_size. The default value is false.-->
@@ -20,7 +20,7 @@
         <!--Apply IIR lowpass butterworth filter to the input Coordinate values. If set to -1, no filtering is applied. The default value is -1.-->
         <lowpass_filter_frequency>-1</lowpass_filter_frequency>
         <!--Print a .sto file with the processed (cut, resampled, normalized, and filtered) kinematics used for posing the model through out the analysis.-->
-        <print_processed_kinematcs>false</print_processed_kinematcs>
+        <print_processed_kinematics>false</print_processed_kinematics>
         <!--Paths to Smith2018ArticularContactForce components to be recorded. Options: 'none','all', or a list of Smith2018ArticularContactForce component paths. The default value is 'all'.-->
         <contacts>all</contacts>
         <!--Names of Smith2018ArticularContactForce outputs that will be written to the results files. Options: 'none','all', or list of individual output names.The default value is 'all'.-->

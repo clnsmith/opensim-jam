@@ -100,7 +100,7 @@ public:
         "Apply IIR lowpass butterworth filter to the input Coordinate values. "
         "If set to -1, no filtering is applied. The default value is -1.")
 
-    OpenSim_DECLARE_PROPERTY(print_processed_kinematcs, bool,
+    OpenSim_DECLARE_PROPERTY(print_processed_kinematics, bool,
         "Print a .sto file with the processed (cut, resampled, normalized, "
         "and filtered) kinematics used for posing the model through out the "
         "analysis.")

@@ -8,9 +8,9 @@
     <!--Path to .xml file that defines the ExternalLoads applied to the model.-->
     <external_loads_file>../../../models/lenhart2015/motion_data/overground_17_ext_loads.xml</external_loads_file>
     <!--Path to folder where all results files will be written.-->
-    <results_directory>../results/comak/</results_directory>
+    <results_directory>../results/comak_muscle_weights/</results_directory>
     <!--Prefix to all results files names.-->
-    <results_prefix>walking</results_prefix>
+    <results_prefix>walking_muscle_weights</results_prefix>
     <!--Replace the model ForceSet with the forces listed in force_set_file. If false, force_set_file forces are appended to the existing model force set. The default value is false.-->
     <replace_force_set>false</replace_force_set>
     <!--Path to .xml file containing an additional ForceSet.-->
@@ -134,7 +134,7 @@
     <!--Path to the directory where the settling forward simulation results will be printed.-->
     <settle_sim_results_directory>../results/comak</settle_sim_results_directory>
     <!--Prefix to settle simulation results file names.-->
-    <settle_sim_results_prefix></settle_sim_results_prefix>
+    <settle_sim_results_prefix>walking_settle_sim_muscle_weights</settle_sim_results_prefix>
     <!--Maximum number of COMAK iterations per time step allowed for the the simulated model accelerations to converge to the input observed acceleration values. The default value is 25.-->
     <max_iterations>25</max_iterations>
     <!--Acceptable difference between the simulated accelerations (udots) and input observed accelerations to determine if the COMAK solution at each time step has converged. The default value is 1.0.-->

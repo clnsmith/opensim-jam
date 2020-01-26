@@ -80,9 +80,13 @@ void COMAKInverseKinematicsTool::constructProperties()
 
 void COMAKInverseKinematicsTool::initialize()
 {
-    IO::makeDir(get_results_directory());
-    OPENSIM_THROW_IF(errno == ENOENT, Exception, "Could not create " + 
-        get_results_directory());
+    //Make results directory
+    int makeDir_out = IO::makeDir(get_results_directory());
+    if (errno == ENOENT && makeDir_out == -1) {
+        OPENSIM_THROW(Exception, "Could not create " +
+            get_results_directory() +
+            "Possible reason: This tool cannot make new folder with subfolder.");
+    }
 
     _model = Model(get_model_file());
 

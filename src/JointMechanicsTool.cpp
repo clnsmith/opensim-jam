@@ -80,7 +80,7 @@ void JointMechanicsTool::constructProperties()
     constructProperty_resample_step_size(-1);
     constructProperty_normalize_to_cycle(false);
     constructProperty_lowpass_filter_frequency(-1);
-    constructProperty_print_processed_kinematcs(false);
+    constructProperty_print_processed_kinematics(false);
 
     constructProperty_contacts(defaultListAll);
     constructProperty_contact_outputs(defaultListAll);
@@ -113,6 +113,14 @@ void JointMechanicsTool::setModel(Model& aModel)
 void JointMechanicsTool::run() {
     //Set the max number of points a ligament or muscle path can contain
     _max_path_points = 100;
+
+    //Make results directory
+    int makeDir_out = IO::makeDir(get_results_directory());
+    if (errno == ENOENT && makeDir_out == -1) {
+        OPENSIM_THROW(Exception, "Could not create " +
+            get_results_directory() +
+            "Possible reason: This tool cannot make new folder with subfolder.");
+    }
 
     if (_model == NULL) {
         OPENSIM_THROW(Exception, "No model was set in JointMechanicsTool");
@@ -204,7 +212,7 @@ void JointMechanicsTool::formQandUMatrixFromFile() {
         store.resampleLinear(get_resample_step_size());
     }
 
-    if (get_print_processed_kinematcs()) {
+    if (get_print_processed_kinematics()) {
         store.print(get_results_directory() + "/" + get_results_file_basename() + "_processed_kinematics.sto");
     }
 
@@ -995,10 +1003,6 @@ int JointMechanicsTool::printResults(const std::string &aBaseName,const std::str
 {
     std::string file_path = get_results_directory();
     std::string base_name = get_results_file_basename();
-
-    IO::makeDir(get_results_directory());
-    OPENSIM_THROW_IF(errno == ENOENT, Exception, "Could not create " + 
-        get_results_directory());
 
     //Analysis Results
     _model->updAnalysisSet().printResults(get_results_file_basename(), get_results_directory());

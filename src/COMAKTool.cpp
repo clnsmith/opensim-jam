@@ -101,6 +101,14 @@ void COMAKTool::run()
 
 void COMAKTool::initialize()
 {
+    //Make results directory
+    int makeDir_out = IO::makeDir(get_results_directory());
+    if (errno == ENOENT && makeDir_out == -1) {
+        OPENSIM_THROW(Exception, "Could not create " +
+            get_results_directory() +
+            "Possible reason: This tool cannot make new folder with subfolder.");
+    }
+
     setModel(Model(get_model_file()));
     updateModelForces();
 
@@ -891,9 +899,12 @@ void COMAKTool::recordResultsStorage(const SimTK::State& state, int frame) {
 }
 
 void COMAKTool::printResultsFiles() {
-    IO::makeDir(get_results_directory());
-    OPENSIM_THROW_IF(errno == ENOENT, Exception, "Could not create " + 
-        get_results_directory());
+    int makeDir_out = IO::makeDir(get_results_directory());
+    if (errno == ENOENT && makeDir_out == -1) {
+        OPENSIM_THROW(Exception, "Could not create " +
+            get_results_directory() +
+            "Possible reason: This tool cannot make new folder with subfolder.");
+    }
 
     STOFileAdapter sto;
     TimeSeriesTable states_table = _result_states.exportToTable(_model);
@@ -1064,11 +1075,13 @@ SimTK::Vector COMAKTool::equilibriateSecondaryCoordinates()
             "nColumns", std::to_string(states_table.getNumColumns()+1));
         states_table.addTableMetaData("inDegrees", std::string("no"));
 
-        IO::makeDir(get_settle_sim_results_directory());
-        OPENSIM_THROW_IF(errno == ENOENT, Exception, "Could not create " + 
-            get_settle_sim_results_directory());
+        int makeDir_out = IO::makeDir(get_settle_sim_results_directory());
+        if (errno == ENOENT && makeDir_out == -1) {
+            OPENSIM_THROW(Exception, "Could not create " +
+                get_settle_sim_results_directory() +
+                "Possible reason: This tool cannot make new folder with subfolder.");
+        }
 
-        IO::makeDir(get_settle_sim_results_directory());
         std::string basefile = get_settle_sim_results_directory() + 
             "/" + get_settle_sim_results_prefix();
 
