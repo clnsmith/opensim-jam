@@ -891,6 +891,10 @@ void COMAKTool::recordResultsStorage(const SimTK::State& state, int frame) {
 }
 
 void COMAKTool::printResultsFiles() {
+    IO::makeDir(get_results_directory());
+    OPENSIM_THROW_IF(errno == ENOENT, Exception, "Could not create " + 
+        get_results_directory());
+
     STOFileAdapter sto;
     TimeSeriesTable states_table = _result_states.exportToTable(_model);
     states_table.addTableMetaData("header", std::string("COMAK Model States"));
@@ -1060,10 +1064,15 @@ SimTK::Vector COMAKTool::equilibriateSecondaryCoordinates()
             "nColumns", std::to_string(states_table.getNumColumns()+1));
         states_table.addTableMetaData("inDegrees", std::string("no"));
 
-        STOFileAdapter sto;
+        IO::makeDir(get_settle_sim_results_directory());
+        OPENSIM_THROW_IF(errno == ENOENT, Exception, "Could not create " + 
+            get_settle_sim_results_directory());
+
         IO::makeDir(get_settle_sim_results_directory());
         std::string basefile = get_settle_sim_results_directory() + 
             "/" + get_settle_sim_results_prefix();
+
+        STOFileAdapter sto;
         sto.write(states_table, basefile + "_states.sto");
     }
 

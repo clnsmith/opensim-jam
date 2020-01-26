@@ -199,6 +199,8 @@ void ForsimTool::run()
     states_table.addTableMetaData("inDegrees", std::string("no"));
 
     IO::makeDir(get_results_directory());
+    OPENSIM_THROW_IF(errno == ENOENT, Exception, "Could not create " + 
+        get_results_directory());
 
     STOFileAdapter sto;
     std::string basefile = get_results_directory() + "/" + get_results_file_basename();
