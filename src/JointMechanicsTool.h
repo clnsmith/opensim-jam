@@ -32,10 +32,29 @@ namespace OpenSim {
 //                        Joint Mechanics Tool
 //=============================================================================
 /**
-This tool is facilitates forward dynamic simulations of joint mechanics.
-It is specifically designed for models that represent articular contact using
-Smith2018ArticularContactForce components, however, it can be used with all
-models. 
+The JointMechanicsTool enables detailed analyses of simulation results and the 
+generation of output files for visualization outside the OpenSim GUI and 
+further analyses in MATLAB/Python. To use this tool, a simulation must be 
+performed (using a different tool) with the model states written to a .sto file.
+The JointMechanicsTool reposes the model at the states listed in the 
+states_file and performs further analyses. 
+
+A key feature of the JointMechanicsTool is the ability to write .vtp files 
+for each timestep that contain both geometric information (vertex locations 
+and connectivity) and simulations outputs. These .vtp 
+files can then be read into a visualization software such as Paraview to 
+generate high quality renderings of simulation results. This feature is 
+especially useful for models with Smith2018ArticularContact Components because 
+it enables triangle level outputs (proximity, pressure, potential energy, etc).
+to visualized on the mesh geometry. Muscle and Blankevoort1991Ligament 
+components can also be written as .vtp files such that they can be colored
+by their output values in visualizations. Finally, AttachedGeometry meshes 
+(ie bones) can also be written as .vtp files for visualiation. The model
+components and respective outputs that are written to .vtp files can be
+controlled using the contacts, contact_outputs, ligaments, ligament_ouputs, 
+muscles, muscle_outputs, and attached_geometry_bodies properties. 
+
+
 
 
 */
