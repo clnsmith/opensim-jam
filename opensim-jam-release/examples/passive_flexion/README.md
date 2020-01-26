@@ -1,7 +1,6 @@
 # Example: Passive Flexion
 
-This example simulates passive flexion of the knee from 0<sup>o</sup> to 120<sup>o</sup>. The simulation is designed to replicate a clinician manually flexing a patient's knee or a robot driving a cadaver knee. Thus, the muscle activation is assumed to be minimal and only the passive muscle, ligament, and contact forces contribute to the predicted 
-knee motion and loading. 
+This example simulates passive flexion of the knee from 0<sup>o</sup> to 120<sup>o</sup>. The simulation is designed to replicate a clinician manually flexing a patient's knee or a robot manipulating a cadaver knee. Thus, the muscle activation is assumed to be minimal and only the passive muscle, ligament, and contact forces contribute to the predicted knee motion and loading. 
 
 ## Simulation Description
 This simulation uses the [lenhart2015 model](../../models/lenhart2015/lenhart2015.osim). Tibiofemoral flexion (knee_flex_r) is prescribed using the prescribed_coordinates_file. Initially, knee_flex_r is held constant at 0<sup>o</sup> for 0.5 seconds to allow the knee to settle into equilibrium, then over the next 2.0 seconds knee_flex_r is linearly prescribed from 0<sup>o</sup> to 120<sup>o</sup>. All other knee Coordinates (5 tibiofemoral DOFs and 6 patellofemoral DOFs) are unlocked and thus their kinematics over the simulation are predicted based on the passive model forces. The pelvis_tilt Coordinate is prescribed to be 90<sup>o</sup> over the duration of the simulation to represent the patient lying on a table. The remaining Coordinates in the model are locked, and thus fixed at their default values throughout the simulation. 
@@ -15,5 +14,5 @@ This simulation uses the [lenhart2015 model](../../models/lenhart2015/lenhart201
 
 4) Use Paraview and/or the OpenSim GUI to visualize the simulation results [instructions](../../documentation/visualizing-simulation-results).
 
-5) Use MATLAB to run the analyze_passive_flexion.m script to generate plots of knee kinematics and ligament strains vs time.  
+5) Use MATLAB to run the [analyze_passive_flexion.m](analyze_passive_flexion.m) script to generate plots of knee kinematics and ligament strains vs time.  
 
