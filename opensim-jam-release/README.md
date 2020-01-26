@@ -76,6 +76,10 @@ The examples use the [OpenSim 4.0 - MATLAB scripting interface](https://simtk-co
 The JointMechanicsTool can be used to analyze and visualize simulated or measured kinematics from fluoroscopy, dynamic MRI, etc or static poses from medical imaging. This example demonstrates how to input bone kinematics to the JointMechanicsTool and generate .vtp files to visualize proximity maps between the tibiofemoral subchondral bone surfaces using Paraview. 
 
 ### [Passive Flexion](./examples/passive_flexion)
+<p align="center">
+  <img src="examples/passive_flexion/graphics/passive_flexion.gif" height="300" >
+</p>
+
 Perform a forward simulation of passive knee flexion where tibiofemoral flexion is prescribed and the other knee coordinates are unconstrained and thus are calculated based on the passive muscle, ligament, and articular contact forces. 
 
 ### [Anterior Laxity](./examples/anterior_laxity)
