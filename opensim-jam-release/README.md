@@ -38,7 +38,7 @@ An OpenSim Plugin containing the OpenSim-JAM Components and Tools has been compi
 The plugin can be used with the OpenSim 4.0 GUI, MATLAB/Python, and commmand line interfaces ([instructions](https://simtk-confluence.stanford.edu/display/OpenSim/Using+Plugins)).
 
 ### Executables 
-Each of the [Simulation Tools](#simulation-tools) have been compiled as command line executables (.exe) for windows. This allows users to define simulation settings in a .xml file and organize and perform simulations using windows .cmd files. The compiled executable files are located at [./bin/](./bin).
+Each of the [Simulation Tools](#simulation-tools) have been compiled as command line executables (.exe) for windows. This allows users to define simulation settings in a .xml file and organize and perform simulations using windows .cmd files. The compiled executable files are located at [./bin/](./bin)
 
 Each executable can be called in the windows command line using the following syntax:
 
@@ -48,38 +48,40 @@ exectuable-name .\path\to\jam_plugin.dll .\path\to\settings_file.xml
 
 The execuatables are dependent on the OpenSim 4.0 libraries. A copy of the necessary OpenSim .dll libraries are included in this repository [here](opensim).
 
+Relative paths in the .xml settings files should be referenced to the location of the .xml file.
+
 ## Examples
 A series of examples are provided to demonstrate the capabilities of OpenSim JAM. 
 
 The examples use the [OpenSim 4.0 - MATLAB scripting interface](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+with+Matlab) to generate the necessary input files and process the simulation results. The windows commmand line executables are used to perform the simulations. Thus, currently only windows can be used to run the examples. 
 
 
-### [Visualize Kinematics](opensim-jam-distribute/examples/visualize_kinematics)
+### [Visualize Kinematics](./examples/visualize_kinematics)
 The JointMechanicsTool can be used to analyze and visualize simulated or measured kinematics from fluoroscopy, dynamic MRI, etc or static poses from medical imaging. This example demonstrates how to input bone kinematics to the JointMechanicsTool and generate .vtp files to visualize proximity maps between the tibiofemoral subchondral bone surfaces using Paraview. 
 
-### [Passive Flexion](opensim-jam-distribute/examples/passive_flexion)
+### [Passive Flexion](./examples/passive_flexion)
 Perform a forward simulation of passive knee flexion where tibiofemoral flexion is prescribed and the other knee coordinates are unconstrained and thus are calculated based on the passive muscle, ligament, and articular contact forces. 
 
-### [Anterior Laxity](opensim-jam-distribute/examples/anterior_laxity)
+### [Anterior Laxity](./examples/anterior_laxity)
 Replicate a clinical test for anterior cruciate ligament (ACL) deficiency by performing a forward simulation where the hip is flexed to 45<sup>o</sup>, the knee is flexed to 90<sup>o</sup> and an anterior force is applied to the tibia.
 
-### [Isometric Extension](opensim-jam-distribute/examples/isometric_extension)
+### [Isometric Extension](./examples/isometric_extension)
 Replicate a clinical isometric extension test where the hip and knee are held at 30<sup>o</sup> flexion and the patient activates their quadriceps. 
 
-### [Walking](opensim-jam-distribute/examples/walking)
+### [Walking](./examples/walking)
 Use COMAK  to predict muscle forces, ligament forces, cartilage contact pressures, and secondary knee kinematics during walking. 
 
 ## Software:
 ### [OpenSim 4.0 GUI](https://opensim.stanford.edu/)
-The OpenSim GUI is helpful for visualizing models and simulation results. Instructions for visualizing models and simulation results are provided [here](documentation/visualizing_models_and_simulation_results.md)
+The OpenSim GUI is helpful for visualizing models and simulation results. Instructions for visualizing models and simulation results are provided [here](documentation/visualizing-simulation-results.md)
 
 ### [MATLAB](https://www.mathworks.com/products/matlab.html)
 MATLAB is used in the examples to generate input files and process simulation results. You will need to have the [OpenSim 4.0 - MATLAB scripting interface](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+with+Matlab) setup in order to generate the example input files. [Python](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+in+Python) is an open-source alternative that can also be used for this purpose, but you will need to tranlsate the MATLAB scripts. 
 
-### [Paraview 5.7](https://www.paraview.org/)
+### [Paraview](https://www.paraview.org/)
 Paraview is used to for high quality rendering of simulation results, visualization of contact maps. The JointMechanicsTool provides the ability to generate .vtp files that can be directly read into Paraview. 
 
-[Vizualizing in Paraview](documentation/visualizing_in_paraview.md)
+Instructions for visualizing simulation results are provided [here](documentation/visualizing-simulation-results.md)
 
 ### [HDFView](https://www.hdfgroup.org/downloads/hdfview/)
 HDFviewer is a standalone gui to explore .h5 file contents. 
@@ -99,3 +101,5 @@ MATLAB based software toolkit that includes mesh editing features.
 
 ## Acknowledgements 
 Much of the included models and codes were initially developed in the [UW Neuromuscular Biomechanics Lab at the University of Wisconsin-Madison](https://uwnmbl.engr.wisc.edu). Contributers to this work include Darryl Thelen, Rachel Lenhart, Jarred Kaiser, Michael Vignos, Kwang won Choi, Scott Brandon, and Josh Roth. Translation and extension of the orginal SIMM and UWPipeline into OpenSim was performed during my time as a PhD at UW-Madison (NIH EB015410) and Stanford ([NCSRR Visiting Scholar](https://opensim.stanford.edu/support/scholars.html)), and as a post-doc at the [Laboratory for Movement Biomechanics](https://www.movement.ethz.ch/) at ETH Zürich ([Whitaker International Program](https://www.whitaker.org/), [OpenSim Pilot Project](https://opensim.stanford.edu/support/pilot.html)).
+
+A list of publications that use these tools is located [here](./documentation/references.md)
