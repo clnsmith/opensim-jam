@@ -1,8 +1,23 @@
-# Visualizing Simulations in Paraview
+# Visualizing Simulation Results
 
-[Paraview](https://www.paraview.org/) is an open-source software for designed for visualization of scientific data. [Paraview Desktop](https://www.paraview.org/desktop/) is a GUI (windows, mac, linux) that allows enables high quality visualization of OpenSim simulations 
+# OpenSim 4.0 GUI 
+The OpenSim GUI offers the easiest 
 
-The JointMechanicsTool can read in simulation results (.sto) and generate .vtp files that can be read into Paraview for visualizing simulation results and generating high quality renderings. See the documentation for the JointMechanicsTool for details on generatiing the .vtp files. 
+## Load Plugin 
+
+## Load Model
+
+## Load Simulation Motion Results
+
+## Color muscles 
+
+
+
+# Paraview
+
+[Paraview](https://www.paraview.org/) is an open-source software for designed for visualization of scientific data. [Paraview Desktop](https://www.paraview.org/desktop/) is a GUI (windows, mac, linux) that allows enables high quality visualization of OpenSim simulations. There is a significant amount of documentation and tutorials on using the Paraview GUI and Paraview python scripting to generate visualizations of scientific data on their website https://www.paraview.org/documentation/. The documentation below provides specific instructions for visualizing OpenSim-JAM simulations.   
+
+The JointMechanicsTool can read in simulation results (.sto) and generate .vtp files that can be read into Paraview for visualizing simulation results and generating high quality renderings. See the [JointMechanicsTool description] and [examples](../examples) for details on generatiing the .vtp files. 
 
 ## Loading .vtp files
 1) File -> Open... 
@@ -35,4 +50,10 @@ The JointMechanicsTool can read in simulation results (.sto) and generate .vtp f
 
 ## Ray Casting Renderer
 
+
+
+
 ## Saving screen shots and animiations
+
+# SimTK Visualizer
+
