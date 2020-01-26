@@ -22,9 +22,9 @@ settle_duration = 0.5;
 force_duration = 1.0;
 
 flex_time = 0 : time_step : flex_duration;
-settle_time = flex_duration+time_step : time_step : flex_duration+settle_duration;
-force_time = flex_duration+settle_duration+time_step : time_step : flex_duration+settle_duration+force_duration;
-time = [flex_time,settle_time,force_time];
+settle_time = flex_duration+time_step : time_step : flex_duration + settle_duration;
+force_time = flex_duration + settle_duration + time_step : time_step : flex_duration+settle_duration + force_duration;
+time = [flex_time, settle_time, force_time];
 
 num_flex_steps = length(flex_time);
 num_settle_steps = length(settle_time);

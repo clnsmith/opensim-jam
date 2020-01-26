@@ -32,9 +32,9 @@
         <!--Names of Blankevoort1991Ligament outputs that will be written to the results files. Options: 'none','all', or list of individual output names. The default value is 'all'.-->
         <ligament_outputs>all</ligament_outputs>
         <!--Paths to Muscle components to be recorded. Options: 'none','all', or a list of Muscle component paths. The default value is 'none'.-->
-        <muscles>/forceset/vasmed_r /forceset/vasint_r /forceset/vaslat_r</muscles>
+        <muscles>all</muscles>
         <!--Names of Muscle component outputs that will be written to the results files. Options: 'none','all', or list of individual output names. The default value is 'all'.-->
-        <muscle_outputs>all</muscle_outputs>
+        <muscle_outputs>none</muscle_outputs>
         <!--Paths to the Body components that contain attached geometry Mesh components (i.e. bone meshes) to be recorded. Options: 'none','all', or a list of Frame component paths. The default value is 'none'.-->
         <attached_geometry_bodies>/bodyset/femur_distal_r /bodyset/tibia_proximal_r /bodyset/patella_r</attached_geometry_bodies>
         <!--Body or Frame to use as origin for model motion in results files. Options: 'ground' or '/path/to/Frame-->
