@@ -1,4 +1,8 @@
 # Example: Passive Flexion
+<p align="center">
+  <img src="graphics/passive_flexion.gif" height="300" >
+</p>
+
 
 This example simulates passive flexion of the knee from 0<sup>o</sup> to 120<sup>o</sup>. The simulation is designed to replicate a clinician manually flexing a patient's knee or a robot manipulating a cadaver knee. Thus, the muscle activation is assumed to be minimal and only the passive muscle, ligament, and contact forces contribute to the predicted knee motion and loading. 
 
