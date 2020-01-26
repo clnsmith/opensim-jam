@@ -4,17 +4,17 @@ _A framework to simulate **J**oint and **A**rticular **M**echanics in OpenSim._
 _Author: Colin Smith_
 
 ## Overview
-OpenSim JAM is a collection of force component plugins, models, and executables (tools) designed to enable OpenSim musculoskeletal simulations that include 6 degree of freedom joint mechanics with explicit representations of articular contact and ligament structures. A series of [examples](Examples) are available to demonstrate how to use these fools to perform forward simulations of joint mechanics, and simulate walking using the Concurrent Optimization of Muscle Activations and Kinematics (COMAK) algorithm. The new OpenSim Components, models, and simulation tools are described below: 
+OpenSim JAM is a collection of force component plugins, models, and executables (tools) designed to enable OpenSim musculoskeletal simulations that include 6 degree of freedom joint mechanics with explicit representations of articular contact and ligament structures. A series of [examples](#examples) are available to demonstrate how to use these fools to perform forward simulations of joint mechanics, and simulate walking using the Concurrent Optimization of Muscle Activations and Kinematics (COMAK) algorithm. The new OpenSim Components, models, and simulation tools are described below: 
 
 ## Components
-### Blankevoort1991Ligament
+### [Blankevoort1991Ligament](../src/Blankevoort1991Ligament.h)
 This one dimensional path geometry acts as a spring-damper to represent ligament fibers. The force strain relationship includes a nonlinear toe region at low strains and a linear region at high strains to represent the uncrimping and stretching of collagen fibers within a ligament. Further details of the implementation and how to use the component are available in the [Blakevoort1991Ligament Description](documentation/doxygen/Blakevoort1991Ligament_doxygen.pdf)
 
-### Smith2018ArticularContactForce and Smith2018_ContactMesh
+### [Smith2018ArticularContactForce](../src/Smith2018ArticularContactForce.h) and [Smith2018ContactMesh](../src/Smith2018ContactMesh.h)
 This force component represents articular contact between cartilage, mensici, or artifical components using triangular mesh representations of the surface geometries and an elastic foundation model to compute local contact pressures. Further details on the implementation and how to use the component are available in the [Smith2018ArticularContactForce Description](documentation/doxygen/Smith2018ArticularContactForce_doxygen.pdf) and [Smith2018ContactMesh_Description](documentation/doxygen/Smith2018ContactMesh_doxygen.pdf)
 
 ## Models
-### Lenhart2015 Model
+### [Lenhart2015 Model](./models/lenhart2015)
 *Lenhart, R. L., Kaiser, J., Smith, C. R., & Thelen, D. G. (2015). Prediction and validation of load-dependent behavior of the tibiofemoral and patellofemoral joints during movement. Annals of biomedical engineering, 43(11), 2675-2685*
 
 <img src="https://github.com/clnsmith/opensim-jam/blob/master/graphics/lenhart2015_fullbody.JPG" height="400"><img src="https://github.com/clnsmith/opensim-jam/blob/master/graphics/lenhart2015_knee.JPG" height="400">
@@ -29,16 +29,22 @@ The ForsimTool enables forward dynamic simulations of joint mechanics to be perf
 The **C**oncurrent **O**ptimization of **M**uscle **A**ctivations and **K**inematics (COMAK) algorithm enables the calculation of muscle forces and detailed joint mechanics during dynamic movements. 
 
 ### Joint Mechanics
-The JointMechanicsTool enables detailed post-hoc analysis of simulations or measurments of joint mechanics. It can be used to generate .vtp files to visualize simulation results in Paraview, or .h5 files which are binary files that can store the large quantites of contact data (multiple calculated values for each triange face) in compact files that can be quickly read by MATLAB, Python, or HDF View (https://www.hdfgroup.org/downloads/hdfview/)
+The JointMechanicsTool enables detailed post-hoc analysis of simulations or measurments of joint mechanics. It can be used to generate .vtp files to visualize simulation results in Paraview, or .h5 files which are binary files that can store the large quantites of contact data (multiple calculated values for each triange face) in compact files that can be quickly read by MATLAB, Python, or [HDF View](https://www.hdfgroup.org/downloads/hdfview/)
 
 ## Distribution
 ### OpenSim-JAM Plugin
-An [OpenSim Plugin]() containing the OpenSim-JAM Components and Tools has been compiled for Windows and OpenSim 4.0 using Visual Studio 15 2017 Win64. The plugin file (jam-plugin.dll) is located [here](bin/jam-plugin.dll) For linux or mac users, you must compile the plugin yourself. 
+An OpenSim Plugin containing the OpenSim-JAM Components and Tools has been compiled for Windows and OpenSim 4.0 using Visual Studio 15 2017 Win64. The plugin file is located at [./bin/jam-plugin.dll](./bin/jam-plugin.dll) For linux or mac users, you must compile the plugin yourself. 
 
 The plugin can be used with the OpenSim 4.0 GUI, MATLAB/Python, and commmand line interfaces ([instructions](https://simtk-confluence.stanford.edu/display/OpenSim/Using+Plugins)).
 
 ### Executables 
-Each of the [Simulation Tools] have been compiled as command line executables for windows. This allows users to define simulation settings in a .xml file and organize and perform simulations using windows .cmd files. 
+Each of the [Simulation Tools](#simulation-tools) have been compiled as command line executables (.exe) for windows. This allows users to define simulation settings in a .xml file and organize and perform simulations using windows .cmd files. The compiled executable files are located at [./bin/](./bin).
+
+Each executable can be called in the windows command line using the following syntax:
+
+```cmd
+exectuable-name .\path\to\jam_plugin.dll .\path\to\settings_file.xml
+```
 
 The execuatables are dependent on the OpenSim 4.0 libraries. A copy of the necessary OpenSim .dll libraries are included in this repository [here](opensim).
 
