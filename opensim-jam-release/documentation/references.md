@@ -1,5 +1,5 @@
 ## References
-Below are all the references I am aware of that use these models or tools in some form. Note that all of these were performed using the older closed-source UWPipeline/SIMM implementation. Some of the early papers use a modified version of CMC to simulate 6 DOF knee mechanics during walking (details in Thelen, JBME, 2014). This algorithm is not included in JAM. 
+Below are all the references I am aware of that use the OpenSim-JAM models or tools in some form. Note that all of the simulations involved in these manuscripts were performed using the older closed-source UWPipeline/SIMM implementations. Some of the early papers use a modified version of CMC to simulate 6 DOF knee mechanics during walking (details in Thelen, JBME, 2014). This algorithm is not included in JAM. 
 
 1. _Clouthier, A., Borschneck, D., Thelen, D. G., Deluzio, K., & Rainbow, M. J. (2019). Relationship Between Lateral Patellar Stability Following Tibial Tubercle Osteotomy for Varying Patellofemoral Geometries. Journal of biomechanical engineering._ |
 
