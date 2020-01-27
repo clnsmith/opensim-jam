@@ -300,7 +300,6 @@ void COMAKTool::initialize()
     int i = 0;
     for (const Muscle& msl : _model.updComponentList<Muscle>()) {
         _optimal_force[i] = msl.getMaxIsometricForce();
-        //_optimal_force[i] = msl.getMaxIsometricForce()*cos(msl.getPennationAngleAtOptimalFiberLength()*SimTK::Pi/180);
         i++;
         _n_muscles++;
         _muscle_path.append(msl.getAbsolutePathString());

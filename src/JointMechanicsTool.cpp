@@ -132,8 +132,6 @@ void JointMechanicsTool::run() {
 
     initialize(state);
 
-    
-
     //loop over each frame
     for (int i = 0; i < _n_frames; ++i) {
         
@@ -304,16 +302,17 @@ void JointMechanicsTool::readStatesFromFile() {
                 }
 
                 SimTK::Vector state_data(_n_frames, 0.0);
-                //if (col_ind == -1) {
+                if (col_ind == -1) {
                 //    std::cout << "WARNING:: Muscle state (" + msl_state + ") NOT found in coordinates file. Assumed 0.0" << std::endl;
-                //}
-                //else {
+                }
+                else {
                     Array<double> data;
+                    
                     store.getDataColumn(col_labels[col_ind], data);
                     for (int j = 0; j < data.getSize(); ++j) {
                         state_data.set(j, data[j]);
                     }
-                //}
+                }
                 state_values.push_back(state_data);
             }
             _muscle_state_data.push_back(state_values);
