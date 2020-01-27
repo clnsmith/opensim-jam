@@ -47,9 +47,11 @@ The Lenhart2015 model is an OpenSim implementation of the model described in the
 ## Simulation Tools
 ### Forsim 
 The ForsimTool enables forward dynamic simulations of joint mechanics to be performed. Practically, this allows simulations of cadaver experiments, passive clinical examinations, and simulations where the muscle forces or excitations are known inputs. Fundamentally, it is similar to the ForwardTool in the OpenSim GUI, but the interface is designed for performing forward simulations involving articular contact. The input files can define the muscle and actuator controls (excitations), activations, or forces vs time, external loads applied to the model, and the Coordinate values vs time for Prescribed Coordinates. The forsim tool uses an implicit integrator (SimTK::CPODES::BDF), which gives far superior performance for simulations that involve contact compared to the explicit integrators used by the existing OpenSim ForwardTool. 
+
 _Source_
 - [../src/ForsimTool.h](../src/ForsimTool.h)
 - [../src/ForsimTool.cpp](../src/ForsimTool.cpp)
+
 _Description_
 - [Smith2018ArticularContactForce Description](./documentation/doxygen/ForsimTool_doxygen.pdf).
 
