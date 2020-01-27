@@ -25,7 +25,7 @@ The Smith2018ContactMesh is implementated in [Smith2018ContactMesh.h](../src/Smi
 ### [Lenhart2015 Model](./models/lenhart2015)
 *Lenhart, R. L., Kaiser, J., Smith, C. R., & Thelen, D. G. (2015). Prediction and validation of load-dependent behavior of the tibiofemoral and patellofemoral joints during movement. Annals of biomedical engineering, 43(11), 2675-2685*
 
-<img src="https://github.com/clnsmith/opensim-jam/blob/master/graphics/lenhart2015_fullbody.JPG" height="400"><img src="https://github.com/clnsmith/opensim-jam/blob/master/graphics/lenhart2015_knee.JPG" height="400">
+<img src="models/lenhart2015/graphics/lenhart2015_fullbody.JPG" height="400" align="left"><img src="models/lenhart2015/graphics/lenhart2015_knee.JPG" height="400" align="right">
 
 The Lenhart2015 model is an OpenSim implementation of the model described in the paper above. A multibody knee model was constructed based on magnetic resonance images from a healthy young adult female. The bones, ligaments, and cartilage were segmented from different image sets that were optimized for the discerning the relavent structures and registered together. The lenhart2015 model includes the tibiofemoral and patellofemoral joints as 6 DOF joints. Tibiofemoral and patellofemoral articular contact are represented using Smith2018SmithArticularContactForce components and damping is represented using SpringGeneralizedForce components acting on each knee coodinate. Knee ligaments and passive structures are represented using bundles of Blankevoort1991Ligaments. See publication for further details of model construction. 
 
