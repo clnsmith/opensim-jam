@@ -36,8 +36,8 @@ The JointMechanicsTool can read in simulation results (.sto) and generate .vtp f
 
 ## Loading .vtp files
 1) File -> Open... 
-2) Select .vtp files. Note that 
-3) 
+2) Navigate to the folder containing the series of .vtp files. Note that all .vtp files in a time-series (name_#) will be collapsed into a single name.
+2) Select the series of .vtp files you want to read. You can hold down ctrl or shift to select multiple series. Press 'OK'  
 
 ## Grouping 
 
