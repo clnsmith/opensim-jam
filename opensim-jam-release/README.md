@@ -10,16 +10,17 @@ OpenSim JAM is a collection of force component plugins, models, and executables 
 ### Blankevoort1991Ligament
 This one dimensional path geometry acts as a spring-damper to represent ligament fibers. The force strain relationship includes a nonlinear toe region at low strains and a linear region at high strains to represent the uncrimping and stretching of collagen fibers within a ligament. 
 
-The Blankevoort1991Ligament is implementated in [Blankevoort1991Ligament.h](../src/Blankevoort1991Ligament.h) and [Blankevoort1991Ligament.cpp](../src/Blankevoort1991Ligament.cpp). Further description is available in the [Blakevoort1991Ligament Description](./documentation/doxygen/Blakevoort1991Ligament_doxygen.pdf)
+Implementation: [Blankevoort1991Ligament.h](../src/Blankevoort1991Ligament.h) and [Blankevoort1991Ligament.cpp](../src/Blankevoort1991Ligament.cpp)
+Description: [Blakevoort1991Ligament Description](./documentation/doxygen/Blakevoort1991Ligament_doxygen.pdf)
 
 
 
 ### Smith2018ArticularContactForce and Smith2018ContactMesh
 This force component represents articular contact between cartilage, mensici, or artifical components using triangular mesh representations of the surface geometries and an elastic foundation model to compute local contact pressures. Further details on the implementation and how to use the component are available in the [Smith2018ArticularContactForce Description](documentation/doxygen/Smith2018ArticularContactForce_doxygen.pdf) and [Smith2018ContactMesh_Description](documentation/doxygen/Smith2018ContactMesh_doxygen.pdf)
 
-The Smith2018ArticularContactForce is implementated in [Smith2018ArticularContactForce.h](../src/Smith2018ArticularContactForce.h) and [Smith2018ArticularContactForce.cpp](../src/Smith2018ArticularContactForce.cpp). Further description is available in the [Smith2018ArticularContactForce Description](./documentation/doxygen/Smith2018ArticularContactForce_doxygen.pdf).
+Implementation: [Smith2018ArticularContactForce.h](../src/Smith2018ArticularContactForce.h) [Smith2018ArticularContactForce.cpp](../src/Smith2018ArticularContactForce.cpp)[Smith2018ContactMesh.h](../src/Smith2018ContactMesh.h) [Smith2018ContactMesh.cpp](../src/Smith2018ContactMesh.cpp)
 
-The Smith2018ContactMesh is implementated in [Smith2018ContactMesh.h](../src/Smith2018ContactMesh.h) and [Smith2018ContactMesh.cpp](../src/Smith2018ContactMesh.cpp). Further description is available in the [Smith2018ContactMesh Description](./documentation/doxygen/Smith2018ContactMesh_doxygen.pdf).
+Description:  [Smith2018ArticularContactForce Description](./documentation/doxygen/Smith2018ArticularContactForce_doxygen.pdf) [Smith2018ContactMesh Description](./documentation/doxygen/Smith2018ContactMesh_doxygen.pdf).
 
 ## Models
 ### [Lenhart2015 Model](./models/lenhart2015)
