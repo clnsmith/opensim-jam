@@ -51,7 +51,7 @@
 							<!--Path to an output (channel) to satisfy the one-value Input 'transform' of type SimTK::Transform (description: The transform that positions the Geometry in Ground so it can be positioned. Note, either the Geometry is attached to a Frame OR the input transform can be supplied, but not both. ).-->
 							<input_transform></input_transform>
 							<!--Scale factors in X, Y, Z directions respectively.-->
-							<scale_factors>1 1 1</scale_factors>
+							<scale_factors>0.99 0.99 0.99</scale_factors>
 							<!--Default appearance attributes for this Geometry-->
 							<Appearance>
 								<!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
@@ -121,7 +121,7 @@
 							<!--Path to an output (channel) to satisfy the one-value Input 'transform' of type SimTK::Transform (description: The transform that positions the Geometry in Ground so it can be positioned. Note, either the Geometry is attached to a Frame OR the input transform can be supplied, but not both. ).-->
 							<input_transform></input_transform>
 							<!--Scale factors in X, Y, Z directions respectively.-->
-							<scale_factors>1 1 1</scale_factors>
+							<scale_factors>0.99 0.99 0.99</scale_factors>
 							<!--Default appearance attributes for this Geometry-->
 							<Appearance>
 								<!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
@@ -492,6 +492,50 @@
 						<!--The set of points defining the path-->
 						<PathPointSet>
 							<objects>
+								<PathPoint name="MCLs2-P1">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>0.011513666127893967 0.0075 -0.040595001220703128</location>
+								</PathPoint>
+								<PathPoint name="MCLs2-P2">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>0.01498914623260498 -0.061850105285644531 -0.015355074363163169</location>
+								</PathPoint>
+							</objects>
+						</PathPointSet>
+						<!--The wrap objects that are associated with this path-->
+						<PathWrapSet>
+							<objects>
+								<PathWrap name="pathwrap_">
+									<!--A WrapObject that this PathWrap interacts with.-->
+									<wrap_object>Med_Lig_r</wrap_object>
+									<!--The wrapping method used to solve the path around the wrap object.-->
+									<method>hybrid</method>
+								</PathWrap>
+							</objects>
+						</PathWrapSet>
+						<!--Default appearance attributes for this GeometryPath-->
+						<Appearance>
+							<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+							<color>0.90000000000000002 0.90000000000000002 0.90000000000000002</color>
+						</Appearance>
+					</GeometryPath>
+					<!--Slope of the linear portion of the force-strain curve of ligament-->
+					<linear_stiffness>1000</linear_stiffness>
+					<!--Strain of ligament when model is posed a default coordinates.-->
+					<slack_length>0.07</slack_length>
+				</Blankevoort1991Ligament>
+				<Blankevoort1991Ligament name="MCL2">
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--The set of points defining the path of the ligament-->
+					<GeometryPath name="geometrypath">
+						<!--The set of points defining the path-->
+						<PathPointSet>
+							<objects>
 								<PathPoint name="MCLs1-P1">
 									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
 									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
@@ -526,51 +570,7 @@
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
 					<linear_stiffness>1000</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
-					<slack_length>0.05</slack_length>
-				</Blankevoort1991Ligament>
-				<Blankevoort1991Ligament name="MCL2">
-					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
-					<appliesForce>true</appliesForce>
-					<!--The set of points defining the path of the ligament-->
-					<GeometryPath name="geometrypath">
-						<!--The set of points defining the path-->
-						<PathPointSet>
-							<objects>
-								<PathPoint name="MCLs2-P1">
-									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
-									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
-									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>0.011513666127893967 0.0072286944389343263 -0.040595001220703128</location>
-								</PathPoint>
-								<PathPoint name="MCLs2-P2">
-									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
-									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
-									<!--The fixed location of the path point expressed in its parent frame.-->
-									<location>0.01498914623260498 -0.061850105285644531 -0.015355074363163169</location>
-								</PathPoint>
-							</objects>
-						</PathPointSet>
-						<!--The wrap objects that are associated with this path-->
-						<PathWrapSet>
-							<objects>
-								<PathWrap name="pathwrap_">
-									<!--A WrapObject that this PathWrap interacts with.-->
-									<wrap_object>Med_Lig_r</wrap_object>
-									<!--The wrapping method used to solve the path around the wrap object.-->
-									<method>hybrid</method>
-								</PathWrap>
-							</objects>
-						</PathWrapSet>
-						<!--Default appearance attributes for this GeometryPath-->
-						<Appearance>
-							<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
-							<color>0.90000000000000002 0.90000000000000002 0.90000000000000002</color>
-						</Appearance>
-					</GeometryPath>
-					<!--Slope of the linear portion of the force-strain curve of ligament-->
-					<linear_stiffness>1000</linear_stiffness>
-					<!--Strain of ligament when model is posed a default coordinates.-->
-					<slack_length>0.05</slack_length>
+					<slack_length>0.07</slack_length>
 				</Blankevoort1991Ligament>
 				<Blankevoort1991Ligament name="MCL3">
 					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
@@ -614,48 +614,26 @@
 					<!--Slope of the linear portion of the force-strain curve of ligament-->
 					<linear_stiffness>1000</linear_stiffness>
 					<!--Strain of ligament when model is posed a default coordinates.-->
-					<slack_length>0.05</slack_length>
-				</Blankevoort1991Ligament>			
+					<slack_length>0.07</slack_length>
+				</Blankevoort1991Ligament>
 				<Smith2018ArticularContactForce name="tf_contact">
-                    <!--List of components that this component owns and serializes.-->
-                    <components />
-                    <!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
-                    <appliesForce>true</appliesForce>
-                    <!--Path to a Component that satisfies the Socket 'target_mesh' of type Smith2018ContactMesh (description: Target mesh for collision detection.).-->
-                    <socket_target_mesh>/contactgeometryset/femur_cartilage</socket_target_mesh>
-                    <!--Path to a Component that satisfies the Socket 'casting_mesh' of type Smith2018ContactMesh (description: Ray casting mesh for collision detection.).-->
-                    <socket_casting_mesh>/contactgeometryset/tibia_cartilage</socket_casting_mesh>
-                    <!--Minimum overlap depthbetween contacting meshes-->
-                    <min_proximity>-0.01</min_proximity>
-                    <!--Maximum overlap depthbetween contacting meshes-->
-                    <max_proximity>0.01</max_proximity>
-                    <!--Formulation for depth-pressure relationship: 'linear' or 'nonlinear'-->
-                    <elastic_foundation_formulation>linear</elastic_foundation_formulation>
-                    <!--Combine the thickness and average material properties between the ContactParams for both meshes and use Bei & Fregly 2003 lumped parameter Elastic Foundation model-->
-                    <use_lumped_contact_model>true</use_lumped_contact_model>
-                    <!--target_mesh material properties-->
-                    <Smith2018ArticularContactForce::ContactParameters name="target_mesh_contact_params">
-                        <!--Uniform Elastic Modulus value for entire mesh-->
-                        <elastic_modulus>1</elastic_modulus>
-                        <!--Uniform Poissons Ratio value for entire mesh-->
-                        <poissons_ratio>0.5</poissons_ratio>
-                        <!--Uniform thickness of elastic layer for entire mesh-->
-                        <thickness>0.005</thickness>
-                        <!--Flag to use variable thickness.Note: mesh_back_file must defined in Smith2018ContactMesh-->
-                        <use_variable_thickness>false</use_variable_thickness>
-                    </Smith2018ArticularContactForce::ContactParameters>
-                    <!--casting_mesh material properties-->
-                    <Smith2018ArticularContactForce::ContactParameters name="casting_mesh_contact_params">
-                        <!--Uniform Elastic Modulus value for entire mesh-->
-                        <elastic_modulus>1</elastic_modulus>
-                        <!--Uniform Poissons Ratio value for entire mesh-->
-                        <poissons_ratio>0.5</poissons_ratio>
-                        <!--Uniform thickness of elastic layer for entire mesh-->
-                        <thickness>0.005</thickness>
-                        <!--Flag to use variable thickness.Note: mesh_back_file must defined in Smith2018ContactMesh-->
-                        <use_variable_thickness>false</use_variable_thickness>
-                    </Smith2018ArticularContactForce::ContactParameters>
-                </Smith2018ArticularContactForce>
+					<!--List of components that this component owns and serializes.-->
+					<components />
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--Path to a Component that satisfies the Socket 'target_mesh' of type Smith2018ContactMesh (description: Target mesh for collision detection.).-->
+					<socket_target_mesh>/contactgeometryset/femur_subchondral_bone</socket_target_mesh>
+					<!--Path to a Component that satisfies the Socket 'casting_mesh' of type Smith2018ContactMesh (description: Ray casting mesh for collision detection.).-->
+					<socket_casting_mesh>/contactgeometryset/tibia_subchondral_bone</socket_casting_mesh>
+					<!--The minimum proximity that is valid between contacting meshes to limit the search distance along the casting_mesh normal ray used for collision detection. Note this can be negative if proximity maps should include triangles that are not in contact.Default value set to 0.0 meters.-->
+					<min_proximity>-0.01</min_proximity>
+					<!--The maximum proximity that is valid between contacting meshes to limit the search distance along the casting_mesh normal ray used for collision detection.Default value set to 0.01 meters.-->
+					<max_proximity>0.0</max_proximity>
+					<!--Formulation for depth-pressure relationship: 'linear' or 'nonlinear'. Default value set to 'linear'.-->
+					<elastic_foundation_formulation>linear</elastic_foundation_formulation>
+					<!--Combine the thickness and the average material properties between the Smith2018ContactMeshes for both meshes and use Bei & Fregly 2003 lumped parameter Elastic Foundation model.-->
+					<use_lumped_contact_model>true</use_lumped_contact_model>
+				</Smith2018ArticularContactForce>
 			</objects>
 			<groups>
 			</groups>
@@ -667,74 +645,94 @@
 		<!--Geometry to be used in contact forces.-->
 		<ContactGeometrySet name="contactgeometryset">
 			<objects>
-				<Smith2018ContactMesh name="femur_cartilage">
-                    <!--List of components that this component owns and serializes.-->
-                    <components />
-                    <!--Path to a Component that satisfies the Socket 'frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
-                    <socket_frame>/bodyset/femur_distal_r</socket_frame>
-                    <!--Location of geometry center in the PhysicalFrame.-->
-                    <location>0 0 0</location>
-                    <!--Orientation of geometry in the PhysicalFrame (body-fixed XYZ Euler angles).-->
-                    <orientation>0 0 0</orientation>
-                    <!--Default appearance for this Geometry-->
-                    <Appearance>
-                    <!--Flag indicating whether the associated Geometry is visible or hidden.-->
-                    <visible>true</visible>
-                    <!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
-                    <opacity>1</opacity>
-                    <!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
-                    <color>0 1 1</color>
-                    <!--Visuals applied to surfaces associated with this Appearance.-->
-                    <SurfaceProperties>
-                        <!--The representation (1:Points, 2:Wire, 3:Shaded) used to display the object.-->
-                        <representation>2</representation>
-                    </SurfaceProperties>
-                    </Appearance>
-                    <!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: The frame whose scale factors are used to scale the mesh.).-->
-                    <socket_scale_frame>/bodyset/femur_distal_r</socket_scale_frame>
-                    <!--Path to mesh geometry file (supports .obj, .stl, .vtp). -->
-                    <mesh_file>lenhart2015-R-femur-subchondral-bone.stl</mesh_file>
-                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
-                    <min_thickness>0.001</min_thickness>
-                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
-                    <max_thickness>0.01</max_thickness>
-                    <!--[x,y,z] scale factors applied to mesh vertex locations.-->
-                    <scale_factors>1 1 1</scale_factors>
-                </Smith2018ContactMesh>
-                <Smith2018ContactMesh name="tibia_cartilage">
-                    <!--List of components that this component owns and serializes.-->
-                    <components />
-                    <!--Path to a Component that satisfies the Socket 'frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
-                    <socket_frame>/bodyset/tibia_proximal_r</socket_frame>
-                    <!--Location of geometry center in the PhysicalFrame.-->
-                    <location>0 0 0</location>
-                    <!--Orientation of geometry in the PhysicalFrame (body-fixed XYZ Euler angles).-->
-                    <orientation>0 0 0</orientation>
-                    <!--Default appearance for this Geometry-->
-                    <Appearance>
-                    <!--Flag indicating whether the associated Geometry is visible or hidden.-->
-                    <visible>true</visible>
-                    <!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
-                    <opacity>1</opacity>
-                    <!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
-                    <color>0 1 1</color>
-                    <!--Visuals applied to surfaces associated with this Appearance.-->
-                    <SurfaceProperties>
-                        <!--The representation (1:Points, 2:Wire, 3:Shaded) used to display the object.-->
-                        <representation>2</representation>
-                    </SurfaceProperties>
-                    </Appearance>
-                    <!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: The frame whose scale factors are used to scale the mesh.).-->
-                    <socket_scale_frame>/bodyset/femur_distal_r</socket_scale_frame>
-                    <!--Path to mesh geometry file (supports .obj, .stl, .vtp). -->
-                    <mesh_file>lenhart2015-R-tibia-subchondral-bone.stl</mesh_file>
-                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
-                    <min_thickness>0.001</min_thickness>
-                    <!--Minimum thickness of cartilage [m] for variable cartilage thickness-->
-                    <max_thickness>0.01</max_thickness>
-                    <!--[x,y,z] scale factors applied to mesh vertex locations.-->
-                    <scale_factors>1 1 1</scale_factors>
-                </Smith2018ContactMesh>			
+				<Smith2018ContactMesh name="femur_subchondral_bone">
+					<!--List of components that this component owns and serializes.-->
+					<components />
+					<!--Path to a Component that satisfies the Socket 'frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
+					<socket_frame>/bodyset/femur_distal_r</socket_frame>
+					<!--Location of geometry center in the PhysicalFrame.-->
+					<location>0 0 0</location>
+					<!--Orientation of geometry in the PhysicalFrame (body-fixed XYZ Euler angles).-->
+					<orientation>0 0 0</orientation>
+					<!--Default appearance for this Geometry-->
+					<Appearance>
+						<!--Flag indicating whether the associated Geometry is visible or hidden.-->
+						<visible>true</visible>
+						<!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
+						<opacity>1</opacity>
+						<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+						<color>0 1 1</color>
+						<!--Visuals applied to surfaces associated with this Appearance.-->
+						<SurfaceProperties>
+							<!--The representation (1:Points, 2:Wire, 3:Shaded) used to display the object.-->
+							<representation>3</representation>
+						</SurfaceProperties>
+					</Appearance>
+					<!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: When using the ScaleTool, the scale factors from this frame will be used to scale the mesh.).-->
+					<socket_scale_frame>/ground</socket_scale_frame>
+					<!--Path to triangle mesh geometry file representing the contact surface (supports .obj, .stl, .vtp).-->
+					<mesh_file>lenhart2015-R-femur-subchondral-bone.stl</mesh_file>
+					<!--Uniform Elastic Modulus value for every triangle in mesh. The default value is 1000000.0 Pa.-->
+					<elastic_modulus>1000000.0</elastic_modulus>
+					<!--Uniform Poissons Ratio value for every triangle in mesh. The default value is 0.5.-->
+					<poissons_ratio>0.5</poissons_ratio>
+					<!--Uniform thickness of elastic layer for entire mesh. The default value is 0.005 meters-->
+					<thickness>0.005</thickness>
+					<!--Compute the local thickness for each triangle in mesh_file by calculating the distance along a normal ray cast from the center of each triangle in the mesh_file to intersection with the mesh_back_file. If use_variable_thickness is true, mesh_back_file must be defined and the 'thickness' property value is not used.The Default value is false.-->
+					<use_variable_thickness>false</use_variable_thickness>
+					<!--Path to traingle mesh geometry file representing the backside of contact surface elastic layer (bone / backside of artifical component) mesh geometry file (supports .obj, .stl, .vtp). -->
+					<mesh_back_file></mesh_back_file>
+					<!--Minimum thickness threshold for elastic layer [m] when calculating variable thickness for each triangle.-->
+					<min_thickness>0.001</min_thickness>
+					<!--Maximum thickness threshold for elastic layer [m] when calculating variable thickness for each triangle.-->
+					<max_thickness>0.01</max_thickness>
+					<!--[x,y,z] scale factors applied to vertex locations of the mesh_file and mesh_back_file meshes.-->
+					<scale_factors>1 1 1</scale_factors>
+				</Smith2018ContactMesh>
+				<Smith2018ContactMesh name="tibia_subchondral_bone">
+					<!--List of components that this component owns and serializes.-->
+					<components />
+					<!--Path to a Component that satisfies the Socket 'frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
+					<socket_frame>/bodyset/tibia_proximal_r</socket_frame>
+					<!--Location of geometry center in the PhysicalFrame.-->
+					<location>0 0 0</location>
+					<!--Orientation of geometry in the PhysicalFrame (body-fixed XYZ Euler angles).-->
+					<orientation>0 0 0</orientation>
+					<!--Default appearance for this Geometry-->
+					<Appearance>
+						<!--Flag indicating whether the associated Geometry is visible or hidden.-->
+						<visible>true</visible>
+						<!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
+						<opacity>1</opacity>
+						<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+						<color>0 1 1</color>
+						<!--Visuals applied to surfaces associated with this Appearance.-->
+						<SurfaceProperties>
+							<!--The representation (1:Points, 2:Wire, 3:Shaded) used to display the object.-->
+							<representation>3</representation>
+						</SurfaceProperties>
+					</Appearance>
+					<!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: When using the ScaleTool, the scale factors from this frame will be used to scale the mesh.).-->
+					<socket_scale_frame>/ground</socket_scale_frame>
+					<!--Path to triangle mesh geometry file representing the contact surface (supports .obj, .stl, .vtp).-->
+					<mesh_file>lenhart2015-R-tibia-subchondral-bone.stl</mesh_file>
+					<!--Uniform Elastic Modulus value for every triangle in mesh. The default value is 1000000.0 Pa.-->
+					<elastic_modulus>1000000.0</elastic_modulus>
+					<!--Uniform Poissons Ratio value for every triangle in mesh. The default value is 0.5.-->
+					<poissons_ratio>0.5</poissons_ratio>
+					<!--Uniform thickness of elastic layer for entire mesh. The default value is 0.005 meters-->
+					<thickness>0.005</thickness>
+					<!--Compute the local thickness for each triangle in mesh_file by calculating the distance along a normal ray cast from the center of each triangle in the mesh_file to intersection with the mesh_back_file. If use_variable_thickness is true, mesh_back_file must be defined and the 'thickness' property value is not used.The Default value is false.-->
+					<use_variable_thickness>false</use_variable_thickness>
+					<!--Path to traingle mesh geometry file representing the backside of contact surface elastic layer (bone / backside of artifical component) mesh geometry file (supports .obj, .stl, .vtp). -->
+					<mesh_back_file></mesh_back_file>
+					<!--Minimum thickness threshold for elastic layer [m] when calculating variable thickness for each triangle.-->
+					<min_thickness>0.001</min_thickness>
+					<!--Maximum thickness threshold for elastic layer [m] when calculating variable thickness for each triangle.-->
+					<max_thickness>0.01</max_thickness>
+					<!--[x,y,z] scale factors applied to vertex locations of the mesh_file and mesh_back_file meshes.-->
+					<scale_factors>1 1 1</scale_factors>
+				</Smith2018ContactMesh>
 			</objects>
 		</ContactGeometrySet>
 	</Model>

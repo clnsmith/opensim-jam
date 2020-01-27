@@ -291,12 +291,16 @@ void Smith2018ArticularContactForce::computeMeshProximity(
                 target_mesh.getPolygonalMesh(), origin, -direction,
                 target_tri[i], contact_point, distance))
             {
-                triangle_proximity(i) = distance;
+                if (distance >= get_min_proximity() &&
+                    distance <= get_max_proximity()) {
+                    
+                    triangle_proximity(i) = distance;
+                
+                    nActiveTri++;
+                    nSameTri++;
 
-                nActiveTri++;
-                nSameTri++;
-
-                if (triangle_proximity(i) > 0.0) { nContactingTri++; }
+                    if (triangle_proximity(i) > 0.0) { nContactingTri++; }
+                }
                 continue;
 
             }
@@ -310,15 +314,20 @@ void Smith2018ArticularContactForce::computeMeshProximity(
                     target_mesh.getPolygonalMesh(), origin, -direction,
                     neighbor_tri, contact_point, distance))
                 {
-                    triangle_proximity(i) = distance;
-                    target_tri[i] = neighbor_tri;
+                    if (distance >= get_min_proximity() &&
+                        distance <= get_max_proximity()) {
 
-                    nActiveTri++;
-                    nNeighborTri++;
-                    if (triangle_proximity(i) > 0.0) { nContactingTri++; }
+                        triangle_proximity(i) = distance;
 
-                    contact_detected = true;
-                    break;
+                        target_tri[i] = neighbor_tri;
+
+                        nActiveTri++;
+                        nNeighborTri++;
+                        if (triangle_proximity(i) > 0.0) { nContactingTri++; }
+
+                        contact_detected = true;
+                        break;
+                    }
                 }
             }
             if (contact_detected) {

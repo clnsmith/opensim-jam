@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <OpenSimDocument Version="40000">
-<JointMechanicsTool>
+    <JointMechanicsTool>
         <!--Path to .osim file to use in analysis.-->
         <model_file>../../../models/lenhart2015/lenhart2015.osim</model_file>
         <!--Path to storage file (.sto) containing the model states vs time for the simulation to be analyzed.-->

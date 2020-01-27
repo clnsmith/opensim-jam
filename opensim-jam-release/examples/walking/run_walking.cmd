@@ -37,6 +37,4 @@ REM REM Joint Mechanics Analysis
 move out.log results\joint_mechanics_muscle_weights_out.log
 move err.log results\joint_mechanics_muscle_weights_err.log
 
-
-
 pause
