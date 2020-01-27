@@ -71,81 +71,81 @@ box off
 
 saveas(coord_fig,'../graphics/prescribed_coordinates.png')
 
-% %% External Loads Files
-% %.sto file
-% %---------
-% external_loads_sto_file = 'external_loads.sto';
-% 
-% 
-% force_data.time = time;
-% force_data.force_vx = ...
-%     [zeros(num_flex_steps + num_settle_steps,1);...
-%      linspace(0,force_magnitude,num_force_steps)'];
-% force_data.force_vy = zeros(num_steps,1);
-% force_data.force_vz = zeros(num_steps,1);
-% force_data.force_px = zeros(num_steps,1);
-% force_data.force_py = ones(num_steps,1)*force_point_height;
-% force_data.force_pz = zeros(num_steps,1);
-% force_data.torque_x = zeros(num_steps,1);
-% force_data.torque_y = zeros(num_steps,1);
-% force_data.torque_z = zeros(num_steps,1);
-% 
-% force_table = osimTableFromStruct(force_data); %% Function distributed in OpenSim 4.0 resources
-% force_table.addTableMetaDataString('header','Anterior Tibial External Force')
-% STOFileAdapter.write(force_table,external_loads_sto_file);
-% 
-% % external loads plot
-% ext_loads_fig = figure('name','external_loads','Position',  [100, 100, 333, 300]);
-% 
-% plot(time,force_data.force_vx,'LineWidth',2)
-% ylim([0.0 100])
-% xlabel('Time [s]')
-% ylabel('Anterior Force [N]')
-% title('External Loads on the Tibia')
-% box off
-% 
-% saveas(ext_loads_fig,'../graphics/external_loads.png')
-% 
-% % .xml file
-% %----------
-% external_loads_xml_file = 'external_loads.xml';
-% 
-% ext_force = ExternalForce();
-% ext_force.setName('AnteriorForce');
-% ext_force.set_applied_to_body('tibia_proximal_r');
-% ext_force.set_force_expressed_in_body('tibia_proximal_r');
-% ext_force.set_point_expressed_in_body('tibia_proximal_r');
-% ext_force.set_force_identifier('force_v');
-% ext_force.set_point_identifier('force_p');
-% ext_force.set_torque_identifier('torque_');
-% 
-% ext_loads = ExternalLoads();
-% ext_loads.setDataFileName(external_loads_sto_file);
-% ext_loads.adoptAndAppend(ext_force);
-% ext_loads.print(external_loads_xml_file );
-% 
-% 
-% %% Write acld model file
-% plugin_file = '../../../bin/jam_plugin.dll';
-% opensimCommon.LoadOpenSimLibrary(plugin_file)
-% lenhart_model_file = '../../../models/lenhart2015/lenhart2015.osim';
-% acld_model_file = '../../../models/lenhart2015/lenhart2015_acld.osim';
-% model = Model(lenhart_model_file);
-% 
-% %Remove ACL Ligaments
-% n=1;
-% for i = 0:model.getForceSet.getSize()-1
-%     force = model.getForceSet.get(i);
-%     if(contains(char(force.getName()),'ACL'))
-%         ACL_names{n} = force.getName();
-%         n=n+1;
-%     end
-% end
-% 
-% for i = 1:length(ACL_names)
-%     force = model.getForceSet.get(ACL_names{i});
-%     model.getForceSet.remove(force);
-% end
-% 
-% model.initSystem();
-% model.print(acld_model_file);
+%% External Loads Files
+%.sto file
+%---------
+external_loads_sto_file = 'external_loads.sto';
+
+
+force_data.time = time;
+force_data.tibia_proximal_r_force_vx = ...
+    [zeros(num_flex_steps + num_settle_steps,1);...
+     linspace(0,force_magnitude,num_force_steps)'];
+force_data.tibia_proximal_r_force_vy = zeros(num_steps,1);
+force_data.tibia_proximal_r_force_vz = zeros(num_steps,1);
+force_data.tibia_proximal_r_force_px = zeros(num_steps,1);
+force_data.tibia_proximal_r_force_py = ones(num_steps,1)*force_point_height;
+force_data.tibia_proximal_r_force_pz = zeros(num_steps,1);
+force_data.tibia_proximal_r_torque_x = zeros(num_steps,1);
+force_data.tibia_proximal_r_torque_y = zeros(num_steps,1);
+force_data.tibia_proximal_r_torque_z = zeros(num_steps,1);
+
+force_table = osimTableFromStruct(force_data); %% Function distributed in OpenSim 4.0 resources
+force_table.addTableMetaDataString('header','Anterior Tibial External Force')
+STOFileAdapter.write(force_table,external_loads_sto_file);
+
+% external loads plot
+ext_loads_fig = figure('name','external_loads','Position',  [100, 100, 333, 300]);
+
+plot(time,force_data.tibia_proximal_r_force_vx,'LineWidth',2)
+ylim([0.0 100])
+xlabel('Time [s]')
+ylabel('Anterior Force [N]')
+title('External Loads on the Tibia')
+box off
+
+saveas(ext_loads_fig,'../graphics/external_loads.png')
+
+% .xml file
+%----------
+external_loads_xml_file = 'external_loads.xml';
+
+ext_force = ExternalForce();
+ext_force.setName('AnteriorForce');
+ext_force.set_applied_to_body('tibia_proximal_r');
+ext_force.set_force_expressed_in_body('tibia_proximal_r');
+ext_force.set_point_expressed_in_body('tibia_proximal_r');
+ext_force.set_force_identifier('tibia_proximal_r_force_v');
+ext_force.set_point_identifier('tibia_proximal_r_force_p');
+ext_force.set_torque_identifier('tibia_proximal_r_torque_');
+
+ext_loads = ExternalLoads();
+ext_loads.setDataFileName(external_loads_sto_file);
+ext_loads.adoptAndAppend(ext_force);
+ext_loads.print(external_loads_xml_file );
+
+
+%% Write acld model file
+plugin_file = '../../../bin/jam_plugin.dll';
+opensimCommon.LoadOpenSimLibrary(plugin_file)
+lenhart_model_file = '../../../models/lenhart2015/lenhart2015.osim';
+acld_model_file = '../../../models/lenhart2015/lenhart2015_acld.osim';
+model = Model(lenhart_model_file);
+
+%Remove ACL Ligaments
+n=1;
+for i = 0:model.getForceSet.getSize()-1
+    force = model.getForceSet.get(i);
+    if(contains(char(force.getName()),'ACL'))
+        ACL_names{n} = force.getName();
+        n=n+1;
+    end
+end
+
+for i = 1:length(ACL_names)
+    force = model.getForceSet.get(ACL_names{i});
+    model.getForceSet.remove(force);
+end
+
+model.initSystem();
+model.print(acld_model_file);

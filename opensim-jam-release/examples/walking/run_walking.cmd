@@ -33,7 +33,7 @@ move out.log results\comak_muscle_weights_out.log
 move err.log results\comak_muscle_weights_err.log
 
 REM REM Joint Mechanics Analysis
-%BIN%\joint-mechanics %BIN%\jam_plugin.dll .\inputs\joint_mechanics_settings.xml 
+%BIN%\joint-mechanics %BIN%\jam_plugin.dll .\inputs\joint_mechanics_muscle_weights_settings.xml 
 move out.log results\joint_mechanics_muscle_weights_out.log
 move err.log results\joint_mechanics_muscle_weights_err.log
 

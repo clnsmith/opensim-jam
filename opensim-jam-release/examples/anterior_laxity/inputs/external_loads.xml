@@ -10,11 +10,11 @@
 				<!--Name of the body the point is expressed in (default is ground).-->
 				<point_expressed_in_body>tibia_proximal_r</point_expressed_in_body>
 				<!--Identifier (string) to locate the force to be applied in the data source.-->
-				<force_identifier>force_v</force_identifier>
+				<force_identifier>tibia_proximal_r_force_v</force_identifier>
 				<!--Identifier (string) to locate the point to be applied in the data source.-->
-				<point_identifier>force_p</point_identifier>
+				<point_identifier>tibia_proximal_r_force_p</point_identifier>
 				<!--Identifier (string) to locate the torque to be applied in the data source.-->
-				<torque_identifier>torque_</torque_identifier>
+				<torque_identifier>tibia_proximal_r_torque_</torque_identifier>
 			</ExternalForce>
 		</objects>
 		<groups />
