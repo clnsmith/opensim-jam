@@ -939,7 +939,7 @@ void COMAKTool::printResultsFiles() {
     _result_values.addTableMetaData("nRows", std::to_string(_result_values.getNumRows()));
     _result_values.addTableMetaData("nColumns", std::to_string(_result_values.getNumColumns() + 1));
 
-    sto.write(_result_values, get_results_directory() + get_results_prefix() + "_kinematics.sto");
+    sto.write(_result_values, get_results_directory() + get_results_prefix() + "_values.sto");
 }
 
 SimTK::Vector COMAKTool::equilibriateSecondaryCoordinates() 

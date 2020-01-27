@@ -5,28 +5,33 @@ import org.opensim.modeling.*
 
 line_width = 2;
 BW = 61*9.81;
-model = Model('../results/scale/lenhart2015_scaled_markers.osim');
+model = Model('../../../models/lenhart2015/lenhart2015.osim');
 %% Force Reporter
 forces_table = TimeSeriesTable('../results/joint-mechanics/walking_ForceReporter_forces.sto');
 forces = osimTableToStruct(forces_table);
 
-
-
 [states_data, states_labels, states_header] = read_opensim_mot('../results/comak/walking_activation.sto');
 states_time = states_data(:,1);
+
+% forces_table = TimeSeriesTable('../results/joint-mechanics/walking_ForceReporter_forces.sto');
+% forces = osimTableToStruct(forces_table);
+% 
+% [states_data, states_labels, states_header] = read_opensim_mot('../results/comak/walking_activation.sto');
+% states_time = states_data(:,1);
+
 %% Plot Contact Forces
 figure('name','Tibiofemoral Contact Forces')
 hold on
-plot(forces.time,forces.tf_contact_casting_contact_force_x/BW,'LineWidth',line_width)
-plot(forces.time,-forces.tf_contact_casting_contact_force_y/BW,'LineWidth',line_width)
-plot(forces.time,forces.tf_contact_casting_contact_force_z/BW,'LineWidth',line_width)
+plot(forces.time,forces.tf_contact_casting_total_contact_force_x/BW,'LineWidth',line_width)
+plot(forces.time,-forces.tf_contact_casting_total_contact_force_y/BW,'LineWidth',line_width)
+plot(forces.time,forces.tf_contact_casting_total_contact_force_z/BW,'LineWidth',line_width)
 legend('Fx','Fy','Fz')
 
 figure('name','Patellofemoral Contact Forces')
 hold on
-plot(forces.time,forces.pf_contact_casting_contact_force_x/BW,'LineWidth',line_width)
-plot(forces.time,forces.pf_contact_casting_contact_force_y/BW,'LineWidth',line_width)
-plot(forces.time,forces.pf_contact_casting_contact_force_z/BW,'LineWidth',line_width)
+plot(forces.time,forces.pf_contact_casting_total_contact_force_x/BW,'LineWidth',line_width)
+plot(forces.time,forces.pf_contact_casting_total_contact_force_y/BW,'LineWidth',line_width)
+plot(forces.time,forces.pf_contact_casting_total_contact_force_z/BW,'LineWidth',line_width)
 legend('Fx','Fy','Fz')
 
 %% Plot Muscle Activation

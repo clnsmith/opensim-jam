@@ -9,6 +9,7 @@ REM Copy Models
 xcopy /I /y  .\models\lenhart2015  opensim-jam-release\models\lenhart2015 
 xcopy /I /y  .\models\lenhart2015\Geometry  opensim-jam-release\models\lenhart2015\Geometry
 xcopy /I /y  .\models\lenhart2015\motion_data  opensim-jam-release\models\lenhart2015\motion_data
+xcopy /I /y  .\models\lenhart2015\graphics  opensim-jam-release\models\lenhart2015\graphics
 
 REM Copy Documentation
 xcopy /I /y  .\documentation opensim-jam-release\documentation

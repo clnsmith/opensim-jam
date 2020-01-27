@@ -196,7 +196,7 @@ private:
     void constructProperties();
     
     void initialize(SimTK::State& state);
-    void formQandUMatrixFromFile();
+    void readStatesFromFile();
     
     int record(const SimTK::State& s, const int frame_num);
     
