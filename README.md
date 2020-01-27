@@ -8,8 +8,3 @@ This repository is a collection of force component plugins, models, and executab
 This repository is used for the development of these tools and contains the [source code](src) for this package. Instructions to build the C++ code from source are provided [here](./documentation/building-opensim-jam-from-source.md)
 
 A release version of these codes is provided in the [opensim-jam-release](opensim-jam-release) folder. This includes prebuilt versions of the opensim_jam.dll plugin for OpenSim, command-line exectuables for the tools, examples, and documentation. 
-
-## Build Instructions
-
-
-
