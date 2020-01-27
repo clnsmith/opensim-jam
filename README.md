@@ -1,6 +1,6 @@
 # OpenSim JAM
 
-<img  height="200" src="graphics/msk_model_walk_full_body.png"><img  height="200" src="graphics/tka_ligament_elongation_walking.gif"><img  height="200" src="graphics/tka_contact.png">
+<img  height="300" src="graphics/msk_model_walk_full_body.png"><img  height="300" src="graphics/tka_ligament_elongation_walking.gif"><img  height="300" src="graphics/tka_contact.png">
 
 _A framework to simulate **J**oint and **A**rticular **M**echanics in OpenSim._
 
