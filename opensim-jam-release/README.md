@@ -22,7 +22,7 @@ _Description_
 
 
 ### Smith2018ArticularContactForce and Smith2018ContactMesh
-This force component represents articular contact between cartilage, mensici, or artifical components using triangular mesh representations of the surface geometries and an elastic foundation model to compute local contact pressures. Further details on the implementation and how to use the component are available in the [Smith2018ArticularContactForce Description](documentation/doxygen/Smith2018ArticularContactForce_doxygen.pdf) and [Smith2018ContactMesh_Description](documentation/doxygen/Smith2018ContactMesh_doxygen.pdf)
+This force component represents articular contact between cartilage, mensici, or artifical components using triangular mesh representations of the surface geometries and an elastic foundation model to compute local contact pressures.
 
 _Source_
 - [Smith2018ArticularContactForce.h](../src/Smith2018ArticularContactForce.h) 
@@ -47,20 +47,34 @@ The Lenhart2015 model is an OpenSim implementation of the model described in the
 ## Simulation Tools
 ### Forsim 
 The ForsimTool enables forward dynamic simulations of joint mechanics to be performed. Practically, this allows simulations of cadaver experiments, passive clinical examinations, and simulations where the muscle forces or excitations are known inputs. Fundamentally, it is similar to the ForwardTool in the OpenSim GUI, but the interface is designed for performing forward simulations involving articular contact. The input files can define the muscle and actuator controls (excitations), activations, or forces vs time, external loads applied to the model, and the Coordinate values vs time for Prescribed Coordinates. The forsim tool uses an implicit integrator (SimTK::CPODES::BDF), which gives far superior performance for simulations that involve contact compared to the explicit integrators used by the existing OpenSim ForwardTool. 
-
-The c++ implementation of the ForsimTool is located at [../src/ForsimTool.h](../src/ForsimTool.h) and [../src/ForsimTool.cpp](../src/ForsimTool.cpp). Further description is available in the [Smith2018ArticularContactForce Description](./documentation/doxygen/ForsimTool_doxygen.pdf).
+_Source_
+- [../src/ForsimTool.h](../src/ForsimTool.h)
+- [../src/ForsimTool.cpp](../src/ForsimTool.cpp)
+_Description_
+- [Smith2018ArticularContactForce Description](./documentation/doxygen/ForsimTool_doxygen.pdf).
 
 ### COMAKInverseKinematics and COMAK
 The **C**oncurrent **O**ptimization of **M**uscle **A**ctivations and **K**inematics (COMAK) algorithm enables the calculation of muscle forces and detailed joint mechanics during dynamic movements. 
 
-The c++ implementation of the COMAKInverseKinematicsTool is located at [../src/COMAKInverseKinematicsTool.h](../src/COMAKInverseKinematicsTool.h) and [../src/COMAKInverseKinematicsTool.cpp](../src/COMAKInverseKinematicsTool.cpp). Further description is available in the [COMAKInverseKinematicsTool Description](./documentation/doxygen/COMAKInverseKinematicsTool_doxygen.pdf).
+_Source_
+- [../src/COMAKInverseKinematicsTool.h](../src/COMAKInverseKinematicsTool.h)
+- [../src/COMAKInverseKinematicsTool.cpp](../src/COMAKInverseKinematicsTool.cpp)
+- [../src/COMAKTool.h](../src/COMAKTool.h)
+- [../src/COMAKTool.cpp](../src/COMAKTool.cpp)
 
-The c++ implementation of the COMAKTool is located at [../src/COMAKTool.h](../src/COMAKTool.h) and [../src/COMAKTool.cpp](../src/COMAKTool.cpp). Further description is available in the [COMAKTool Description](./documentation/doxygen/COMAKTool_doxygen.pdf).
+_Description_
+- [COMAKInverseKinematicsTool Description](./documentation/doxygen/COMAKInverseKinematicsTool_doxygen.pdf)
+- [COMAKTool Description](./documentation/doxygen/COMAKTool_doxygen.pdf)
 
 ### Joint Mechanics
 The JointMechanicsTool enables detailed post-hoc analysis of simulations or measurments of joint mechanics. It can be used to generate .vtp files to visualize simulation results in Paraview, or .h5 files which are binary files that can store the large quantites of contact data (multiple calculated values for each triange face) in compact files that can be quickly read by MATLAB, Python, or [HDF View](https://www.hdfgroup.org/downloads/hdfview/)
 
-The c++ implementation of the JointMechanicsTool is located at [../src/JointMechanicsTool.h](../src/JointMechanicsTool.h) and [../src/JointMechanicsTool.cpp](../src/JointMechanicsTool.cpp). Further description is available in the [JointMechanicsTool Description](./documentation/doxygen/JointMechanicsToolTool_doxygen.pdf).
+_Source_
+- [../src/JointMechanicsTool.h](../src/JointMechanicsTool.h)
+- [../src/JointMechanicsTool.cpp](../src/JointMechanicsTool.cpp)
+
+_Description_
+- [JointMechanicsTool Description](./documentation/doxygen/JointMechanicsToolTool_doxygen.pdf)
 
 ## Distribution
 ### OpenSim-JAM Plugin
