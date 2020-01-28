@@ -13245,7 +13245,7 @@
 					<!--The maximum proximity that is valid between contacting meshes to limit the search distance along the casting_mesh normal ray used for collision detection.Default value set to 0.01 meters.-->
 					<max_proximity>0.02</max_proximity>
 					<!--Formulation for depth-pressure relationship: 'linear' or 'nonlinear'. Default value set to 'linear'.-->
-					<elastic_foundation_formulation>nonlinear</elastic_foundation_formulation>
+					<elastic_foundation_formulation>linear</elastic_foundation_formulation>
 					<!--Combine the thickness and the average material properties between the Smith2018ContactMeshes for both meshes and use Bei & Fregly 2003 lumped parameter Elastic Foundation model.-->
 					<use_lumped_contact_model>true</use_lumped_contact_model>
 				</Smith2018ArticularContactForce>
@@ -13263,7 +13263,7 @@
 					<!--The maximum proximity that is valid between contacting meshes to limit the search distance along the casting_mesh normal ray used for collision detection.Default value set to 0.01 meters.-->
 					<max_proximity>0.02</max_proximity>
 					<!--Formulation for depth-pressure relationship: 'linear' or 'nonlinear'. Default value set to 'linear'.-->
-					<elastic_foundation_formulation>nonlinear</elastic_foundation_formulation>
+					<elastic_foundation_formulation>linear</elastic_foundation_formulation>
 					<!--Combine the thickness and the average material properties between the Smith2018ContactMeshes for both meshes and use Bei & Fregly 2003 lumped parameter Elastic Foundation model.-->
 					<use_lumped_contact_model>true</use_lumped_contact_model>
 				</Smith2018ArticularContactForce>
@@ -13832,7 +13832,7 @@
 					<!--Uniform thickness of elastic layer for entire mesh. The default value is 0.005 meters-->
 					<thickness>0.0030000000000000001</thickness>
 					<!--Compute the local thickness for each triangle in mesh_file by calculating the distance along a normal ray cast from the center of each triangle in the mesh_file to intersection with the mesh_back_file. If use_variable_thickness is true, mesh_back_file must be defined and the 'thickness' property value is not used.The Default value is false.-->
-					<use_variable_thickness>true</use_variable_thickness>
+					<use_variable_thickness>false</use_variable_thickness>
 					<!--Path to traingle mesh geometry file representing the backside of contact surface elastic layer (bone / backside of artifical component) mesh geometry file (supports .obj, .stl, .vtp). -->
 					<mesh_back_file>lenhart2015-R-femur-bone.stl</mesh_back_file>
 					<!--Minimum thickness threshold for elastic layer [m] when calculating variable thickness for each triangle.-->
@@ -13876,7 +13876,7 @@
 					<!--Uniform thickness of elastic layer for entire mesh. The default value is 0.005 meters-->
 					<thickness>0.0030000000000000001</thickness>
 					<!--Compute the local thickness for each triangle in mesh_file by calculating the distance along a normal ray cast from the center of each triangle in the mesh_file to intersection with the mesh_back_file. If use_variable_thickness is true, mesh_back_file must be defined and the 'thickness' property value is not used.The Default value is false.-->
-					<use_variable_thickness>true</use_variable_thickness>
+					<use_variable_thickness>false</use_variable_thickness>
 					<!--Path to traingle mesh geometry file representing the backside of contact surface elastic layer (bone / backside of artifical component) mesh geometry file (supports .obj, .stl, .vtp). -->
 					<mesh_back_file>lenhart2015-R-tibia-bone.stl</mesh_back_file>
 					<!--Minimum thickness threshold for elastic layer [m] when calculating variable thickness for each triangle.-->
@@ -13920,7 +13920,7 @@
 					<!--Uniform thickness of elastic layer for entire mesh. The default value is 0.005 meters-->
 					<thickness>0.0030000000000000001</thickness>
 					<!--Compute the local thickness for each triangle in mesh_file by calculating the distance along a normal ray cast from the center of each triangle in the mesh_file to intersection with the mesh_back_file. If use_variable_thickness is true, mesh_back_file must be defined and the 'thickness' property value is not used.The Default value is false.-->
-					<use_variable_thickness>true</use_variable_thickness>
+					<use_variable_thickness>false</use_variable_thickness>
 					<!--Path to traingle mesh geometry file representing the backside of contact surface elastic layer (bone / backside of artifical component) mesh geometry file (supports .obj, .stl, .vtp). -->
 					<mesh_back_file>lenhart2015-R-patella-bone.stl</mesh_back_file>
 					<!--Minimum thickness threshold for elastic layer [m] when calculating variable thickness for each triangle.-->

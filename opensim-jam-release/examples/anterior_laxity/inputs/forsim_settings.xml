@@ -18,7 +18,7 @@
 		<!--The timestep interval to report the results. Set to -1 to use step size in input files. The Default value is 0.01.-->
 		<report_time_step>0.01</report_time_step>
 		<!--Accuracy setting for BDF integrator. The Default value is 1e-6-->
-		<integrator_accuracy>1e-8</integrator_accuracy>
+		<integrator_accuracy>1e-6</integrator_accuracy>
 		<!--Limit on the number of internal steps that can be taken by BDF integrator. If -1, then there is no limit. The Default value is -1-->
 		<internal_step_limit>10000</internal_step_limit>
 		<!--Constant value (between 0 and 1) input as control to all muscles not listed in the actuator_input_file. Set to -1 to ignore. Default is 0.01.-->
