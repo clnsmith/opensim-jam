@@ -6,7 +6,7 @@
 %==========================================================================
 import org.opensim.modeling.*
 
-force_magnitude = 100; % 100 N anterior force, similar to KT-1000 arthrometer
+force_magnitude = 1000; % 100 N anterior force, similar to KT-1000 arthrometer
 force_point_height = -0.1; %Apply at the tibial tuberosity height
 
 %% Simulation Time
