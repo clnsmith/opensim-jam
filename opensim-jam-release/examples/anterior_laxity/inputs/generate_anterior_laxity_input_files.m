@@ -21,7 +21,7 @@ time_step = 0.01;
 settle1_duration = 0.5;
 flex_duration = 1.0;
 settle2_duration = 0.5;
-force_duration = 0.5;
+force_duration = 1.0;
 
 
 settle1_time = 0 : time_step : settle1_duration;
@@ -45,8 +45,8 @@ num_steps = length(time);
 %% Prescribed Coordinates File
 prescribed_coordinate_file = 'prescribed_coordinates.sto';
 
-max_hip_flex = 30;
-max_knee_flex = 30;
+max_hip_flex = 15;
+max_knee_flex = 15;
 
 coord_data.time = time;
 
