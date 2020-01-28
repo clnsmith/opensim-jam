@@ -41,9 +41,9 @@ ForsimTool::ForsimTool(std::string settings_file) : Object(settings_file) {
     constructProperties();
     updateFromXMLDocument();
     loadModel(settings_file);
-    
-    _directoryOfSetupFile = IO::getParentDirectory(settings_file);	
-    IO::chDir(_directoryOfSetupFile); 
+
+    _directoryOfSetupFile = IO::getParentDirectory(settings_file);
+    IO::chDir(_directoryOfSetupFile);
 }
 
 void ForsimTool::setNull()
@@ -83,7 +83,7 @@ void ForsimTool::setModel(Model& aModel)
     set_model_file(_model.getDocumentFileName());
 }
 
-void ForsimTool::run() 
+void ForsimTool::run()
 {
     //Make results directory
     int makeDir_out = IO::makeDir(get_results_directory());
@@ -92,30 +92,30 @@ void ForsimTool::run()
             get_results_directory() +
             "Possible reason: This tool cannot make new folder with subfolder.");
     }
-    
+
     SimTK::State state = _model.initSystem();
-        
+
     //Add Analysis set
     AnalysisSet aSet = get_AnalysisSet();
     int size = aSet.getSize();
 
-    for(int i=0;i<size;i++) {
+    for (int i = 0; i < size; i++) {
         Analysis *analysis = aSet.get(i).clone();
         _model.addAnalysis(analysis);
     }
 
-
-    applyExternalLoads();
-
     initializeActuators(state);
 
     initializeCoordinates();
+
+    applyExternalLoads();
 
     if (get_use_visualizer()) {
         _model.setUseVisualizer(true);
     }
 
     state = _model.initSystem();
+
 
     initializeStartStopTimes();
 

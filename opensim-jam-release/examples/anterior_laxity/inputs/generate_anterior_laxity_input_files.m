@@ -6,7 +6,7 @@
 %==========================================================================
 import org.opensim.modeling.*
 
-force_magnitude = 1000; % 100 N anterior force, similar to KT-1000 arthrometer
+force_magnitude = 100; % 100 N anterior force, similar to KT-1000 arthrometer
 force_point_height = -0.1; %Apply at the tibial tuberosity height
 
 %% Simulation Time
@@ -17,7 +17,7 @@ force_point_height = -0.1; %Apply at the tibial tuberosity height
 
 time_step = 0.01;
 
-flex_duration = 2.0;
+flex_duration = 1.0;
 settle_duration = 0.5;
 force_duration = 0.5;
 
@@ -35,8 +35,8 @@ num_steps = length(time);
 %% Prescribed Coordinates File
 prescribed_coordinate_file = 'prescribed_coordinates.sto';
 
-max_hip_flex = 45;
-max_knee_flex = 90;
+max_hip_flex = 30;
+max_knee_flex = 30;
 
 coord_data.time = time;
 coord_data.hip_flex_r = [...
