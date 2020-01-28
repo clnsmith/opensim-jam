@@ -19,15 +19,23 @@ flex_time = settle_duration + time_step : time_step : flex_duration + settle_dur
 
 time = [settle_time, flex_time];
 
+time_points = [0,settle_duration,settle_duration + flex_duration];
+
 nSettleSteps = length(settle_time);
 nFlexSteps = length(flex_time);
 
 sto = STOFileAdapter();
 
 %% Prescribed Coordinate File
+max_knee_flex = 90;
+
+knee_flex = [0,0,max_knee_flex];
+smooth_knee_flex = interp1(time_points, knee_flex, time,'pchip');
+
+coord_data.knee_flex_r = smooth_knee_flex';
 coord_data.time = time;
 coord_data.pelvis_tilt = ones(nSettleSteps+nFlexSteps,1)*90;
-coord_data.knee_flex_r = [zeros(nSettleSteps,1); linspace(0,90,nFlexSteps)'];
+
 coord_table = osimTableFromStruct(coord_data);
 
 sto.write(coord_table,coord_file);

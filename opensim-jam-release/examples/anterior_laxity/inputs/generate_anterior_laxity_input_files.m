@@ -10,24 +10,34 @@ force_magnitude = 100; % 100 N anterior force, similar to KT-1000 arthrometer
 force_point_height = -0.1; %Apply at the tibial tuberosity height
 
 %% Simulation Time
-%Simulation consists of three phases:
+%Simulation consists of four phases:
+%settle: allow knee to settle into equilbrium
 %flex: hip and knee flexion
 %settle: allow knee to settle into equilbrium 
 %force: ramp up the anterior force
 
 time_step = 0.01;
 
+settle1_duration = 0.5;
 flex_duration = 1.0;
-settle_duration = 0.5;
+settle2_duration = 0.5;
 force_duration = 0.5;
 
-flex_time = 0 : time_step : flex_duration;
-settle_time = flex_duration+time_step : time_step : flex_duration + settle_duration;
-force_time = flex_duration + settle_duration + time_step : time_step : flex_duration+settle_duration + force_duration;
-time = [flex_time, settle_time, force_time];
 
+settle1_time = 0 : time_step : settle1_duration;
+flex_time = settle1_duration + time_step : time_step : settle1_duration + flex_duration;
+settle2_time = settle1_duration + flex_duration + time_step : time_step : settle1_duration + flex_duration + settle2_duration;
+force_time = settle1_duration + flex_duration + settle2_duration + time_step : time_step : settle1_duration + flex_duration + settle2_duration + force_duration;
+time = [settle1_time, flex_time, settle2_time, force_time];
+
+time_points = [0,settle1_duration,...
+    settle1_duration + flex_duration,...
+    settle1_duration + flex_duration + settle2_duration,...
+    settle1_duration + flex_duration + settle2_duration + force_duration];
+
+num_settle1_steps = length(settle1_time);
 num_flex_steps = length(flex_time);
-num_settle_steps = length(settle_time);
+num_settle2_steps = length(settle2_time);
 num_force_steps = length(force_time);
 num_steps = length(time);
 
@@ -39,13 +49,15 @@ max_hip_flex = 30;
 max_knee_flex = 30;
 
 coord_data.time = time;
-coord_data.hip_flex_r = [...
-    linspace(0,max_hip_flex,num_flex_steps)';...
-    ones(num_settle_steps+num_force_steps,1)*max_hip_flex];
 
-coord_data.knee_flex_r = [...
-    linspace(0,max_knee_flex,num_flex_steps)';...
-    ones(num_settle_steps+num_force_steps,1)*max_knee_flex];
+hip_flex = [0,0,max_hip_flex,max_hip_flex,max_hip_flex];
+knee_flex = [0,0,max_knee_flex,max_knee_flex,max_knee_flex];
+
+smooth_hip_flex = interp1(time_points, hip_flex, time,'pchip');
+smooth_knee_flex = interp1(time_points, knee_flex, time,'pchip');
+
+coord_data.hip_flex_r = smooth_hip_flex';
+coord_data.knee_flex_r = smooth_knee_flex';
 
 coord_table = osimTableFromStruct(coord_data); %% Function distributed in OpenSim 4.0 resources
 STOFileAdapter.write(coord_table,prescribed_coordinate_file);
@@ -76,11 +88,11 @@ saveas(coord_fig,'../graphics/prescribed_coordinates.png')
 %---------
 external_loads_sto_file = 'external_loads.sto';
 
+force_vx = [0,0,0,0,force_magnitude];
+smooth_force_vx = interp1(time_points, force_vx, time,'pchip');
 
 force_data.time = time;
-force_data.tibia_proximal_r_force_vx = ...
-    [zeros(num_flex_steps + num_settle_steps,1);...
-     linspace(0,force_magnitude,num_force_steps)'];
+force_data.tibia_proximal_r_force_vx = smooth_force_vx';
 force_data.tibia_proximal_r_force_vy = zeros(num_steps,1);
 force_data.tibia_proximal_r_force_vz = zeros(num_steps,1);
 force_data.tibia_proximal_r_force_px = zeros(num_steps,1);
@@ -96,7 +108,6 @@ STOFileAdapter.write(force_table,external_loads_sto_file);
 
 % external loads plot
 ext_loads_fig = figure('name','external_loads','Position',  [100, 100, 333, 300]);
-
 plot(time,force_data.tibia_proximal_r_force_vx,'LineWidth',2)
 ylim([0.0 100])
 xlabel('Time [s]')

@@ -7,24 +7,33 @@
 import org.opensim.modeling.*
 
 %% Simulation Time
-%Simulation consists of three phases:
+%Simulation consists of four phases:
+%settle1: allow knee to settle into equilbrium
 %flex: hip and knee flexion
-%settle: allow knee to settle into equilbrium 
+%settle2: allow knee to settle into equilbrium 
 %force: ramp up the muscle forces
 
 time_step = 0.01;
 
+settle1_duration = 0.5;
 flex_duration = 1.0;
-settle_duration = 0.5;
+settle2_duration = 0.5;
 force_duration = 1.0;
 
-flex_time = 0 : time_step : flex_duration;
-settle_time = flex_duration+time_step : time_step : flex_duration+settle_duration;
-force_time = flex_duration+settle_duration+time_step : time_step : flex_duration+settle_duration+force_duration;
-time = [flex_time,settle_time,force_time];
+settle1_time = 0 : time_step : settle1_duration;
+flex_time = settle1_duration + time_step : time_step : settle1_duration + flex_duration;
+settle2_time = settle1_duration + flex_duration + time_step : time_step : settle1_duration + flex_duration + settle2_duration;
+force_time = settle1_duration + flex_duration + settle2_duration + time_step : time_step : settle1_duration + flex_duration + settle2_duration + force_duration;
+time = [settle1_time, flex_time, settle2_time, force_time];
 
+time_points = [0,settle1_duration,...
+    settle1_duration + flex_duration,...
+    settle1_duration + flex_duration + settle2_duration,...
+    settle1_duration + flex_duration + settle2_duration + force_duration];
+
+num_settle1_steps = length(settle1_time);
 num_flex_steps = length(flex_time);
-num_settle_steps = length(settle_time);
+num_settle2_steps = length(settle2_time);
 num_force_steps = length(force_time);
 num_steps = length(time);
 
@@ -35,16 +44,15 @@ prescribed_coordinate_file = 'prescribed_coordinates.sto';
 max_hip_flex = 30;
 max_knee_flex = 30;
 
+hip_flex = [0,0,max_hip_flex,max_hip_flex,max_hip_flex];
+knee_flex = [0,0,max_knee_flex,max_knee_flex,max_knee_flex];
 
+smooth_hip_flex = interp1(time_points, hip_flex, time,'pchip');
+smooth_knee_flex = interp1(time_points, knee_flex, time,'pchip');
+
+coord_data.hip_flex_r = smooth_hip_flex';
+coord_data.knee_flex_r = smooth_knee_flex';
 coord_data.time = time;
-coord_data.hip_flex_r = [...
-    linspace(0,max_hip_flex,num_flex_steps)';...
-    ones(num_settle_steps+num_force_steps,1)*max_hip_flex];
-
-coord_data.knee_flex_r = [...
-    linspace(0,max_knee_flex,num_flex_steps)';...
-    ones(num_settle_steps+num_force_steps,1)*max_knee_flex];
-
 
 coord_table = osimTableFromStruct(coord_data); %% Function distributed in OpenSim 4.0 resources
 STOFileAdapter.write(coord_table,prescribed_coordinate_file);
@@ -75,26 +83,25 @@ saveas(coord_fig,'../graphics/prescribed_coordinates.png')
 %% Muscle File
 muscle_input_sto_file = 'muscle_inputs.sto';
 
-max_control = 0.5;
-max_activation = 0.5;
-max_force = 100;
+max_control = 0.75;
+max_activation = 0.75;
+max_force = 500;
 
 msl_data.time = time;
 
-msl_data.vasmed_r_control = [
-    zeros(num_flex_steps+num_settle_steps,1);...
-    linspace(0,max_control,num_force_steps)'
-    ];
+control_points = [0,0,0,0,max_control];
+activation_points = [0,0,0,0,max_activation];
+force_points = [0,0,0,0,max_force];
 
-msl_data.vaslat_r_activation = [
-    zeros(num_flex_steps+num_settle_steps,1);...
-    linspace(0,max_activation,num_force_steps)'
-    ];
+smooth_control = interp1(time_points,control_points, time,'pchip');
+smooth_activation = interp1(time_points,activation_points, time,'pchip');
+smooth_force = interp1(time_points,force_points, time,'pchip');
 
-msl_data.vasint_r_force = [
-    zeros(num_flex_steps+num_settle_steps,1);...
-    linspace(0,max_force,num_force_steps)'
-    ];
+msl_data.vasmed_r_control = smooth_control';
+
+msl_data.vaslat_r_activation = smooth_activation';
+
+msl_data.vasint_r_force = smooth_force';
 
 msl_table = osimTableFromStruct(msl_data); %% Function distributed in OpenSim 4.0 resources
 
