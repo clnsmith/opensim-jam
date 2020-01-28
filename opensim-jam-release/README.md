@@ -49,20 +49,20 @@ The Lenhart2015 model is an OpenSim implementation of the model described in the
 The ForsimTool enables forward dynamic simulations of joint mechanics to be performed. Practically, this allows simulations of cadaver experiments, passive clinical examinations, and simulations where the muscle forces or excitations are known inputs. Fundamentally, it is similar to the ForwardTool in the OpenSim GUI, but the interface is designed for performing forward simulations involving articular contact. The input files can define the muscle and actuator controls (excitations), activations, or forces vs time, external loads applied to the model, and the Coordinate values vs time for Prescribed Coordinates. The forsim tool uses an implicit integrator (SimTK::CPODES::BDF), which gives far superior performance for simulations that involve contact compared to the explicit integrators used by the existing OpenSim ForwardTool. 
 
 _Source_
-- [../src/ForsimTool.h](../src/ForsimTool.h)
-- [../src/ForsimTool.cpp](../src/ForsimTool.cpp)
+- [ForsimTool.h](../src/ForsimTool.h)
+- [ForsimTool.cpp](../src/ForsimTool.cpp)
 
 _Description_
-- [Smith2018ArticularContactForce Description](./documentation/doxygen/ForsimTool_doxygen.pdf).
+- [Smith2018ArticularContactForce Description](./documentation/doxygen/ForsimTool_doxygen.pdf)
 
 ### COMAKInverseKinematics and COMAK
 The **C**oncurrent **O**ptimization of **M**uscle **A**ctivations and **K**inematics (COMAK) algorithm enables the calculation of muscle forces and detailed joint mechanics during dynamic movements. 
 
 _Source_
-- [../src/COMAKInverseKinematicsTool.h](../src/COMAKInverseKinematicsTool.h)
-- [../src/COMAKInverseKinematicsTool.cpp](../src/COMAKInverseKinematicsTool.cpp)
-- [../src/COMAKTool.h](../src/COMAKTool.h)
-- [../src/COMAKTool.cpp](../src/COMAKTool.cpp)
+- [COMAKInverseKinematicsTool.h](../src/COMAKInverseKinematicsTool.h)
+- [COMAKInverseKinematicsTool.cpp](../src/COMAKInverseKinematicsTool.cpp)
+- [COMAKTool.h](../src/COMAKTool.h)
+- [COMAKTool.cpp](../src/COMAKTool.cpp)
 
 _Description_
 - [COMAKInverseKinematicsTool Description](./documentation/doxygen/COMAKInverseKinematicsTool_doxygen.pdf)
@@ -72,8 +72,8 @@ _Description_
 The JointMechanicsTool enables detailed post-hoc analysis of simulations or measurments of joint mechanics. It can be used to generate .vtp files to visualize simulation results in Paraview, or .h5 files which are binary files that can store the large quantites of contact data (multiple calculated values for each triange face) in compact files that can be quickly read by MATLAB, Python, or [HDF View](https://www.hdfgroup.org/downloads/hdfview/)
 
 _Source_
-- [../src/JointMechanicsTool.h](../src/JointMechanicsTool.h)
-- [../src/JointMechanicsTool.cpp](../src/JointMechanicsTool.cpp)
+- [JointMechanicsTool.h](../src/JointMechanicsTool.h)
+- [JointMechanicsTool.cpp](../src/JointMechanicsTool.cpp)
 
 _Description_
 - [JointMechanicsTool Description](./documentation/doxygen/JointMechanicsToolTool_doxygen.pdf)
@@ -85,7 +85,7 @@ An OpenSim Plugin containing the OpenSim-JAM Components and Tools has been compi
 The plugin can be used with the OpenSim 4.0 GUI, MATLAB/Python, and commmand line interfaces ([instructions](https://simtk-confluence.stanford.edu/display/OpenSim/Using+Plugins)).
 
 ### Executables 
-Each of the [Simulation Tools](#simulation-tools) have been compiled as command line executables (.exe) for windows. This allows users to define simulation settings in a .xml file and organize and perform simulations using windows .cmd files. The compiled executable files are located at [./bin/](./bin) and the c++ source code is located at [../src/cmd_tools](../src/cmd_tools)
+Each of the [Simulation Tools](#simulation-tools) have been compiled as command line executables (.exe) for windows. This allows users to define simulation settings in a .xml file and organize and perform simulations using windows .cmd files. The compiled executable files are located at [bin](./bin) and the c++ source code is located at [cmd_tools](../src/cmd_tools)
 
 Each executable can be called in the windows command line using the following syntax:
 
