@@ -38,9 +38,9 @@
         <!--Paths to the Body components that contain attached geometry Mesh components (i.e. bone meshes) to be recorded. Options: 'none','all', or a list of Frame component paths. The default value is 'none'.-->
         <attached_geometry_bodies>/bodyset/femur_distal_r /bodyset/tibia_proximal_r /bodyset/patella_r</attached_geometry_bodies>
         <!--Body or Frame to use as origin for model motion in results files. Options: 'ground' or '/path/to/Frame-->
-        <output_origin>ground</output_origin>
+        <output_origin>/bodyset/femur_distal_r</output_origin>
         <!--Body or Frame to use as reference frame for model motion in results files. Options: 'ground' or '/path/to/Frame' -->
-        <output_frame>ground</output_frame>
+        <output_frame>/bodyset/femur_distal_r</output_frame>
         <!--Write .vtp files for visualization. The default value is true.-->
         <write_vtp_files>true</write_vtp_files>
         <!--Write binary .h5 file-->

@@ -45,8 +45,8 @@ num_steps = length(time);
 %% Prescribed Coordinates File
 prescribed_coordinate_file = 'prescribed_coordinates.sto';
 
-max_hip_flex = 15;
-max_knee_flex = 15;
+max_hip_flex = 25;
+max_knee_flex = 25;
 
 coord_data.time = time;
 
@@ -67,7 +67,7 @@ coord_fig = figure('name','prescribed_coordinates','Position',  [100, 100, 667, 
 
 subplot(1,2,1);
 plot(time,coord_data.hip_flex_r,'LineWidth',2)
-ylim([0.0 100])
+ylim([0.0 35])
 xlabel('Time [s]')
 ylabel('Angle [^o]')
 title('Hip Flexion (hip\_flex\_r)')
@@ -75,7 +75,7 @@ box off
 
 subplot(1,2,2);
 plot(time,coord_data.knee_flex_r,'LineWidth',2)
-ylim([0.0 100])
+ylim([0.0 35])
 xlabel('Time [s]')
 ylabel('Angle [^o]')
 title('Knee Flexion (knee\_flex\_r)')
