@@ -25,13 +25,11 @@ This simulation uses the [lenhart2015 model](../../models/lenhart2015/lenhart201
 Note: That only the vastus medialis activation can be visualized in paraview at the moment. 
 
 ## Workflow Steps
-1) Run the [./inputs/generate_isometric_extension_input_files.m](inputs/generate_isometric_extension_input_files.m) script in MATLAB to generate the necessary input files. This write the [./inputs/prescribed_coordinates.sto](./inputs/prescribed_coordinates.sto) file which contains the hip_flex_r and knee_flex_r values vs time, and the [./inputs/muscle_inputs.sto](./inputs/muscle_inputs.sto) which contain the vastii controls, activations, and forces vs time. 
+1) Run the [./inputs/generate_isometric_extension_input_files.m](inputs/generate_isometric_extension_input_files.m) script in MATLAB to generate the necessary input files. This will write the [./inputs/prescribed_coordinates.sto](./inputs/prescribed_coordinates.sto) file which contains the hip_flex_r and knee_flex_r values vs time and the [./inputs/muscle_inputs.sto](./inputs/muscle_inputs.sto) which contain the vastii controls, activations, and forces vs time. 
 
-2) Inspect the [./inputs/forsim_settings.xml](inputs/forsim_settings.xml) and [./inputs/joint_mechanics_settings.xml](inputs/joint_mechanics_settings.xml) files in a text editor to understand the property settings that setup the simulations.
+2) Inspect the [./inputs/forsim_settings.xml](inputs/forsim_settings.xml) and [./inputs/joint_mechanics_settings.xml](inputs/joint_mechanics_settings.xml) files in a text editor to understand the property settings that setup the simulation.
 
 3) Double click on [run_isometric_extension.cmd](run_isometric_extension.cmd) to perform the forsim simulation and joint-mechanics analysis using the command line. You can open this file in a text editor to understand the code format to run the forsim and joint-mechanics executables.
 
-4) Use Paraview and/or the OpenSim GUI to visualize the simulation results [instructions](../../documentation/visualizing-simulation-results).
-
-5) Use MATLAB to run the analyze_anterior_laxity.m script to generate plots of anterior translation vs time for the healthy and ACL deficient models. A plot of ACL force vs time is also generated for the healthy model.  
+4) Use Paraview and/or the OpenSim GUI to visualize the simulation results [instructions](../../documentation/visualizing-models-and-simulation-results.md).
 
