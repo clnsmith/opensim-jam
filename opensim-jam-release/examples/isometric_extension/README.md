@@ -14,7 +14,7 @@ This simulation uses the [lenhart2015 model](../../models/lenhart2015/lenhart201
 ## Simulation Inputs
 <p align="center">
 <img src="./graphics/prescribed_coordinates.png" height="400">
-<img src="./graphics/muscle_inputs.png" height="400">
+<img src="./graphics/muscle_inputs.png" height="350">
 </p>
 
 ## Simulation Results
