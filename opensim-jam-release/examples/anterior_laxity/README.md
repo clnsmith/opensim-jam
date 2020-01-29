@@ -27,11 +27,11 @@ This simulation uses the [lenhart2015 model](../../models/lenhart2015/lenhart201
 ## Simulation Results
 
 <p align="center">
-<img src="./graphics/ACL_force_strain.png" height="300" >
+<img src="./graphics/ACL_force_strain.png" height="400" >
 </p>
 
 <p align="center">
-<img src="./graphics/anterior_translation_healthy_ACLd.png" height="300" >
+<img src="./graphics/anterior_translation_internal_rotation_healthy_ACLd.png" height="300" >
 </p>
 
 ## Workflow Steps
