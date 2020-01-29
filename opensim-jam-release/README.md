@@ -117,7 +117,7 @@ The JointMechanicsTool can be used to analyze and visualize simulated or measure
 Perform a forward simulation of passive knee flexion where tibiofemoral flexion is prescribed and the other knee coordinates are unlocked (unconstrained) and thus are calculated based on the passive muscle, ligament, and articular contact forces. 
 
 ### [Anterior Laxity](./examples/anterior_laxity)
-Replicate a clinical test for anterior cruciate ligament (ACL) deficiency by performing a forward simulation where the hip is flexed to 15<sup>o</sup>, the knee is flexed to 15<sup>o</sup> and an anterior force is applied to the tibia.
+Replicate a clinical test for anterior cruciate ligament (ACL) deficiency by performing a forward simulation where the hip is flexed to 25<sup>o</sup>, the knee is flexed to 25<sup>o</sup> and an anterior force is applied to the tibia.
 
 ### [Isometric Extension](./examples/isometric_extension)
 <p align="center">
