@@ -36,13 +36,13 @@ _Description_
 
 ## Models
 ### [Lenhart2015 Model](./models/lenhart2015)
-*Lenhart, R. L., Kaiser, J., Smith, C. R., & Thelen, D. G. (2015). Prediction and validation of load-dependent behavior of the tibiofemoral and patellofemoral joints during movement. Annals of biomedical engineering, 43(11), 2675-2685*
-
 <p align="center">
 <img src="models/lenhart2015/graphics/lenhart2015_fullbody.JPG" height="300" >   <img src="models/lenhart2015/graphics/lenhart2015_knee.JPG" height="300">
 </p>
 
-The Lenhart2015 model is an OpenSim implementation of the model described in the paper above. A multibody knee model was constructed based on magnetic resonance images from a healthy young adult female. The bones, ligaments, and cartilage were segmented from different image sets that were optimized for the discerning the relavent structures and registered together. The lenhart2015 model includes the tibiofemoral and patellofemoral joints as 6 DOF joints. Tibiofemoral and patellofemoral articular contact are represented using Smith2018SmithArticularContactForce components and damping is represented using SpringGeneralizedForce components acting on each knee coodinate. Knee ligaments and passive structures are represented using bundles of Blankevoort1991Ligaments. See publication for further details of model construction. 
+The Lenhart2015 model is an OpenSim implementation of the model described in the paper above. A multibody knee model was constructed based on magnetic resonance images from a healthy young adult female. The bones, ligaments, and cartilage were segmented from different image sets that were optimized for the discerning the relavent structures and registered together. The lenhart2015 model includes the tibiofemoral and patellofemoral joints as 6 DOF joints. Tibiofemoral and patellofemoral articular contact are represented using Smith2018SmithArticularContactForce components and damping is represented using SpringGeneralizedForce components acting on each knee coodinate. Knee ligaments and passive structures are represented using bundles of Blankevoort1991Ligaments. See publication for further details of model construction:
+
+[*Lenhart, R. L., Kaiser, J., Smith, C. R., & Thelen, D. G. (2015). Prediction and validation of load-dependent behavior of the tibiofemoral and patellofemoral joints during movement. Annals of biomedical engineering, 43(11), 2675-2685*](https://link.springer.com/article/10.1007/s10439-015-1326-3)
 
 ## Simulation Tools
 ### Forsim 
@@ -107,17 +107,17 @@ The examples use the [OpenSim 4.0 - MATLAB scripting interface](https://simtk-co
 <p align="center">
   <img src="examples/visualize_kinematics/graphics/visualize_kinematics.gif" height="300" >
 </p>
-The JointMechanicsTool can be used to analyze and visualize simulated or measured kinematics from fluoroscopy, dynamic MRI, etc or static poses from medical imaging. This example demonstrates how to input bone kinematics to the JointMechanicsTool and generate .vtp files to visualize proximity maps between the tibiofemoral subchondral bone surfaces using Paraview. 
+The JointMechanicsTool can be used to analyze and visualize simulated or measured kinematics from fluoroscopy, dynamic MRI, etc or static poses from medical imaging. This example demonstrates how to input bone kinematics to the JointMechanicsTool and generate .vtp files to visualize proximity maps between the tibiofemoral subchondral bone surfaces using Paraview. Additionally, a Blankevoort1991Ligament component is used to assess soft tissue elongation patterns. 
 
 ### [Passive Flexion](./examples/passive_flexion)
 <p align="center">
   <img src="examples/passive_flexion/graphics/passive_flexion.gif" height="300" >
 </p>
 
-Perform a forward simulation of passive knee flexion where tibiofemoral flexion is prescribed and the other knee coordinates are unconstrained and thus are calculated based on the passive muscle, ligament, and articular contact forces. 
+Perform a forward simulation of passive knee flexion where tibiofemoral flexion is prescribed and the other knee coordinates are unlocked (unconstrained) and thus are calculated based on the passive muscle, ligament, and articular contact forces. 
 
 ### [Anterior Laxity](./examples/anterior_laxity)
-Replicate a clinical test for anterior cruciate ligament (ACL) deficiency by performing a forward simulation where the hip is flexed to 45<sup>o</sup>, the knee is flexed to 90<sup>o</sup> and an anterior force is applied to the tibia.
+Replicate a clinical test for anterior cruciate ligament (ACL) deficiency by performing a forward simulation where the hip is flexed to 15<sup>o</sup>, the knee is flexed to 15<sup>o</sup> and an anterior force is applied to the tibia.
 
 ### [Isometric Extension](./examples/isometric_extension)
 Replicate a clinical isometric extension test where the hip and knee are held at 30<sup>o</sup> flexion and the patient activates their quadriceps. 
@@ -136,7 +136,7 @@ MATLAB is used in the examples to generate input files and process simulation re
 A text editor that is capable of syntax highlighting and code folding is nice for viewing the .osim model files, as well as the .cmd scripts and .xml settings files in the examples. [Visual Studio Code](https://code.visualstudio.com/) is my personal choice at the moment, but many OpenSim users also like [Notepad++](https://notepad-plus-plus.org/).
 
 ### [Paraview](https://www.paraview.org/)
-Paraview is used to for high quality rendering of simulation results, visualization of contact maps. The JointMechanicsTool provides the ability to generate .vtp files that can be directly read into Paraview. 
+Paraview is used to for high quality rendering of simulation results including visualization of contact maps. The JointMechanicsTool provides the ability to generate .vtp files that can be directly read into Paraview. 
 
 Instructions for visualizing simulation results are provided [here](documentation/visualizing-simulation-results.md)
 
@@ -157,6 +157,6 @@ MATLAB based software toolkit that includes mesh editing features.
 
 
 ## Acknowledgements 
-Much of the included models and codes were initially developed in the [UW Neuromuscular Biomechanics Lab at the University of Wisconsin-Madison](https://uwnmbl.engr.wisc.edu). Contributers to this work include Darryl Thelen, Rachel Lenhart, Jarred Kaiser, Michael Vignos, Kwang won Choi, Scott Brandon, and Josh Roth. Translation and extension of the orginal SIMM and UWPipeline into OpenSim was performed during my time as a PhD at UW-Madison (NIH EB015410) and Stanford ([NCSRR Visiting Scholar](https://opensim.stanford.edu/support/scholars.html)), and as a post-doc at the [Laboratory for Movement Biomechanics](https://www.movement.ethz.ch/) at ETH Zürich ([Whitaker International Program](https://www.whitaker.org/), [OpenSim Pilot Project](https://opensim.stanford.edu/support/pilot.html)).
+Much of the included models and codes were initially developed in the [UW Neuromuscular Biomechanics Lab at the University of Wisconsin-Madison](https://uwnmbl.engr.wisc.edu). Contributers to this work include Darryl Thelen, Rachel Lenhart, Jarred Kaiser, Michael Vignos, Kwang won Choi, Scott Brandon, and Josh Roth. Translation and extension of the orginal SIMM and UWPipeline into OpenSim was performed during my time as a PhD at UW-Madison (NIH EB015410) and Stanford ([NCSRR Visiting Scholar](https://opensim.stanford.edu/support/scholars.html)), and as a post-doc at the [Laboratory for Movement Biomechanics](https://www.movement.ethz.ch/) at ETH Zürich ([Whitaker International Program](https://www.whitaker.org/), [OpenSim Pilot Project](https://opensim.stanford.edu/support/pilot.html) Pilot Project Award No. 5P2CHD065690-09).
 
 A list of publications that use these tools is located [here](./documentation/references.md)
