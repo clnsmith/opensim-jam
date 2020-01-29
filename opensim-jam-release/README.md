@@ -120,6 +120,10 @@ Perform a forward simulation of passive knee flexion where tibiofemoral flexion 
 Replicate a clinical test for anterior cruciate ligament (ACL) deficiency by performing a forward simulation where the hip is flexed to 15<sup>o</sup>, the knee is flexed to 15<sup>o</sup> and an anterior force is applied to the tibia.
 
 ### [Isometric Extension](./examples/isometric_extension)
+<p align="center">
+  <img src="examples/isometric_extension/graphics/isometric_extension_oblique.gif" height="300" >
+</p>
+
 Replicate a clinical isometric extension test where the hip and knee are held at 30<sup>o</sup> flexion and the patient activates their quadriceps. 
 
 ### [Walking](./examples/walking)
