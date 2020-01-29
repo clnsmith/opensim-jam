@@ -68,7 +68,23 @@ The JointMechanicsTool can read in simulation results (.sto) and generate .vtp f
 
 
 
-## Saving screen shots and animiations
+## Saving the Scene, Screenshots, and Animations
+### Scene
+To be able to a paraview project to the current state, you can save and reload all of the loaded .vtp files, paraview settings, and applied filters to a Paraview State file (.pvsm) using 
+ - File -> Save State... 
+ - File -> Load State...
+ 
+### Screenshot
+Paraview can save high quality screenshots to (.bmp, .jpg, .png, .tiff) files using: 
+1) File -> Save Screenshot...
+2) Select the output folder, enter the file name and image file type, press OK.
+3) A new window will appear with image settings options, press OK.
+
+### Animation
+Paraview can save a screenshot at each frame using the following instructions. You can then use a movie editing software such as Windows Photos to create a movie (.mp4 etc) from the series of images.
+1) File -> Save Animation...
+2) Select the output folder, enter the file name and image file type, press OK. \_FRAME# will be appended to the file name for each frame
+3) A new window will appear with image settings options, press OK.
 
 # SimTK Visualizer
 In the .xml settings file for each of the OpenSim-Jam tools there is a <use_visualizer> property that will enable using the SimTK::Visualizer to view the model in realtime. 
