@@ -9,13 +9,20 @@
 This example intends to replicate an isometric extension test where the hip and knee are manually flexed to 30<sup>o</sup> by a clinician. Then, the clinician holds the leg in place and the patient attempts to extend their knee by activating their quadriceps. 
 
 ## Simulation Description
-This simulation uses the [lenhart2015 model](../../models/lenhart2015/lenhart2015.osim). In the first 1.0 seconds, the hip_flex_r and knee_flex_r coordinates are prescribed to flex from 0<sup>o</sup> to 30<sup>o</sup> in a linear manner, then they are held constant at 30<sup>o</sup> for the remainder of the simulation. The remaining knee coordinates (5 tibiofemoral and 6 patellofemoral DOFs) are unlocked, thus their kinematics are predicted as a result of the muscle, ligament, and articular contact forces. The pelvis_tilt coordinate is prescribed to be 90<sup>o</sup> throughout the simulation to replicate the patient lying on a table. Once 30<sup>o</sup> hip and knee flexion are reached, the model is allowed to settle into equilibrium for 0.5 seconds, and then the vastii are activated over a duration of 1.0 seconds. For the purpose of demonstrating the capabilities of the ForsimTool, the *control* (excitation) of the vastus medialis is increased from 0 to XX, the *activation* of vastus lateralis is increased from 0 to XX, and the *force* in the vastus intermedius is increased from 0 to XX.
+This simulation uses the [lenhart2015 model](../../models/lenhart2015/lenhart2015.osim). First, the hip_flex_r and knee_flex_r are fixed at 0<sup>o</sup> and the knee is allowed to settle into equilibrium for 0.5 seconds. Then, over the next 1.0 seconds, the hip_flex_r and knee_flex_r coordinates are prescribed to flex from 0<sup>o</sup> to 30<sup>o</sup>, then they are held constant at 30<sup>o</sup> for the remainder of the simulation. The remaining knee coordinates (5 tibiofemoral and 6 patellofemoral DOFs) are unlocked, thus their kinematics are predicted as a result of the muscle, ligament, and articular contact forces. The pelvis_tilt coordinate is prescribed to be 90<sup>o</sup> throughout the simulation to replicate the patient lying on a table. Once 30<sup>o</sup> hip and knee flexion are reached, the model is allowed to settle into equilibrium for 0.5 seconds, and then the vastii are activated over a duration of 1.0 seconds. For the purpose of demonstrating the capabilities of the ForsimTool, the *control* (excitation) of the vastus medialis is increased from 0 to 0.75, the *activation* of vastus lateralis is increased from 0 to 0.75, and the *force* in the vastus intermedius is increased from 0 to 500.
 
 ## Simulation Inputs
+<p align="center">
+<img src="./graphics/prescribed_coordinates.png" height="500">
+<img src="./graphics/muscle_inputs.png" height="500">
+</p>
 
 ## Simulation Results
-<img src="./graphics/isometric_extension_sagittal.gif" height="400">
-<img src="./graphics/isometric_extension_oblique.gif" height="400">
+<p align="center">
+<img src="./graphics/isometric_extension_sagittal.gif" height="600">
+<img src="./graphics/isometric_extension_oblique.gif" height="600">
+</p>
+Note: That only the vastus medialis activation can be visualized at the moment. 
 
 ## Workflow Steps
 1) Run the [./inputs/generate_isometric_extension_input_files.m](inputs/generate_isometric_extension_input_files.m) script in MATLAB to generate the necessary input files. This write the [./inputs/prescribed_coordinates.sto](./inputs/prescribed_coordinates.sto) file which contains the hip_flex_r and knee_flex_r values vs time, and the [./inputs/muscle_inputs.sto](./inputs/muscle_inputs.sto) which contain the vastii controls, activations, and forces vs time. 
