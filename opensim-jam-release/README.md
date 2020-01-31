@@ -146,7 +146,7 @@ A text editor that is capable of syntax highlighting and code folding is nice fo
 ### [Paraview](https://www.paraview.org/)
 Paraview is used to for high quality rendering of simulation results including visualization of contact maps. The JointMechanicsTool provides the ability to generate .vtp files that can be directly read into Paraview. 
 
-Instructions for visualizing simulation results are provided [here](documentation/visualizing-simulation-results.md)
+Instructions for visualizing simulation results are provided [here](documentation/visualizing-models-and-simulation-results.md)
 
 ### [HDFView](https://www.hdfgroup.org/downloads/hdfview/)
 HDFviewer is a standalone gui to explore .h5 file contents. 
