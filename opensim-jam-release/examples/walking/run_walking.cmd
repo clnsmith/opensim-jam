@@ -8,11 +8,11 @@ set OPENSIM=%CD%\..\..\opensim
 set PATH=%BIN%;%OPENSIM%;%PATH%
 
 REM COMAK Inverse Kinematics
-%BIN%\comak-inverse-kinematics %BIN%\jam_plugin.dll .\inputs\comak_inverse_kinematics_settings.xml
-move out.log results\comak-inverse-kinematics_out.log
-move err.log results\comak-inverse-kinematics_err.log
+REM %BIN%\comak-inverse-kinematics %BIN%\jam_plugin.dll .\inputs\comak_inverse_kinematics_settings.xml
+REM move out.log results\comak-inverse-kinematics_out.log
+REM move err.log results\comak-inverse-kinematics_err.log
 
-REM COMAK
+REM REM COMAK
 %BIN%\comak %BIN%\jam_plugin.dll .\inputs\comak_settings.xml
 move out.log results\comak_out.log
 move err.log results\comak_err.log

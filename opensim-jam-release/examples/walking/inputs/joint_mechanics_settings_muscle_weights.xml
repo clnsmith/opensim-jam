@@ -6,17 +6,17 @@
         <!--Path to storage file (.sto) containing the model states vs time for the simulation to be analyzed.-->
         <states_file>../results/comak_muscle_weights/walking_states.sto</states_file>
         <!--Path to folder where the results files will be written.-->
-        <results_directory>../results/joint-mechanics</results_directory>
+        <results_directory>../results/joint-mechanics_muscle_weights</results_directory>
         <!--Prefix to each results file name.-->
         <results_file_basename>walking_muscle_weights</results_file_basename>
         <!--Time to start the analysis. Set to -1 to use initial frame in states_file. The default value is -1.-->
-        <start_time>-1</start_time>
+        <start_time>1.26</start_time>
         <!--Time to stop the analysis. Set to -1 to use last frame in states_file. The default value is -1.-->
-        <stop_time>-1</stop_time>
+        <stop_time>2.32</stop_time>
         <!--Time step size to report results, set to -1 to use steps directly from the states_file. The default value is 0.01.-->
         <resample_step_size>-1</resample_step_size>
         <!--Resample to 101 equally spaced time steps (percentage of activity cycle). Note: If true, this overrides resample_step_size. The default value is false.-->
-        <normalize_to_cycle>false</normalize_to_cycle>
+        <normalize_to_cycle>true</normalize_to_cycle>
         <!--Apply IIR lowpass butterworth filter to the input Coordinate values. If set to -1, no filtering is applied. The default value is -1.-->
         <lowpass_filter_frequency>-1</lowpass_filter_frequency>
         <!--Print a .sto file with the processed (cut, resampled, normalized, and filtered) kinematics used for posing the model through out the analysis.-->
@@ -38,7 +38,7 @@
         <!--Paths to the Body components that contain attached geometry Mesh components (i.e. bone meshes) to be recorded. Options: 'none','all', or a list of Frame component paths. The default value is 'none'.-->
         <attached_geometry_bodies>all</attached_geometry_bodies>
         <!--Body or Frame to use as origin for model motion in results files. Options: 'ground' or '/path/to/Frame-->
-        <output_origin>ground</output_origin>
+        <output_origin>/bodyset/femur_distal_r</output_origin>
         <!--Body or Frame to use as reference frame for model motion in results files. Options: 'ground' or '/path/to/Frame' -->
         <output_frame>ground</output_frame>
         <!--Write .vtp files for visualization. The default value is true.-->
@@ -51,7 +51,22 @@
         <h5_kinematics_data>true</h5_kinematics_data>
         <!--Analyses to be performed during forward simulation.-->
         <AnalysisSet>
-        <objects />
+        <objects>
+            <ForceReporter name = "ForceReporter">
+                <!--Flag (true or false) specifying whether on. True by default.-->
+                <on>true</on>
+                <!--Start time.-->
+                <start_time>-Inf</start_time>
+                <!--End time.-->
+                <end_time>Inf</end_time>
+                <!--Specifies how often to store results during a simulation. More specifically, the interval (a positive integer) specifies how many successful integration steps should be taken before results are recorded again.-->
+                <step_interval>1</step_interval>
+                <!--Flag (true or false) indicating whether the results are in degrees or not.-->
+                <in_degrees>true</in_degrees>
+                <!--Flag indicating whether to include forces due to constraints.-->
+                <include_constraint_forces>false</include_constraint_forces>
+            </ForceReporter>
+        </objects>
         <groups />
         </AnalysisSet>
     </JointMechanicsTool>

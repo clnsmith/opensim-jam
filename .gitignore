@@ -2,3 +2,8 @@
 /opensim-jam-distribute/examples/passive_flexion/results/joint-mechanics/*.h5
 joint-mechanics
 /opensim-jam-release/examples/visualize_kinematics/results/joint-mechanics/*.vtp
+render_images_acld_contact
+/opensim-jam-release/examples/anterior_laxity/graphics/render_images_healthy_acld_kinematics
+/opensim-jam-release/examples/anterior_laxity/graphics/render_images_healthy_contact
+/opensim-jam-release/examples/isometric_extension/graphics/oblique_render_images
+/opensim-jam-release/examples/isometric_extension/graphics/sagittal_render_images

@@ -130,9 +130,9 @@
     <!--Set the integrator accuracy for initializing forward simulation. The default value is 1e-6.-->
     <settle_accuracy>1e-5</settle_accuracy>
     <!--Print the model states during the forward simulation to a .sto file in the settle_sim_results_dir.-->
-    <print_settle_sim_results>false</print_settle_sim_results>
+    <print_settle_sim_results>true</print_settle_sim_results>
     <!--Path to the directory where the settling forward simulation results will be printed.-->
-    <settle_sim_results_directory>../results/comak</settle_sim_results_directory>
+    <settle_sim_results_directory>../results/comak_muscle_weights</settle_sim_results_directory>
     <!--Prefix to settle simulation results file names.-->
     <settle_sim_results_prefix>walking_settle_sim_muscle_weights</settle_sim_results_prefix>
     <!--Maximum number of COMAK iterations per time step allowed for the the simulated model accelerations to converge to the input observed acceleration values. The default value is 25.-->
@@ -255,21 +255,7 @@
     <verbose>0</verbose>
     <!--Analyses to be performedthroughout the COMAK simulation.-->
     <AnalysisSet>
-     <objects>
-            <ForceReporter name = "ForceReporter">
-                <!--Flag (true or false) specifying whether on. True by default.-->
-                <on>true</on>
-                <!--Start time.-->
-                <start_time>-Inf</start_time>
-                <!--End time.-->
-                <end_time>Inf</end_time>
-                <!--Specifies how often to store results during a simulation. More specifically, the interval (a positive integer) specifies how many successful integration steps should be taken before results are recorded again.-->
-                <step_interval>1</step_interval>
-                <!--Flag (true or false) indicating whether the results are in degrees or not.-->
-                <in_degrees>true</in_degrees>
-                <!--Flag indicating whether to include forces due to constraints.-->
-                <include_constraint_forces>false</include_constraint_forces>
-            </ForceReporter>
+        <objects>
         </objects>
         <groups />
     </AnalysisSet>

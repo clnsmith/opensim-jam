@@ -67,14 +67,14 @@ end
 saveas(pf_kin_fig,'../graphics/walking_patellofemoral_kinematics.png')
 
 %% Plot Contact Forces
-% [forces_data, forces_labels, forces_header] = read_opensim_mot('../results/comak/walking_values.sto');
-% [forces_weights_data, forces_weights_labels, forces_weights_header] = read_opensim_mot('../results/comak_muscle_weights/walking_muscle_weights_values.sto');
-% 
-% figure('name','Tibiofemoral Contact Forces')
-% hold on
-% plot(forces.time,-forces.tf_contact_casting_total_contact_force_y/BW,'LineWidth',line_width)
-% 
-% legend('no weights','muscle weights')
+[forces_data, forces_labels, forces_header] = read_opensim_mot('../results/comak/walking_values.sto');
+[forces_weights_data, forces_weights_labels, forces_weights_header] = read_opensim_mot('../results/comak_muscle_weights/walking_muscle_weights_values.sto');
+
+figure('name','Tibiofemoral Contact Forces')
+hold on
+plot(forces.time,-forces.tf_contact_casting_total_contact_force_y/BW,'LineWidth',line_width)
+
+legend('no weights','muscle weights')
 
 %% Plot Muscle Activation
 % [act_data, act_labels, act_header] = read_opensim_mot('../results/comak/walking_activations.sto');
