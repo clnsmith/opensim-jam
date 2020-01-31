@@ -64,7 +64,7 @@ The JointMechanicsTool can read in simulation results (.sto) and generate .vtp f
 1) Load mesh_XX.vtp files
 
 ## Ray Casting Renderer
-
+<img  height="300" src="../../graphics/tka_ligament_elongation_walking.gif"><img  height="300" src="../../graphics/tka_contact.png">
 
 
 
@@ -86,5 +86,6 @@ Paraview can save a screenshot at each frame using the following instructions. Y
 2) Select the output folder, enter the file name and image file type, press OK. \_FRAME# will be appended to the file name for each frame
 3) A new window will appear with image settings options, press OK.
 
+https://www.paraview.org/Wiki/Advanced_Animations
 # SimTK Visualizer
 In the .xml settings file for each of the OpenSim-Jam tools there is a <use_visualizer> property that will enable using the SimTK::Visualizer to view the model in realtime. 
