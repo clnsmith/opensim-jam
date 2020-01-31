@@ -11,7 +11,7 @@
   </a>
 </p>
 
-This simulation replicates an anterior laxity test used to diagnose (anterior cruciate ligament) ACL injuries. In this test, a clinician manually flexes the hip to 25<sup>o</sup> and the knee to 25<sup>o</sup> and then applies an anterior force to the tibia to test for excessive laxity indicative of an ACL tear. In the example, the simulation is first performed with a healthy knee and then repeated using an ACL deficient knee so that the tibiofemoral anterior translation between the two conditions can be compared. All muscles are assumed to be minimally activated, thus the predicted knee kinematics result from the passive contributions of the muscles, ligaments, and articular contact. 
+This simulation replicates an anterior laxity test used to diagnose anterior cruciate ligament (ACL) injuries. In this test, a clinician manually flexes the hip to 25<sup>o</sup> and the knee to 25<sup>o</sup> and then applies an anterior force to the tibia to test for excessive laxity indicative of an ACL tear. In the example, the simulation is first performed with a healthy knee and then repeated using an ACL deficient knee so that the tibiofemoral anterior translation between the two conditions can be compared. All muscles are assumed to be minimally activated, thus the predicted knee kinematics result from the passive model dynamics (muscles, ligaments, articular contact, damping, gravity, inertia). 
 
 ## Simulation Description
 This simulation uses the [lenhart2015 model](../../models/lenhart2015/lenhart2015.osim). First, the hip_flex_r and knee_flex_r coordinates are fixed at 0<sup>o</sup> and the knee is allowed to settle into equilibrium for 0.5 seconds. Then, hip_flex_r and knee_flex_r are prescribed to flex from 0<sup>o</sup> to 25<sup>o</sup>. Once peak flexion is reached, the hip and knee flexion are prescribed to be constant at 25<sup>o</sup>. After a 0.5 second settling period, a anterior force is applied to the tibia that increases from 0 to 100 N over a 1.0 second period. The muscles are minimally activated (0.02) and thus only provide passive forces. The remaining knee coordinates aside from knee_flex_r (5 tibiofemoral DOFs and 6 patellofemoral DOFs) are unlocked and thus their kinematics are predicted as a result of the muscle, ligament, and cartilage contact forces. All other model coordinates are locked, and thus fixed to their default values over the duration of the simulation. 
@@ -25,6 +25,21 @@ This simulation uses the [lenhart2015 model](../../models/lenhart2015/lenhart201
 </p>
 
 ## Simulation Results
+
+<p align="center">
+<b>Healthy Model Cartilage Contact</b><br>
+<img src="./graphics/anterior_laxity_healthy_contact.gif" height="400" >
+</p>
+
+<p align="center">
+<b>ACLd Model Cartilage Contact</b><br>
+<img src="./graphics/anterior_laxity_acld_contact.gif" height="400" >
+  
+  <p align="center">
+<b>Comparison of Healthy and ACLd Simulations</b><br>
+<img src="./graphics/anterior_laxity_kinematics.gif" height="400" >
+</p>
+</p>
 
 <p align="center">
 <img src="./graphics/ACL_force_strain.png" height="400" >
