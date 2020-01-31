@@ -4,7 +4,7 @@
         <!--Path to .osim file to use in analysis.-->
         <model_file>../../../models/lenhart2015/lenhart2015.osim</model_file>
         <!--Path to storage file (.sto) containing the model states vs time for the simulation to be analyzed.-->
-        <states_file>../results/comak_muscle_weights/walking_states.sto</states_file>
+        <states_file>../results/comak_muscle_weights/walking_muscle_weights_states.sto</states_file>
         <!--Path to folder where the results files will be written.-->
         <results_directory>../results/joint-mechanics_muscle_weights</results_directory>
         <!--Prefix to each results file name.-->

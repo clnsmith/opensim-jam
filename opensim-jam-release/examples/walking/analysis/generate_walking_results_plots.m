@@ -5,7 +5,7 @@ import org.opensim.modeling.*
 
 line_width = 2;
 BW = 61*9.81;
-model = Model('../../../models/lenhart2015/lenhart2015.osim');
+%model = Model('../../../models/lenhart2015/lenhart2015.osim');
 
 %% Plot Knee Kinematics
 [values_data, values_labels, values_header] = read_opensim_mot('../results/comak/walking_values.sto');
@@ -67,13 +67,19 @@ end
 saveas(pf_kin_fig,'../graphics/walking_patellofemoral_kinematics.png')
 
 %% Plot Contact Forces
-[forces_data, forces_labels, forces_header] = read_opensim_mot('../results/comak/walking_values.sto');
-[forces_weights_data, forces_weights_labels, forces_weights_header] = read_opensim_mot('../results/comak_muscle_weights/walking_muscle_weights_values.sto');
+[forces_data, forces_labels, forces_header] = read_opensim_mot('../results/joint-mechanics/walking_ForceReporter_forces.sto');
+[forces_weights_data, forces_weights_labels, forces_weights_header] = read_opensim_mot('../results/joint-mechanics_muscle_weights/walking_muscle_weights_ForceReporter_forces.sto');
+
+ind = find(contains(forces_labels,'tf_contact.casting.total.contact_force_y'));
+ind_weights = find(contains(forces_weights_labels,'tf_contact.casting.total.contact_force_y'));
+
+forces_time = forces_data(:,1);
+forces_weights_time = forces_weights_data(:,1);
 
 figure('name','Tibiofemoral Contact Forces')
-hold on
-plot(forces.time,-forces.tf_contact_casting_total_contact_force_y/BW,'LineWidth',line_width)
-
+hold on;
+plot(forces_time,forces_data(:,ind)/BW,'LineWidth',line_width)
+plot(forces_time,forces_weights_data(:,ind_weights)/BW,'LineWidth',line_width)
 legend('no weights','muscle weights')
 
 %% Plot Muscle Activation

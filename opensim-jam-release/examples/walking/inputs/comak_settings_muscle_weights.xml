@@ -144,7 +144,7 @@
     <!--The size of the perturbation applied to COMAKSecondaryCoordinates when computing the gradient of the acceleration constraints in the COMAK optimization to changes in the secondary coordinate values. The default value is 1e-8.-->
     <unit_udot_epsilon>1e-08</unit_udot_epsilon>
     <!--The weighting on Smith2018ArticularContactForce potential energy term in COMAK cost function. The default value is 0.-->
-    <contact_energy_weight>500</contact_energy_weight>
+    <contact_energy_weight>0</contact_energy_weight>
     <!--List of COMAKCostFunctionWeight objects.-->
     <COMAKCostFunctionParameterSet>
         <objects>
