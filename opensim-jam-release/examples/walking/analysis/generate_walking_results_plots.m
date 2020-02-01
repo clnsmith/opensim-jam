@@ -82,6 +82,9 @@ plot(forces_time,forces_data(:,ind)/BW,'LineWidth',line_width)
 plot(forces_time,forces_weights_data(:,ind_weights)/BW,'LineWidth',line_width)
 legend('no weights','muscle weights')
 
+
+%% Plot GRF
+
 %% Plot Muscle Activation
 % [act_data, act_labels, act_header] = read_opensim_mot('../results/comak/walking_activations.sto');
 % 
