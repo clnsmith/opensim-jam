@@ -16,7 +16,7 @@
 		<!--Duration of the initial settle period where the secondary_coupled_coordinate is locked and secondary coordinates settle into equilibrium.The default value is 1.0 seconds.-->
 		<secondary_constraint_sim_settle_time>0.5</secondary_constraint_sim_settle_time>
 		<!--The duration of the simulation phase where the secondary_coupled_coord is linearly prescribed from the secondary_coupled_coordinate_start_value and secondary_coupled_coordinate_stop_value.-->
-		<secondary_constraint_sim_sweep_time>2.0</secondary_constraint_sim_sweep_time>
+		<secondary_constraint_sim_sweep_time>3.0</secondary_constraint_sim_sweep_time>
 		<!--Initial Coordinate value for the secondary_coupled_coordinate in the secondary_constraint_sim. The units are in meters for translational coordinates and degrees for rotational coordinates. The default value is 0.0.-->
 		<secondary_coupled_coordinate_start_value>0</secondary_coupled_coordinate_start_value>
 		<!--Initial Coordinate value for the secondary_coupled_coordinate in the secondary_constraint_sim. The units are in meters for translational coordinates and degrees for rotational coordinates. The default value is 0.0.-->
