@@ -130,7 +130,7 @@
     <!--Set the integrator accuracy for initializing forward simulation. The default value is 1e-6.-->
     <settle_accuracy>1e-5</settle_accuracy>
     <!--Limit on the number of internal steps that can be taken by BDF integrator initializing forward simulation. If -1, then there is no limit. The Default value is -1.-->
-    <settle_internal_step_limit>10000</settle_internal_step_limit>
+    <settle_internal_step_limit>50000</settle_internal_step_limit>
     <!--Print the model states during the forward simulation to a .sto file in the settle_sim_results_dir.-->
     <print_settle_sim_results>true</print_settle_sim_results>
     <!--Path to the directory where the settling forward simulation results will be printed.-->
