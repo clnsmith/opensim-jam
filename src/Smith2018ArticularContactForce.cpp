@@ -634,7 +634,7 @@ void Smith2018ArticularContactForce::computeForce(const State& state,
     }
 
     //Compute Contact Stats
-    std::vector<int> casting_faces;
+    /*std::vector<int> casting_faces;
     for (int i = 0; i < casting_mesh.getNumFaces(); ++i) {
         casting_faces.push_back(i);
     }
@@ -708,7 +708,7 @@ void Smith2018ArticularContactForce::computeForce(const State& state,
             "target.total.contact_force", stats.contact_force);
         setCacheVariableValue(state,
             "target.total.contact_moment", stats.contact_moment);
-    }
+    }*/
 }
 
 double Smith2018ArticularContactForce::

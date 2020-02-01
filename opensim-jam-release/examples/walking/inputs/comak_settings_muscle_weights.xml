@@ -142,7 +142,7 @@
     <!--Maximum acceptable difference between simulated and observed accelerations (udots) that is still used if no COMAK iterations converge. If the max difference between the udots for all iterations is greater than udot_worse_case_tolerance then no acceptable COMAK solution was found, and the solution from previous time step is used for the current time step. The default value is 50.0.-->
     <udot_worse_case_tolerance>50</udot_worse_case_tolerance>
     <!--The size of the perturbation applied to COMAKSecondaryCoordinates when computing the gradient of the acceleration constraints in the COMAK optimization to changes in the secondary coordinate values. The default value is 1e-8.-->
-    <unit_udot_epsilon>1e-08</unit_udot_epsilon>
+    <unit_udot_epsilon>1e-8</unit_udot_epsilon>
     <!--The weighting on Smith2018ArticularContactForce potential energy term in COMAK cost function. The default value is 0.-->
     <contact_energy_weight>0</contact_energy_weight>
     <!--List of COMAKCostFunctionWeight objects.-->

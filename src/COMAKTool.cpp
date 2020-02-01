@@ -197,9 +197,6 @@ void COMAKTool::initialize()
 
     for (int i = 0; i < get_COMAKSecondaryCoordinateSet().getSize(); ++i) {
         std::string path = get_COMAKSecondaryCoordinateSet().get(i).get_coordinate();
-
-        std::cout << path << std::endl;
-
         try { _model.getComponent<Coordinate>(path); }
         catch (Exception){
             OPENSIM_THROW(Exception,"secondary_coordinate: " + path + "not found in model.")
@@ -268,6 +265,30 @@ void COMAKTool::initialize()
             _secondary_coord_index[ind] = nCoord;
         }
         nCoord++;
+    }
+
+    if (get_verbose() > 0) {
+        std::cout << std::endl;
+        std::cout << "Prescribed Coordinates:" << std::endl;
+        std::cout << "-----------------------" << std::endl;
+        for (int i = 0; i < _n_prescribed_coord; ++i) {
+            std::cout << _prescribed_coord_name[i] << std::endl;
+        }
+
+        std::cout << std::endl;
+        std::cout << "Primary Coordinates:" << std::endl;
+        std::cout << "--------------------" << std::endl;
+        for (int i = 0; i < _n_primary_coord; ++i) {
+            std::cout << _primary_coord_name[i] << std::endl;
+        }
+
+        std::cout << std::endl;
+        std::cout << "Secondary Coordinates:" << std::endl;
+        std::cout << "----------------------" << std::endl;
+        for (int i = 0; i < _n_secondary_coord; ++i) {
+            std::cout << _secondary_coord_name[i] << std::endl;
+        }
+        std::cout << std::endl;
     }
 
     //Organize COMAKSecondaryCoordinate Properties
@@ -515,6 +536,8 @@ void COMAKTool::performCOMAK()
 
     //Loop over each time step
     //------------------------
+    std::cout << "\nPerforming COMAK...\n" << std::endl;
+
     int frame_num = 0;
     for (int i = 0; i < _n_frames; ++i) {
         if (_time[i] < get_start_time()) { continue; }
@@ -523,42 +546,42 @@ void COMAKTool::performCOMAK()
         //Set Time
         state.setTime(_time[i]);
 
-        std::cout << "================================================================================" << std::endl;
-        std::cout << "Frame: " << ++frame_num << "/" << _n_out_frames << std::endl;
-        std::cout << "Time: " << _time[i] << std::endl;
-        std::cout << "================================================================================\n" << std::endl;
+        std::cout << "Frame: " << ++frame_num << "/" << _n_out_frames << "\t" 
+                  << "Time: " << _time[i] << std::endl;
+        //std::cout << "================================================================================" << std::endl;
 
         //Set Primary Qs and Us to experimental values
         for (int j = 0; j < _n_primary_coord; ++j) {
             Coordinate& coord = _model.updComponent<Coordinate>(_primary_coord_path[j]);
-            coord.setValue(state, _q_matrix(i, _primary_coord_index[j]),false);
+            coord.setValue(state, _q_matrix(i, _primary_coord_index[j]), false);
             coord.setSpeedValue(state, _u_matrix(i, _primary_coord_index[j]));
         }
 
         //Reset the Secondary Us to experimental values
         for (int j = 0; j < _n_secondary_coord; ++j) {
-            Coordinate& coord = _model.updComponent<Coordinate>(_secondary_coord_path[j]);			
+            Coordinate& coord = _model.updComponent<Coordinate>(_secondary_coord_path[j]);
             coord.setSpeedValue(state, _u_matrix(i, _secondary_coord_index[j]));
         }
-        
+
         _model.assemble(state);
         _model.realizeVelocity(state);
 
         //Iterate for COMAK Solution		
         double max_udot_error = SimTK::Infinity;
-        SimTK::Vector iter_max_udot_error(get_max_iterations(),0.0);
+        SimTK::Vector iter_max_udot_error(get_max_iterations(), 0.0);
         std::vector<std::string> iter_max_udot_coord(get_max_iterations(), "");
-        SimTK::Matrix iter_parameters(get_max_iterations(), _n_parameters,0.0);
+        SimTK::Matrix iter_parameters(get_max_iterations(), _n_parameters, 0.0);
 
         int iter;
-        for (iter = 0; iter < get_max_iterations(); ++iter) {
-
-            std::cout << std::endl;
-            std::cout << "--------------------------------------------------------------------------------" << std::endl;
-            std::cout << "Frame: " << frame_num << "\t"
-                      << "Time: " << _time[i] << "\t"
-                      << "Iteration: " << iter << std::endl;
-            std::cout << "--------------------------------------------------------------------------------" << std::endl;
+        for (iter = 0; iter < get_max_iterations(); ++iter) {            
+            if (get_verbose() > 0) {
+                std::cout << std::endl;
+                std::cout << "--------------------------------------------------------------------------------" << std::endl;
+                std::cout << "Frame: " << frame_num << "\t"
+                    << "Time: " << _time[i] << "\t"
+                    << "Iteration: " << iter << std::endl;
+                std::cout << "--------------------------------------------------------------------------------" << std::endl;
+            }
 
             if (get_verbose() > 2) {
                 std::cout << "Initial Coordinate Values Speeds" << std::endl;
@@ -572,18 +595,18 @@ void COMAKTool::performCOMAK()
             for (CoordinateActuator &coord_act : _model.updComponentList<CoordinateActuator>()) {
                 coord_act.overrideActuation(state, true);
                 _optim_parameters[j] = 0;
-                coord_act.setOverrideActuation(state,0);		
+                coord_act.setOverrideActuation(state,0);
                 j++;
             }*/
 
             ComakTarget target = ComakTarget(state, &_model, ~_udot_matrix[i],
                 _optim_parameters, _optim_parameter_names,
                 _primary_coord_path, _secondary_coord_path,
-                _muscle_path, _non_muscle_actuator_path, 
+                _muscle_path, _non_muscle_actuator_path,
                 _secondary_damping_actuator_path, false);
 
             SimTK::Vector msl_weight(_n_muscles);
-            for (int m = 0; m < _n_muscles; ++ m) {
+            for (int m = 0; m < _n_muscles; ++m) {
                 msl_weight(m) = _cost_muscle_weights.get(m).calcValue(SimTK::Vector(1, _time[i]));
             }
 
@@ -603,16 +626,15 @@ void COMAKTool::performCOMAK()
             SimTK::Optimizer optimizer(target, algorithm);
 
             optimizer.setDiagnosticsLevel(0);
-            optimizer.setMaxIterations(500);
-            optimizer.setConvergenceTolerance(0.00000001);
-            
+            //optimizer.setMaxIterations(500);
+            //optimizer.setConvergenceTolerance(0.00000001);
+
             optimizer.useNumericalGradient(false);
             optimizer.useNumericalJacobian(false);
 
             if (algorithm == SimTK::InteriorPoint) {
                 // Some IPOPT-specific settings
                 optimizer.setAdvancedBoolOption("warm_start", true);
-                //optimizer.setAdvancedStrOption("expect_infeasible_problem", "yes");
                 optimizer.setAdvancedRealOption("obj_scaling_factor", 1);
                 optimizer.setAdvancedRealOption("nlp_scaling_max_gradient", 1);
             }
@@ -623,20 +645,22 @@ void COMAKTool::performCOMAK()
                     break;
                 }
                 catch (SimTK::Exception::Base ex) {
-                    std::cout << "COMAK Optimization failed, upping the parameter bounds: " << ex.getMessage() << std::endl;
+                    if (get_verbose() > 1) {
+                        std::cout << "COMAK Optimization failed, upping the parameter bounds: " << ex.getMessage() << std::endl;
+                    }
                     target.setParameterBounds(m);
                     optimizer.setOptimizerSystem(target);
                 }
 
             }
-            iter_parameters[iter] = ~_optim_parameters;            
-                        
+            iter_parameters[iter] = ~_optim_parameters;
+
             setStateFromComakParameters(state, _optim_parameters);
 
             _model.realizeAcceleration(state);
 
             //Output Optimization Results
-            if (get_verbose() > 0) {
+            if (get_verbose() > 1) {
                 printOptimizationResultsToConsole(_optim_parameters);
             }
 
@@ -649,7 +673,7 @@ void COMAKTool::performCOMAK()
                 }
             }
 
-            if (get_verbose() > 0) {
+            if (get_verbose() > 1) {
                 std::cout << "\nOptimized Acceleration Errors:" << std::endl;
                 std::cout << std::setw(20) << "Name" << std::setw(20) << "Experimental" << std::setw(20) << "Simulated" << std::setw(20) << "Error" << std::endl;
             }
@@ -682,27 +706,20 @@ void COMAKTool::performCOMAK()
                     max_udot_error = udot_error;
                 }
 
-                if (get_verbose() > 0) {
-                    std::cout << std::setw(20) << coord.getName() << std::setw(20) << observed_udot  << std::setw(20)  << coord_udot << std::setw(20) << udot_error << std::endl;
+                if (get_verbose() > 1) {
+                    std::cout << std::setw(20) << coord.getName() << std::setw(20) << observed_udot << std::setw(20) << coord_udot << std::setw(20) << udot_error << std::endl;
                 }
             }
-
-            std::cout << "\nMax udot Error: " << max_udot_error << std::endl;
-            std::cout << "Max Error Coord: " << max_udot_coord << std::endl;
+            if (get_verbose() > 0) {
+                std::cout << "\nMax udot Error: " << max_udot_error << std::endl;
+                std::cout << "Max Error Coord: " << max_udot_coord << std::endl;
+            }
             iter_max_udot_error(iter) = max_udot_error;
             iter_max_udot_coord[iter] = max_udot_coord;
 
-            if (false){
-                for (SpringGeneralizedForce& sgf : _model.updComponentList<SpringGeneralizedForce>()) {
-                    for (int m = 0; m < sgf.getRecordLabels().size(); ++m) {
-                        std::cout << sgf.getRecordLabels().get(m) << ": " << sgf.getRecordValues(state).get(m) << std::endl;
-                    }
-                }
-            }
-
             //Check for convergence
             if (max_udot_error < get_udot_tolerance()) {
-                _consecutive_bad_frame=1; //converged so reset
+                _consecutive_bad_frame = 1; //converged so reset
                 break;
             }
         }// END COMAK ITERATION
@@ -741,7 +758,10 @@ void COMAKTool::performCOMAK()
             _bad_udot_errors.push_back(min_val);
             _bad_udot_coord.push_back(bad_coord);
         }
-        
+        else {
+            std::cout << "COMAK Converged! Number of iterations: " 
+                << iter << std::endl << std::endl;
+        }
 
         //Store Solution
         _model.realizeAcceleration(state);
@@ -754,7 +774,7 @@ void COMAKTool::performCOMAK()
 
         //Save the results
         recordResultsStorage(state,i);        
-
+ 
         //Visualize the Results
         if (get_use_visualizer()) {
             int k = 0;
@@ -779,12 +799,17 @@ void COMAKTool::performCOMAK()
     //Print Convergence Summary
     std::cout << "Convergence Summary:" << std::endl;
     std::cout << "--------------------" << std::endl;
-    std::cout << std::setw(15) << "Bad Times" << std::setw(15) << "Bad Frames" << std::setw(15) << "udot error" << std::endl;
 
-    for (int i = 0; i < _bad_frames.size(); i++) {
-        std::cout << std::setw(15) << _bad_times[i] << std::setw(15) << _bad_frames[i] << std::setw(15) << _bad_udot_errors[i] << std::endl;
+    if (_bad_frames.empty()) {
+        std::cout << "All frames converged!" << std::endl;
     }
+    else {
+        std::cout << std::setw(15) << "Bad Times" << std::setw(15) << "Bad Frames" << std::setw(15) << "udot error" << std::endl;
 
+        for (int i = 0; i < _bad_frames.size(); i++) {
+            std::cout << std::setw(15) << _bad_times[i] << std::setw(15) << _bad_frames[i] << std::setw(15) << _bad_udot_errors[i] << std::endl;
+        }
+    }
     //Print Results
     printResultsFiles();
 }
@@ -1353,58 +1378,29 @@ SimTK::Vector COMAKTool::computeMuscleVolumes() {
 
 void COMAKTool::printCOMAKascii() {
     std::cout <<
-"####################################################################################################\n" 
-"####################################################################################################\n"
-"##                                                        WW                                      ##\n"
-"##                                                    WWWWWW                                      ##\n"
-"##                                       WWWWWWWW  WWWWWWWWWW                                     ##\n"
-"##                                      WWWWWWWWWW WWWWWWWWWWW                                    ##\n"
-"##    WWWWWW WWWW      WWWWWWW         WWWWWWWWWWWWWWWWWWWWWWW      WWWWWWWWWW   WWWWWWWW WWWWWWW ##\n"
-"##  WWWWWWWWWWWWW   WWWWWWWWWWWWW      WWWWWWWWWWWWWWWW WWWWWWW     WWWWWWWWWW   WWWWWWWW WWWWWWW ##\n"
-"## WWWWWW    WWWW  WWWWWW   WWWWWW    WWWWWWW WWWWWWWW  WWWWWWWW    WWWWWWWWW     WWWWWW  WWWW    ##\n"
-"## WWWWWW          WWWWWW   WWWWWW    WWWWWWW  WWWWWWW   WWWWWWW    WWW  WWWWW    WWWWWWWWWWW     ##\n"
-"## WWWWWW    WWW   WWWWWW   WWWWWW   WWWWWWW   WWWWWWW  WWWWWWWW   WWWWWWWWWWW    WWWWWW WWWWWW   ##\n"
-"## WWWWWWW  WWWWW   WWWWWW WWWWWW   WWWWWWWWW WWWWWWWW WWWWWWWWW WWWWW    WWWWWW WWWWWWW  WWWWWWW ##\n"
-"##   WWWWWWWWWW       WWWWWWWWW    WWWWWWWWWW WWWWWWWW WWWWWWW   WWWWWW  WWWWWWW WWWWWWWW WWWWWWW ##\n"
-"##                                 WWWWWWWWW  WWWWWWWW WWWW                                       ##\n"
-"##                                 WWWWWWWWW  WWWWWWW                                             ##\n"
-"##                                WWWWWWWW                                                        ##\n"  
-"####################################################################################################\n"
-"####################################################################################################\n"                          
-"        ##           Concurrent Optimization of Muscle Activations and Kinematics          ##\n"
-"        ##                                                                                 ##\n"
-"        ##               Developed by Colin Smith [1,2] and Darryl Thelen [1]              ##\n"
-"        ##                       1. University of Wisconsin-Madison                        ##\n"
-"        ##                                   2. ETH Zurich                                 ##\n"
-"        #####################################################################################\n"
-"        #####################################################################################\n\n"
+"#################################################################################################\n" 
+"#################################################################################################\n"
+"##                                                                                             ##\n"
+"##    WWWWWW WWWW      WWWWWWW        WWWWWWW    WWWWWWWW       WWWWWWWWW    WWWWWWWW  WWWWWWW ##\n"
+"##  WWWWWWWWWWWWW   WWWWWWWWWWWWW    WWWWWWWWW   WWWWWWWW        WWWWWWWWW    WWWWWWW  WWWWWWW ##\n"
+"## WWWWWW    WWWW  WWWWWW   WWWWWW   WWWWW  WWWWWWW  WWWWW       WWWWWWWWW     WWWWWW  WWWW    ##\n"
+"## WWWWWW          WWWWWW   WWWWWW   WWWWW  WWWWWWW  WWWWW       WWW  WWWWW    WWWWWWWWWWW     ##\n"
+"## WWWWWW    WWW   WWWWWW   WWWWWW  WWWWWW   WWWWW   WWWWW      WWWWWWWWWWW    WWWWWW WWWWWW   ##\n"
+"## WWWWWWW  WWWWW   WWWWWW WWWWWW   WWWWWW  WWWWWW   WWWWWW   WWWWW    WWWWWW WWWWWWW  WWWWWWW ##\n"
+"##   WWWWWWWWWW       WWWWWWWWW    WWWWWWW WWWWWWWW  WWWWWWW  WWWWWW  WWWWWWW WWWWWWWW WWWWWWW ##\n"
+"##                                                                                             ##\n"
+"#################################################################################################\n"
+"#################################################################################################\n"                          
+"      ##           Concurrent Optimization of Muscle Activations and Kinematics          ##\n"
+"      ##                                                                                 ##\n"
+"      ##               Developed by Colin Smith [1,2] and Darryl Thelen [1]              ##\n"
+"      ##                       1. University of Wisconsin-Madison                        ##\n"
+"      ##                                   2. ETH Zurich                                 ##\n"
+"      #####################################################################################\n"
+"      #####################################################################################\n\n"
 
 
     << std::endl;
-
-    if (get_verbose() > 0) {
-        std::cout << std::endl;
-        std::cout << "Prescribed Coordinates:" << std::endl;
-        std::cout << "-----------------------" << std::endl;
-        for (int i = 0; i < _n_prescribed_coord; ++i) {
-            std::cout << _prescribed_coord_name[i] << std::endl;
-        }
-
-        std::cout << std::endl;
-        std::cout << "Primary Coordinates:" << std::endl;
-        std::cout << "--------------------" << std::endl;
-        for (int i = 0; i < _n_primary_coord; ++i) {
-            std::cout << _primary_coord_name[i] << std::endl;
-        }
-
-        std::cout << std::endl;
-        std::cout << "Secondary Coordinates:" << std::endl;
-        std::cout << "----------------------" << std::endl;
-        for (int i = 0; i < _n_secondary_coord; ++i) {
-            std::cout << _secondary_coord_name[i] << std::endl;
-        }
-        std::cout << std::endl;
-    }
 };
 
 void COMAKTool::printOptimizationResultsToConsole(const SimTK::Vector& parameters) {
