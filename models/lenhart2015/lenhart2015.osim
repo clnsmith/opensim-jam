@@ -13247,7 +13247,7 @@
 					<!--Formulation for depth-pressure relationship: 'linear' or 'nonlinear'. Default value set to 'linear'.-->
 					<elastic_foundation_formulation>nonlinear</elastic_foundation_formulation>
 					<!--Combine the thickness and the average material properties between the Smith2018ContactMeshes for both meshes and use Bei & Fregly 2003 lumped parameter Elastic Foundation model.-->
-					<use_lumped_contact_model>false</use_lumped_contact_model>
+					<use_lumped_contact_model>true</use_lumped_contact_model>
 				</Smith2018ArticularContactForce>
 				<Smith2018ArticularContactForce name="pf_contact">
 					<!--List of components that this component owns and serializes.-->
@@ -13265,7 +13265,7 @@
 					<!--Formulation for depth-pressure relationship: 'linear' or 'nonlinear'. Default value set to 'linear'.-->
 					<elastic_foundation_formulation>nonlinear</elastic_foundation_formulation>
 					<!--Combine the thickness and the average material properties between the Smith2018ContactMeshes for both meshes and use Bei & Fregly 2003 lumped parameter Elastic Foundation model.-->
-					<use_lumped_contact_model>false</use_lumped_contact_model>
+					<use_lumped_contact_model>true</use_lumped_contact_model>
 				</Smith2018ArticularContactForce>
 				<SpringGeneralizedForce name="knee_flex_r">
 					<!--List of components that this component owns and serializes.-->
