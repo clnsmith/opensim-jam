@@ -13,4 +13,5 @@ xcopy /I /y  .\models\lenhart2015\graphics  opensim-jam-release\models\lenhart20
 
 REM Copy Documentation
 xcopy /I /y  .\documentation opensim-jam-release\documentation
+xcopy /I /y  .\documentation\doxygen opensim-jam-release\documentation\doxygen
 pause
