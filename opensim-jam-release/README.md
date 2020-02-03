@@ -32,7 +32,7 @@ _Source_
 
 _Description_  
 - [Smith2018ArticularContactForce Description](./documentation/doxygen/Smith2018ArticularContactForce_doxygen.pdf) 
-- [Smith2018ContactMesh Description](./documentation/doxygen/Smith2018ContactMesh_doxygen.pdf).
+- [Smith2018ContactMesh Description](./documentation/doxygen/Smith2018ContactMesh_doxygen.pdf)
 
 ## Models
 ### [Lenhart2015 Model](./models/lenhart2015)
@@ -40,23 +40,29 @@ _Description_
 <img src="models/lenhart2015/graphics/lenhart2015_fullbody.JPG" height="300" >   <img src="models/lenhart2015/graphics/lenhart2015_knee.JPG" height="300">
 </p>
 
-The Lenhart2015 model is an OpenSim implementation of the model described in the paper above. A multibody knee model was constructed based on magnetic resonance images from a healthy young adult female. The bones, ligaments, and cartilage were segmented from different image sets that were optimized for the discerning the relavent structures and registered together. The lenhart2015 model includes the tibiofemoral and patellofemoral joints as 6 DOF joints. Tibiofemoral and patellofemoral articular contact are represented using Smith2018SmithArticularContactForce components and damping is represented using SpringGeneralizedForce components acting on each knee coodinate. Knee ligaments and passive structures are represented using bundles of Blankevoort1991Ligaments. See publication for further details of model construction:
+The Lenhart2015 model is an OpenSim implementation of the model described in the paper below. A multibody knee model was constructed based on magnetic resonance images from a healthy young adult female. The bones, ligaments, and cartilage were segmented from different image sets that were optimized for the discerning the relavent structures and registered together. The lenhart2015 model includes the tibiofemoral and patellofemoral joints as 6 DOF joints. Tibiofemoral and patellofemoral articular contact are represented using Smith2018SmithArticularContactForce components and damping within the joint is represented using SpringGeneralizedForce components acting on each knee coodinate. Knee ligaments and passive structures are represented using bundles of Blankevoort1991Ligaments. See the publication for further details of model construction:
 
 [*Lenhart, R. L., Kaiser, J., Smith, C. R., & Thelen, D. G. (2015). Prediction and validation of load-dependent behavior of the tibiofemoral and patellofemoral joints during movement. Annals of biomedical engineering, 43(11), 2675-2685*](https://link.springer.com/article/10.1007/s10439-015-1326-3)
 
 ## Simulation Tools
 ### Forsim 
-The ForsimTool enables forward dynamic simulations of joint mechanics to be performed. Practically, this allows simulations of cadaver experiments, passive clinical examinations, and simulations where the muscle forces or excitations are known inputs. Fundamentally, it is similar to the ForwardTool in the OpenSim GUI, but the interface is designed for performing forward simulations involving articular contact. The input files can define the muscle and actuator controls (excitations), activations, or forces vs time, external loads applied to the model, and the Coordinate values vs time for Prescribed Coordinates. The forsim tool uses an implicit integrator (SimTK::CPODES::BDF), which gives far superior performance for simulations that involve contact compared to the explicit integrators used by the existing OpenSim ForwardTool. 
+The ForsimTool enables forward dynamic simulations of joint mechanics to be performed. Practically, this allows simulations of cadaver experiments, passive clinical examinations, and simulations where the muscle forces or excitations are known inputs. Fundamentally, it is similar to the ForwardTool in the OpenSim GUI, but the interface is designed for performing forward simulations involving articular contact. The input files can define the muscle and actuator controls (excitations), activations, or forces vs time, external loads applied to the model, and the coordinate values vs time for prescribed coordinates. The forsim tool uses an implicit integrator (SimTK::CPODES::BDF), which gives far superior performance for simulations that involve contact compared to the explicit integrators used by the existing OpenSim ForwardTool. 
 
 _Source_
 - [ForsimTool.h](../src/ForsimTool.h)
 - [ForsimTool.cpp](../src/ForsimTool.cpp)
 
 _Description_
-- [Smith2018ArticularContactForce Description](./documentation/doxygen/ForsimTool_doxygen.pdf)
+- [Smith2018ArticularContactForce Description](./documentation/doxygen/ForsimTool_doxygen.pdf) coming soon
 
 ### COMAKInverseKinematics and COMAK
-The **C**oncurrent **O**ptimization of **M**uscle **A**ctivations and **K**inematics (COMAK) algorithm enables the calculation of muscle forces and detailed joint mechanics during dynamic movements. 
+The **C**oncurrent **O**ptimization of **M**uscle **A**ctivations and **K**inematics (COMAK) algorithm enables the calculation of muscle forces and detailed joint mechanics during dynamic movements. For details of the COMAK algorithm refer to the following publications:
+
+Smith, C. R., Brandon, S. C., & Thelen, D. G. (2019). Can altered neuromuscular coordination restore soft tissue loading patterns in anterior cruciate ligament and menisci deficient knees during walking?. Journal of biomechanics, 82, 124-133.
+
+Brandon, S. C., Smith, C. R., & Thelen, D. G. (2018). Simulation of soft tissue loading from observed movement dynamics. Handbook of Human Motion, 395-428.
+
+Smith, C. R., Lenhart, R. L., Kaiser, J., Vignos, M. F., & Thelen, D. G. (2016). Influence of ligament properties on tibiofemoral mechanics in walking. The journal of knee surgery, 29(02), 099-106.
 
 _Source_
 - [COMAKInverseKinematicsTool.h](../src/COMAKInverseKinematicsTool.h)
@@ -65,18 +71,18 @@ _Source_
 - [COMAKTool.cpp](../src/COMAKTool.cpp)
 
 _Description_
-- [COMAKInverseKinematicsTool Description](./documentation/doxygen/COMAKInverseKinematicsTool_doxygen.pdf)
-- [COMAKTool Description](./documentation/doxygen/COMAKTool_doxygen.pdf)
+- [COMAKInverseKinematicsTool Description](./documentation/doxygen/COMAKInverseKinematicsTool_doxygen.pdf) coming soon
+- [COMAKTool Description](./documentation/doxygen/COMAKTool_doxygen.pdf) coming soon
 
 ### Joint Mechanics
-The JointMechanicsTool enables detailed post-hoc analysis of simulations or measurments of joint mechanics. It can be used to generate .vtp files to visualize simulation results in Paraview, or .h5 files which are binary files that can store the large quantites of contact data (multiple calculated values for each triange face) in compact files that can be quickly read by MATLAB, Python, or [HDF View](https://www.hdfgroup.org/downloads/hdfview/)
+The JointMechanicsTool enables detailed post-hoc analysis of simulations or measurements of joint mechanics. It can be used to generate .vtp files to visualize simulation results in Paraview, or .h5 files which are binary files that can store the large quantites of contact data (multiple calculated values for each triange face) in compact files that can be quickly read by MATLAB, Python, or [HDF View](https://www.hdfgroup.org/downloads/hdfview/)
 
 _Source_
 - [JointMechanicsTool.h](../src/JointMechanicsTool.h)
 - [JointMechanicsTool.cpp](../src/JointMechanicsTool.cpp)
 
 _Description_
-- [JointMechanicsTool Description](./documentation/doxygen/JointMechanicsToolTool_doxygen.pdf)
+- [JointMechanicsTool Description](./documentation/doxygen/JointMechanicsToolTool_doxygen.pdf) coming soon
 
 ## Distribution
 ### OpenSim-JAM Plugin
@@ -107,7 +113,7 @@ The examples use the [OpenSim 4.0 - MATLAB scripting interface](https://simtk-co
 <p align="center">
   <img src="examples/visualize_kinematics/graphics/visualize_kinematics.gif" height="300" >
 </p>
-The JointMechanicsTool can be used to analyze and visualize simulated or measured kinematics from fluoroscopy, dynamic MRI, etc or static poses from medical imaging. This example demonstrates how to input bone kinematics to the JointMechanicsTool and generate .vtp files to visualize proximity maps between the tibiofemoral subchondral bone surfaces using Paraview. Additionally, a Blankevoort1991Ligament component is used to assess soft tissue elongation patterns. 
+The JointMechanicsTool can be used to analyze and visualize simulated or measured kinematics from fluoroscopy, dynamic MRI, or static poses from medical imaging. This example demonstrates how to input bone kinematics to the JointMechanicsTool and generate .vtp files to visualize proximity maps between the tibiofemoral subchondral bone surfaces using Paraview. Additionally, a Blankevoort1991Ligament component is used to assess soft tissue elongation patterns. 
 
 ### [Passive Flexion](./examples/passive_flexion)
 <p align="center">
@@ -131,14 +137,14 @@ Replicate a clinical test for anterior cruciate ligament (ACL) deficiency by per
 Replicate a clinical isometric extension test where the hip and knee are held at 30<sup>o</sup> flexion and the patient activates their quadriceps. 
 
 ### [Walking](./examples/walking)
-Use COMAK  to predict muscle forces, ligament forces, cartilage contact pressures, and secondary knee kinematics during walking. 
+Use COMAK to predict muscle forces, ligament forces, cartilage contact pressures, and secondary knee kinematics during walking. 
 
 ## Software:
 ### [OpenSim 4.0 GUI](https://opensim.stanford.edu/)
 The OpenSim GUI is helpful for visualizing models and simulation results. Instructions for visualizing models and simulation results are provided [here](documentation/visualizing-simulation-results.md)
 
 ### [MATLAB](https://www.mathworks.com/products/matlab.html)
-MATLAB is used in the examples to generate input files and process simulation results. You will need to have the [OpenSim 4.0 - MATLAB scripting interface](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+with+Matlab) setup in order to generate the example input files. [Python](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+in+Python) is an open-source alternative that can also be used for this purpose, but you will need to tranlsate the MATLAB scripts. 
+MATLAB is used in the examples to generate input files and process simulation results. You will need to have the [OpenSim 4.0 - MATLAB scripting interface](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+with+Matlab) setup in order to generate the example input files. [Python](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+in+Python) is an open-source alternative that can also be used for this purpose, but you will need to translate the MATLAB scripts. 
 
 ### Text Editor
 A text editor that is capable of syntax highlighting and code folding is nice for viewing the .osim model files, as well as the .cmd scripts and .xml settings files in the examples. [Visual Studio Code](https://code.visualstudio.com/) is my personal choice at the moment, but many OpenSim users also like [Notepad++](https://notepad-plus-plus.org/).
@@ -165,6 +171,6 @@ MATLAB based software toolkit that includes mesh editing features.
 
 
 ## Acknowledgements 
-Much of the included models and codes were initially developed in the [UW Neuromuscular Biomechanics Lab at the University of Wisconsin-Madison](https://uwnmbl.engr.wisc.edu). Contributers to this work include Darryl Thelen, Rachel Lenhart, Jarred Kaiser, Michael Vignos, Kwang won Choi, Scott Brandon, and Josh Roth. Translation and extension of the orginal SIMM and UWPipeline into OpenSim was performed during my time as a PhD at UW-Madison (NIH EB015410) and Stanford ([NCSRR Visiting Scholar](https://opensim.stanford.edu/support/scholars.html)), and as a post-doc at the [Laboratory for Movement Biomechanics](https://www.movement.ethz.ch/) at ETH Zürich ([Whitaker International Program](https://www.whitaker.org/), [OpenSim Pilot Project](https://opensim.stanford.edu/support/pilot.html) Pilot Project Award No. 5P2CHD065690-09).
+Much of the included models and codes were initially developed in the [UW Neuromuscular Biomechanics Lab at the University of Wisconsin-Madison](https://uwnmbl.engr.wisc.edu). Contributers to this work include Darryl Thelen, Rachel Lenhart, Jarred Kaiser, Michael Vignos, Kwang won Choi, Scott Brandon, and Josh Roth. Translation and extension of the orginal SIMM and UWPipeline into OpenSim was performed during my time as a PhD at UW-Madison (NIH EB015410) and Stanford ([NCSRR Visiting Scholar](https://opensim.stanford.edu/support/scholars.html)), and as a Post-doc at the [Laboratory for Movement Biomechanics](https://www.movement.ethz.ch/) at ETH Zürich ([Whitaker International Program](https://www.whitaker.org/), [OpenSim Pilot Project](https://opensim.stanford.edu/support/pilot.html) Pilot Project Award No. 5P2CHD065690-09).
 
 A list of publications that use these tools is located [here](./documentation/references.md)
