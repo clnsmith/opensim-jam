@@ -5,7 +5,8 @@ This example uses the COMAK to predict muscle forces, ligament forces, cartilage
 
 The experimental data (motion capture, ground reaction forces) were collected while the Lenhart2015 subject performed overground walking at a self selected speed. 
 
-Within COMAK it is important to define model coordinates as Primary, Secondary, and Prescribed. The Primary and the Prescribed coordinates must be quantifable using motion capture. In the COMAK optimization, a constraint equation is included for each Primary coordinate that dictates that the measured accelerations of the Primary coordinates  
+Within COMAK it is important to define model coordinates as Primary, Secondary, and Prescribed. The Primary and the Prescribed coordinates must be quantifable using motion capture. In the COMAK optimization, a constraint equation is included for each Primary coordinate that dictates that the measured accelerations of the Primary coordinates 
+
 __Primary Coordinates__
 - hip_flex_r
 - hip_add_r
@@ -26,8 +27,8 @@ __Secondary Coordinates__
 - pf_ty_r
 - pf_tz_r
 
-__ Prescribed Coordinates__
-All other model coordinates (pelvis, left leg, upperbody). 
+__Prescribed Coordinates__
+- All other model coordinates (pelvis, left leg, upperbody). 
 
 __COMAKInverseKinematicsTool__
 The COMAKInverseKinematicsTool is used to calculate the First, the COMAKInverseKinematics tool is used to perform a passive forward simulation where the knee flexion flexes from 0<sup>o<sup> to 120<sup>o<sup> and the Seconday Coordinates (listed below) are predicted based on the passive muscle, ligament, and articular contact forces. These simulation results are used to generate functions that couple the Secondary
