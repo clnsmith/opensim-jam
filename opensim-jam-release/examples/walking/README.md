@@ -31,11 +31,43 @@ __Prescribed Coordinates__
 - All other model coordinates (pelvis, left leg, upperbody). 
 
 __COMAKInverseKinematicsTool__
-The COMAKInverseKinematicsTool is used to calculate the kinematics of the Primary and Prescribed coordinates from the motion capture data. First, the COMAKInverseKinematics tool is used to perform a passive forward simulation where the knee flexion flexes from 0<sup>o<sup> to 120<sup>o<sup> and the Seconday coordinates are predicted based on the passive muscle, ligament, and articular contact forces. These simulation results are used to generate functions that couple the Secondary coordinates to the knee_flex_r within inverse kinematics through a CoordinateCouplerConstraint. These constraints are only used in the inverse kinematics solution and are removed for the COMAK simulation.
+
+The COMAKInverseKinematicsTool is used to calculate the kinematics of the Primary and Prescribed coordinates from the motion capture data. First, the COMAKInverseKinematics tool is used to perform a passive forward simulation where the knee flexion flexes from 0<sup>o</sup> to 120<sup>o</sup> and the Seconday coordinates are predicted based on the passive muscle, ligament, and articular contact forces. These simulation results are used to generate functions that couple the Secondary coordinates to the knee_flex_r within inverse kinematics through a CoordinateCouplerConstraint. These constraints are only used in the inverse kinematics solution and are removed for the COMAK simulation.
   
 __COMAKTool__
-The COMAKTool is used to calculate the Secondary kinematics, as well as the muscle, ligament, and articular contact forces for the measured walking trial. In this example   
-  
+
+The COMAKTool is used to calculate the Secondary kinematics, as well as the muscle, ligament, and articular contact forces for the measured walking trial. The COMAK optimization minimizes the following cost function:
+<p align="center">
+  <b>COMAK Cost Function</b><br>
+  <img src="../../documentation/figures/comak/comak_cost_function.png" height="200" > 
+</p>
+
+In this example, three simulations are performed with different cost function parameters using the same input data to demonstrate the ability to vary the optimized muscle coordination patterns and inspect the resulting knee mechanics. The three simulations are setup as follows
+
+_comak_\
+All muscle weight terms (W<sub>i</sub>) are set to 1, and the contact energy weight (CW) is set to 0.
+
+_comak_muscle_weights_\
+All muscle weight terms (W<sub>i</sub>) are set to 1 except those listed below, and the contact energy weight (CW) is set to 0.
+- W<sub>gasmed_r</sub> = 4
+- W<sub>gaslat_r</sub> = 7
+- W<sub>gaslat_r</sub> = 7
+- W<sub>soleus_r</sub> = 0.9
+- W<sub>recfem_r</sub> = 3
+- W<sub>glmed1_r</sub> = 0.9
+- W<sub>glmed2_r</sub> = 0.9
+- W<sub>glmed3_r</sub> = 0.9
+- W<sub>glmin1_r</sub> = 0.9
+- W<sub>glmin2_r</sub> = 0.9
+- W<sub>glmin3_r</sub> = 0.9
+- W<sub>bflh_r</sub> = 2
+- W<sub>bfsh_r</sub> = 2
+- W<sub>semiten_r</sub> = 2
+- W<sub>semimem_r</sub> = 2
+
+
+_comak_contact_energy_\
+All muscle weight terms (W<sub>i</sub>) are set to 1, and the contact energy weight (CW) is set to 500.
 ## Simulation Results
 <p align="center">
   <b>Tibiofemoral Kinematics</b><br>
@@ -68,12 +100,10 @@ The COMAKTool is used to calculate the Secondary kinematics, as well as the musc
 </p>
 
 ## Workflow Steps
-1) Inspect the [./inputs/comak_inverse_kinematics_settings.xml](./inputs/comak_inverse_kinematics_settings.xml) and [./inputs/comak_settings.xml](./inputs/comak_settings.xml) files to understand the inputs and settings for the simulation.
+1) Inspect the [./inputs/comak_inverse_kinematics_settings.xml](./inputs/comak_inverse_kinematics_settings.xml), as well as the [./inputs/comak_settings.xml](./inputs/comak_settings.xml),[./inputs/comak_settings_muscle_weights.xml](./inputs/comak_settings_muscle_weights.xml),and [./inputs/comak_settings_contact_energy.xml](./inputs/comak_settings_contact_energy.xml) files to understand the inputs and settings for the simulation.
 
-2) Inspect the [run_walking.cmd](run_walking.cmd) file.
+2) Double click on [run_walking.cmd](run_walking.cmd) to run the COMAKInverseKinematics, COMAKTool, and JointMechanicsTools to perform the simulation using the command line. You can open this file in a text editor to understand the code format to run the executables. 
 
-3) Double click on the [run_walking.cmd](run_walking.cmd) file to perform the simulation.
+4) Use Paraview and/or the OpenSim GUI to visualize the simulation results [instructions](../../documentation/visualizing-models-and-simulation-results.md).
 
-4) Visualize the results in Paraview.
-
-5) Use MATLAB to run analyze_walking_results.m to generate plots of the simulation results. 
+5) Use MATLAB to run [./analysis/generate_walking_results_plots.m](./analysis/generate_walking_results_plots.m) to generate plots of the simulation results. 
