@@ -1,6 +1,18 @@
 # Visualizing Models and Simulation Results
 
+# SimTK Visualizer
+<p align="center">
+  <img src="figures/visualization/simbody_visualizer.PNG" height="500" >
+</p>
+
+In the .xml settings file for each of the OpenSim-Jam tools there is a <use_visualizer> property that will enable using the SimTK::Visualizer to view the model in realtime. 
+
 # OpenSim 4.0 GUI 
+
+<p align="center">
+  <img src="figures/visualization/opensim_gui.PNG" height="500" >
+</p>
+
 The OpenSim GUI offers the easiest way to visualize models including OpenSim-JAM components and simulation results generated using the OpenSim-JAM tools. For an overview on using the OpenSim GUI, see [here](https://simtk-confluence.stanford.edu/display/OpenSim/Graphical+User+Interface). Currently, the Blankevoort1991Ligaments and Smith2018ContactMesh components can only be visualized in the OpenSim GUI with a constant solid color defined in the .osim file. 
 
 ## Load Plugin 
@@ -29,6 +41,9 @@ You can use the OpenSim plot tool to visualize simulation results stored in .sto
 
 
 # Paraview
+<p align="center">
+  <img src="figures/visualization/paraview.png" height="500" >
+</p>
 
 [Paraview](https://www.paraview.org/) is an open-source software for designed for visualization of scientific data. [Paraview Desktop](https://www.paraview.org/desktop/) is a GUI (windows, mac, linux) that allows enables high quality visualization of OpenSim simulations. There is a significant amount of documentation and tutorials on using the Paraview GUI and Paraview python scripting to generate visualizations of scientific data on their website https://www.paraview.org/documentation/. The documentation below provides specific instructions for visualizing OpenSim-JAM simulations.   
 
@@ -70,5 +85,4 @@ The JointMechanicsTool can read in simulation results (.sto) and generate .vtp f
 
 ## Saving screen shots and animiations
 
-# SimTK Visualizer
-In the .xml settings file for each of the OpenSim-Jam tools there is a <use_visualizer> property that will enable using the SimTK::Visualizer to view the model in realtime. 
+
