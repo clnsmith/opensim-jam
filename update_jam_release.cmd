@@ -15,4 +15,5 @@ REM Copy Documentation
 xcopy /I /y  .\documentation opensim-jam-release\documentation
 xcopy /I /y  .\documentation\doxygen opensim-jam-release\documentation\doxygen
 xcopy /I /y  .\documentation\figures\visualization opensim-jam-release\documentation\figures\visualization
+xcopy /I /y  .\documentation\figures\comak opensim-jam-release\documentation\figures\comak
 pause
