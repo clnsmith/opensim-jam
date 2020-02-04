@@ -13430,7 +13430,7 @@
 					<!--Path to triangle mesh geometry file representing the contact surface (supports .obj, .stl, .vtp).-->
 					<mesh_file>lenhart2015-R-femur-cartilage.stl</mesh_file>
 					<!--Uniform Elastic Modulus value for every triangle in mesh. The default value is 1000000.0 Pa.-->
-					<elastic_modulus>5000000</elastic_modulus>
+					<elastic_modulus>10000000</elastic_modulus>
 					<!--Uniform Poissons Ratio value for every triangle in mesh. The default value is 0.5.-->
 					<poissons_ratio>0.45000000000000001</poissons_ratio>
 					<!--Uniform thickness of elastic layer for entire mesh. The default value is 0.005 meters-->
@@ -13474,7 +13474,7 @@
 					<!--Path to triangle mesh geometry file representing the contact surface (supports .obj, .stl, .vtp).-->
 					<mesh_file>lenhart2015-R-tibia-cartilage.stl</mesh_file>
 					<!--Uniform Elastic Modulus value for every triangle in mesh. The default value is 1000000.0 Pa.-->
-					<elastic_modulus>5000000</elastic_modulus>
+					<elastic_modulus>10000000</elastic_modulus>
 					<!--Uniform Poissons Ratio value for every triangle in mesh. The default value is 0.5.-->
 					<poissons_ratio>0.45000000000000001</poissons_ratio>
 					<!--Uniform thickness of elastic layer for entire mesh. The default value is 0.005 meters-->
@@ -13518,7 +13518,7 @@
 					<!--Path to triangle mesh geometry file representing the contact surface (supports .obj, .stl, .vtp).-->
 					<mesh_file>lenhart2015-R-patella-cartilage.stl</mesh_file>
 					<!--Uniform Elastic Modulus value for every triangle in mesh. The default value is 1000000.0 Pa.-->
-					<elastic_modulus>5000000</elastic_modulus>
+					<elastic_modulus>10000000</elastic_modulus>
 					<!--Uniform Poissons Ratio value for every triangle in mesh. The default value is 0.5.-->
 					<poissons_ratio>0.45000000000000001</poissons_ratio>
 					<!--Uniform thickness of elastic layer for entire mesh. The default value is 0.005 meters-->

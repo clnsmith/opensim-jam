@@ -1,9 +1,9 @@
 ## References
 Below are all the references I am aware of that use these models or tools in some form. Note that all of these were performed using the older closed-source UWPipeline/SIMM implementation. Some of the early papers use a modified version of CMC to simulate 6 DOF knee mechanics during walking (details in Thelen, JBME, 2014). This algorithm is not included in JAM. 
 
-1. _Clouthier, A., Borschneck, D., Thelen, D. G., Deluzio, K., & Rainbow, M. J. (2019). Relationship Between Lateral Patellar Stability Following Tibial Tubercle Osteotomy for Varying Patellofemoral Geometries. Journal of biomechanical engineering._ 
+1. _Clouthier, A., Borschneck, D., Thelen, D. G., Deluzio, K., & Rainbow, M. J. (2019). Relationship Between Lateral Patellar Stability Following Tibial Tubercle Osteotomy for Varying Patellofemoral Geometries. Journal of biomechanical engineering._ |
 
-1. _Meireles, S., Reeves, N. D., Jones, R. K., Smith, C. R., Thelen, D. G., & Jonkers, I. (2019). Patients with medial knee osteoarthritis reduce medial knee contact forces by altering trunk kinematics, progression speed, and stepping strategy during stair ascent and descent: a pilot study. Journal of applied biomechanics, 35(4), 280-289._ 
+1. _Meireles, S., Reeves, N. D., Jones, R. K., Smith, C. R., Thelen, D. G., & Jonkers, I. (2019). Patients with medial knee osteoarthritis reduce medial knee contact forces by altering trunk kinematics, progression speed, and stepping strategy during stair ascent and descent: a pilot study. Journal of applied biomechanics, 35(4), 280-289._ |
 
 1. _Rakhsha, M., Smith, C. R., Recuero, A. M., Brandon, S. C., Vignos, M. F., Thelen, D. G., & Negrut, D. (2019). Simulation of surface strain in tibiofemoral cartilage during walking for the prediction of collagen fibre orientation. Computer Methods in Biomechanics and Biomedical Engineering: Imaging & Visualization, 7(4), 396-405._
 

@@ -69,62 +69,51 @@ saveas(pf_kin_fig,'../graphics/walking_patellofemoral_kinematics.png')
 %% Plot Contact Forces
 [forces_data, forces_labels, forces_header] = read_opensim_mot('../results/joint-mechanics/walking_ForceReporter_forces.sto');
 [forces_weights_data, forces_weights_labels, forces_weights_header] = read_opensim_mot('../results/joint-mechanics_muscle_weights/walking_muscle_weights_ForceReporter_forces.sto');
+[forces_contact_data, forces_contact_labels, forces_contact_header] = read_opensim_mot('../results/joint-mechanics_contact_energy/walking_contact_energy_ForceReporter_forces.sto');
 
 ind = find(contains(forces_labels,'tf_contact.casting.total.contact_force_y'));
 ind_weights = find(contains(forces_weights_labels,'tf_contact.casting.total.contact_force_y'));
-
+ind_contact = find(contains(forces_contact_labels,'tf_contact.casting.total.contact_force_y'));
 forces_time = forces_data(:,1);
 forces_weights_time = forces_weights_data(:,1);
+forces_contact_time = forces_contact_data(:,1);
 
-figure('name','Tibiofemoral Contact Forces')
+kcf_fig = figure('name','Tibiofemoral Contact Forces');
 hold on;
 plot(forces_time,forces_data(:,ind)/BW,'LineWidth',line_width)
-plot(forces_time,forces_weights_data(:,ind_weights)/BW,'LineWidth',line_width)
-legend('no weights','muscle weights')
+plot(forces_weights_time,forces_weights_data(:,ind_weights)/BW,'LineWidth',line_width)
+plot(forces_contact_time,forces_contact_data(:,ind_weights)/BW,'LineWidth',line_width)
+legend('no weights','muscle weights','contact energy','Location','southeast')
 
-
-%% Plot GRF
+saveas(kcf_fig,'../graphics/walking_knee_contact_force.png')
 
 %% Plot Muscle Activation
-% [act_data, act_labels, act_header] = read_opensim_mot('../results/comak/walking_activations.sto');
-% 
-% time = act_data(:,1);
-% 
-% figure('name','Muscle Activation - All')
-% hold on;
-% numMuscles = model.getMuscles().getSize();
-% msl_names = cell(numMuscles,1);
-% 
-% for m=0:numMuscles-1
-%    msl_path = model.getMuscles().get(m).getAbsolutePathString();
-%    
-%    activation = act_data(:,strcmp(act_labels,msl_path));
-%    plot(states_time,activation,'LineWidth',line_width)
-%    
-%    msl_names{m+1} = char(model.getMuscles().get(m).getName());
-% end
-% legend(msl_names)
-% title('Muscle Activations')
-% xlabel('Time [s]')
-% ylabel('Activation')
-% ylim([0 1]);
-% 
-% 
-% if(false)
-%     numMuscles = model.getMuscles().getSize();
-%     msl_names = cell(numMuscles,1);
-% 
-%     for m=0:numMuscles-1
-%         msl_names{m+1} = char(model.getMuscles().get(m).getName());
-%        figure('name',msl_names{m+1})
-%        msl_path = model.getMuscles().get(m).getAbsolutePathString();
-% 
-%        activation = states_data(:,strcmp(states_labels,msl_path));
-%        plot(states_time,activation)
-%            title(msl_names{m+1})
-%         xlabel('Time [s]')
-%         ylabel('Activation')
-%         ylim([0 1]);
-%     end
-% 
-% end
+[act_data, act_labels, act_header] = read_opensim_mot('../results/comak/walking_activation.sto');
+[act_weights_data, act_weights_labels, act_weights_header] = read_opensim_mot('../results/comak_muscle_weights/walking_muscle_weights_activation.sto');
+[act_contact_data, act_contact_labels, act_contact_header] = read_opensim_mot('../results/comak_contact_energy/walking_contact_energy_activation.sto');
+
+act_time = act_data(:,1);
+act_weights_time = act_weights_data(:,1);
+act_contact_time = act_contact_data(:,1);
+
+msls = {'soleus','gasmed_r','recfem_r','semimem_r','glmed1_r','glmin1_r'};
+msl_names = {'soleus','gasmed','recfem','semimem','glmed1','glmin1'};
+
+act_fig = figure('name','Muscle Activation - All','Position',[100 100 1600 400]);
+
+for i = 1:length(msls)
+    ind = find(contains(act_labels,msls{i}));
+    ind_weights = find(contains(act_weights_labels,msls{i}));
+    ind_contact = find(contains(act_contact_labels,msls{i}));
+    
+    subplot(2,3,i);hold on;
+    plot(act_time,act_data(:,ind),'LineWidth',line_width);
+    plot(act_weights_time,act_weights_data(:,ind_weights),'LineWidth',line_width);
+    plot(act_contact_time,act_contact_data(:,ind_contact),'LineWidth',line_width);
+    
+    title(msl_names{i})
+    xlabel('Time [s]')
+    ylabel('Activation')
+end
+legend('no weights','muscle weights','contact energy')
+saveas(act_fig,'../graphics/walking_muscle_activations.png')
