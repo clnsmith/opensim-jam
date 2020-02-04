@@ -137,6 +137,10 @@ Replicate a clinical test for anterior cruciate ligament (ACL) deficiency by per
 Replicate a clinical isometric extension test where the hip and knee are held at 30<sup>o</sup> flexion and the patient activates their quadriceps. 
 
 ### [Walking](./examples/walking)
+<p align="center">
+  <img src="examples/walking/graphics/walking_contact.gif" height="300" >
+</p>
+
 Use COMAK to predict muscle forces, ligament forces, cartilage contact pressures, and secondary knee kinematics during walking. 
 
 ## Software:
