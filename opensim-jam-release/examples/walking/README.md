@@ -33,7 +33,36 @@ __Prescribed Coordinates__
 __COMAKInverseKinematicsTool__
 The COMAKInverseKinematicsTool is used to calculate the First, the COMAKInverseKinematics tool is used to perform a passive forward simulation where the knee flexion flexes from 0<sup>o<sup> to 120<sup>o<sup> and the Seconday Coordinates (listed below) are predicted based on the passive muscle, ligament, and articular contact forces. These simulation results are used to generate functions that couple the Secondary
   
+## Simulation Results
+<p align="center">
+  <b>Tibiofemoral Kinematics</b><br>
+  <img src="graphics/walking_tibiofemoral_kinematics.png" height="400" >  
+</p>
 
+<p align="center">
+  <b>Patellofemoral Kinematics</b><br>
+  <img src="graphics/walking_patellofemoral_kinematics.png" height="400" > 
+</p>
+
+<p align="center">
+  <b>Tibia Axial Contact Force</b><br>
+  <img src="graphics/walking_knee_contact_force.png" height="400" > 
+</p>
+
+<p align="center">
+  <b>Muscle Activations</b><br>
+  <img src="graphics/walking_muscle_activations.png" height="250" > 
+</p>
+
+<p align="center">
+  <b>Cartilage Contact Pressure</b><br>
+  <img src="graphics/walking_contact.gif" height="400" > 
+</p>
+
+<p align="center">
+  <b>ACL and Patellar Tendon Force</b><br>
+  <img src="graphics/walking_ligaments.gif" height="400" > 
+</p>
 
 ## Workflow Steps
 1) Inspect the [./inputs/comak_inverse_kinematics_settings.xml](./inputs/comak_inverse_kinematics_settings.xml) and [./inputs/comak_settings.xml](./inputs/comak_settings.xml) files to understand the inputs and settings for the simulation.
