@@ -42,7 +42,7 @@ You can use the OpenSim plot tool to visualize simulation results stored in .sto
 
 # Paraview
 <p align="center">
-  <img src="figures/visualization/paraview.png" height="500" >
+  <img src="figures/visualization/paraview.png" height="400" >
 </p>
 
 [Paraview](https://www.paraview.org/) is an open-source software for designed for visualization of scientific data. [Paraview Desktop](https://www.paraview.org/desktop/) is a GUI (windows, mac, linux) that allows enables high quality visualization of OpenSim simulations. There is a significant amount of documentation and tutorials on using the Paraview GUI and Paraview python scripting to generate visualizations of scientific data on their website https://www.paraview.org/documentation/. The documentation below provides specific instructions for visualizing OpenSim-JAM simulations.   
@@ -55,24 +55,29 @@ The JointMechanicsTool can read in simulation results (.sto) and generate .vtp f
 2) Select the series of .vtp files you want to read. You can hold down ctrl or shift to select multiple series. Press 'OK'  
 
 ### Grouping 
+You can group multiple sources (.vtp files) together by selecting them in the Pipeline Browser and pressing the "Group" button. This allows you to set visualization parameters for all ligaments etc. at the same time.  
 
 ### Filters
+Paraview has filters built in to post process the source data (.vtp files). To apply a filter, select a source in the Pipeline Browser, then Filters->Alphabetical from the drop down menu.
+
 
 ### Smith2018ArticularContact
 1) Load contact_XX.vtp files 
 2) Apply Filter CellToPoint to smooth the color map 
-3) Select the output values to visualize using the .
-
+3) Select the output values to visualize using the "Change color source" field.
+4) Adjust the Color Map using the "Color map editor"
 
 ### Ligaments
 1) Load ligament_XX.vtp files
 2) Apply Tube filter
-3) Select outputs to visualize 
+3) Select the output values to visualize using the "Change color source" field. 
+4) Adjust the Color Map using the "Color map editor"
 
 ### Muscles
 1) Load muscle_XX.vtp files
-2) Apply Tube filters
-3) Select outputs to visualize 
+2) Apply Tube filter
+3) Select the output values to visualize using the "Change color source" field. 
+4) Adjust the Color Map using the "Color map editor"
 
 ### Attached Geometries (bones etc)
 1) Load mesh_XX.vtp files
@@ -88,3 +93,6 @@ The JointMechanicsTool can read in simulation results (.sto) and generate .vtp f
 3) Enter image specification details, press OK.
 
 This will save a series of images for each frame, you will need to use a video editor to combine these images into a video file. 
+
+### Saving the Paraview State
+You can use File->Save State... and File->Load State... to save the current paraview configuration (loaded .vtp files, filters, settings, etc).
