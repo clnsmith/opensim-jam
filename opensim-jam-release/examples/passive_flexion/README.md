@@ -21,4 +21,4 @@ This simulation uses the [lenhart2015 model](../../models/lenhart2015/lenhart201
 
 3) Double click on [run_passive_flexion.cmd](run_passive_flexion.cmd) to perform the forsim simulation and joint-mechanics analysis using the command line. You can open this file in a text editor to understand the code format to run the forsim and joint-mechanics executables.
 
-4) Use Paraview and/or the OpenSim GUI to visualize the simulation results [instructions](../../documentation/visualizing-simulation-results).
+4) Use Paraview and/or the OpenSim GUI to visualize the simulation results [instructions](../../documentation/visualizing-models-and-simulation-results.md).
