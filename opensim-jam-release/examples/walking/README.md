@@ -1,6 +1,17 @@
 # Example: Walking
 
 ## Simulation Description
+<p align="center">
+  <b>COMAK Workflow</b><br>
+  <img src="../../documentation/figures/comak/comak_workflow.png" height="400" > 
+</p>
+
+<p align="center">
+  <b>COMAK Algorithm</b><br>
+  <img src="../../documentation/figures/comak/comak_algorithm.png" height="400" >
+  <br><i>Note: The complete form of the cost function is provided below. </i><br>
+</p>
+
 This example uses the COMAK to predict muscle forces, ligament forces, cartilage contact pressures, and secondary knee kinematics (5 tibiofemoral DOFs, 5 patellofemoral DOFs) during walking. 
 
 The experimental data (motion capture, ground reaction forces) were collected while the Lenhart2015 subject performed overground walking at a self selected speed. 
@@ -100,7 +111,7 @@ All muscle weight terms (W<sub>i</sub>) are set to 1, and the contact energy wei
 </p>
 
 ## Workflow Steps
-1) Inspect the [./inputs/comak_inverse_kinematics_settings.xml](./inputs/comak_inverse_kinematics_settings.xml), as well as the [./inputs/comak_settings.xml](./inputs/comak_settings.xml),[./inputs/comak_settings_muscle_weights.xml](./inputs/comak_settings_muscle_weights.xml),and [./inputs/comak_settings_contact_energy.xml](./inputs/comak_settings_contact_energy.xml) files to understand the inputs and settings for the simulation.
+1) Inspect the [./inputs/comak_inverse_kinematics_settings.xml](./inputs/comak_inverse_kinematics_settings.xml), as well as the [./inputs/comak_settings.xml](./inputs/comak_settings.xml), [./inputs/comak_settings_muscle_weights.xml](./inputs/comak_settings_muscle_weights.xml), and [./inputs/comak_settings_contact_energy.xml](./inputs/comak_settings_contact_energy.xml) files to understand the inputs and settings for the simulation.
 
 2) Double click on [run_walking.cmd](run_walking.cmd) to run the COMAKInverseKinematics, COMAKTool, and JointMechanicsTools to perform the simulation using the command line. You can open this file in a text editor to understand the code format to run the executables. 
 
