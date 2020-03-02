@@ -10,4 +10,4 @@ This repository is a collection of force component plugins, models, and executab
 
 This top level repository is used for the development and contains the [source code](src) for this package. Instructions to build the C++ code from source are provided [here](./documentation/building-opensim-jam-from-source.md).
 
-A release version of these codes is provided for users in the [opensim-jam-release](opensim-jam-release) folder. This includes prebuilt versions of the opensim_jam.dll plugin for OpenSim, command-line exectuables for the tools, examples, and documentation. 
+Release versions of these codes are available for users to download from  the [OpenSim JAM SimTK website](https://simtk.org/projects/opensim-jam). This includes prebuilt versions of the opensim_jam.dll plugin for OpenSim, command-line exectuables for the tools, examples, and documentation. Browser friendly documentation and the bleeding edge version of the release folder can be found at [opensim-jam-release](opensim-jam-release).  
