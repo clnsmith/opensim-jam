@@ -251,6 +251,8 @@ public:
         return getComponent<PhysicalOffsetFrame>("mesh_frame");
     };
 
+    void printMeshDebugInfo() const;
+
 private:
     void setNull();
     void constructProperties();

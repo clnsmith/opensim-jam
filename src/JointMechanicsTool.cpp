@@ -95,7 +95,7 @@ void JointMechanicsTool::constructProperties()
     constructProperty_output_frame("ground");
     
     constructProperty_write_vtp_files(true);
-
+    constructProperty_vtp_file_format("binary");
     constructProperty_write_h5_file(true);
     constructProperty_h5_states_data(true);
     constructProperty_h5_kinematics_data(true);
@@ -1369,7 +1369,56 @@ void JointMechanicsTool::writeH5File(
 
     //Write Contact Data
     if (!_contact_mesh_names.empty()) {
-        std::cout << "contact data cannot be written to H5 file yet. " << std::endl;
+        h5_adapter.writeComponentGroupDataSet("Smith2018ArticularContactForce",
+            _contact_force_names, 
+            _contact_output_double_names, _contact_output_double_values);
+        
+        h5_adapter.writeComponentGroupDataSetVec3("Smith2018ArticularContactForce",
+            _contact_force_names, 
+            _contact_output_vec3_names, _contact_output_vec3_values);
+
+        h5_adapter.writeComponentGroupDataSetVector("Smith2018ArticularContactForce",
+            _contact_force_names, 
+            _contact_output_vector_double_names, _contact_output_vector_double_values);
+
+        //h5_adapter.writeComponentGroupDataSet("Smith2018ArticularContactForce",_contact_force_names, _contact_output_double_names, _contact_output_double_values);
+        /*std::string contact_path = "/Smith2018ArticularContactForce";
+        
+         h5_adapter.createGroup(contact_path);
+
+        for (std::string force_name : _contact_force_names) {
+            h5_adapter.createGroup(contact_path + "/" + force_name);
+
+            int i = 0;
+            for (std::string comp_name : _contact_output_double_names) {
+                std::string comp_group = group_name + "/" + comp_name;
+		        _file.createGroup(comp_group);
+
+                int j = 0;
+                for (std::string data_label : output_double_names) {
+
+                    SimTK::Vector data = output_double_values[i](j);
+			        writeDataSetSimTKVector(data, lig_group + "/" + data_label);
+                    j++;
+                }
+                i++;
+            }
+        }
+            
+            
+            
+            std::vector<std::string> _contact_force_names;
+    std::vector<std::string> _contact_force_paths;
+    std::vector<std::string> _contact_mesh_names;
+    std::vector<std::string> _contact_mesh_paths;
+    std::vector<SimTK::Matrix_<SimTK::Vec3>> _mesh_vertex_locations;
+    
+    std::vector<std::string> _contact_output_double_names;
+    std::vector<std::string> _contact_output_vec3_names;
+    std::vector<std::string> _contact_output_vector_double_names;
+    std::vector<SimTK::Matrix> _contact_output_double_values;
+    std::vector<SimTK::Matrix_<SimTK::Vec3>> _contact_output_vec3_values;
+    std::vector<std::vector<SimTK::Matrix>> _contact_output_vector_double_values;*/
         /*
         std::string cnt_group_name{ "/Contacts" };
         h5_adapter.createGroup(cnt_group_name);
@@ -1420,7 +1469,7 @@ void JointMechanicsTool::writeH5File(
                         std::string data_path = mesh_path + "/tri/" + "pressure";
                         h5_adapter.writeDataSetVector(report.getTable(), data_path);
                     }
-                    if (get_output_proximity()) {                        
+                    if (get_output_proximity()) {
                         std::string data_path = mesh_path + "/tri/" + "proximity";
                         h5_adapter.writeDataSetVector(report.getTable(), data_path);
                     }

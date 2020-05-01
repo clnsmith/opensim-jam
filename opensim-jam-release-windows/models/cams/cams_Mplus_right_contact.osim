@@ -1,0 +1,700 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<OpenSimDocument Version="40000">
+	<Model name="cams_Mplus_right">
+		<!--The model's ground reference frame.-->
+		<Ground name="ground">
+			<!--The geometry used to display the axes of this Frame.-->
+			<FrameGeometry name="frame_geometry">
+				<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
+				<socket_frame>..</socket_frame>
+				<!--Scale factors in X, Y, Z directions respectively.-->
+				<scale_factors>0.20000000000000001 0.20000000000000001 0.20000000000000001</scale_factors>
+			</FrameGeometry>
+		</Ground>
+		<!--List of bodies that make up this model.-->
+		<BodySet name="bodyset">
+			<objects>
+				<Body name="femur_distal_r">
+					<!--The geometry used to display the axes of this Frame.-->
+					<FrameGeometry name="frame_geometry">
+						<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
+						<socket_frame>..</socket_frame>
+						<!--Scale factors in X, Y, Z directions respectively.-->
+						<scale_factors>0.20000000000000001 0.20000000000000001 0.20000000000000001</scale_factors>
+					</FrameGeometry>
+					<!--List of geometry attached to this Frame. Note, the geometry are treated as fixed to the frame and they share the transform of the frame when visualized-->
+					<attached_geometry>
+						<Mesh name="femur_distal_r_geom_1">
+							<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
+							<socket_frame>..</socket_frame>
+							<!--Name of geometry file.-->
+							<mesh_file>femur_implant_Mplus_JWI_meters_reduce.stl</mesh_file>
+						</Mesh>
+					</attached_geometry>
+					<!--The mass of the body (kg)-->
+					<mass>5</mass>
+					<!--The location (Vec3) of the mass center in the body frame.-->
+					<mass_center>0 0 0</mass_center>
+					<!--The elements of the inertia tensor (Vec6) as [Ixx Iyy Izz Ixy Ixz Iyz] measured about the mass_center and not the body origin.-->
+					<inertia>0.01 0.01 0.01 0 0 0</inertia>
+				</Body>
+				<Body name="tibia_proximal_r">
+					<!--The geometry used to display the axes of this Frame.-->
+					<FrameGeometry name="frame_geometry">
+						<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
+						<socket_frame>..</socket_frame>
+						<!--Scale factors in X, Y, Z directions respectively.-->
+						<scale_factors>0.20000000000000001 0.20000000000000001 0.20000000000000001</scale_factors>
+					</FrameGeometry>
+					<!--List of geometry attached to this Frame. Note, the geometry are treated as fixed to the frame and they share the transform of the frame when visualized-->
+					<attached_geometry>
+						<Mesh name="tibia_proximal_r_geom_1">
+							<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
+							<socket_frame>..</socket_frame>
+							<!--Name of geometry file.-->
+							<mesh_file>tibia_implant_JWI_meters.stl</mesh_file>
+						</Mesh>
+						<Mesh name="tibia_proximal_r_geom_2">
+							<!--Path to a Component that satisfies the Socket 'frame' of type Frame.-->
+							<socket_frame>..</socket_frame>
+							<!--Name of geometry file.-->
+							<mesh_file>tibia_inlay_JWI_meters.stl</mesh_file>
+						</Mesh>
+					</attached_geometry>
+					<!--The mass of the body (kg)-->
+					<mass>5</mass>
+					<!--The location (Vec3) of the mass center in the body frame.-->
+					<mass_center>0 0 0</mass_center>
+					<!--The elements of the inertia tensor (Vec6) as [Ixx Iyy Izz Ixy Ixz Iyz] measured about the mass_center and not the body origin.-->
+					<inertia>0.01 0.01 0.01 0 0 0</inertia>
+				</Body>
+			</objects>
+			<groups />
+		</BodySet>
+		<!--List of joints that connect the bodies.-->
+		<JointSet name="jointset">
+			<objects>
+				<CustomJoint name="gnd_femur">
+					<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The parent frame for the joint.).-->
+					<socket_parent_frame>/ground</socket_parent_frame>
+					<!--Path to a Component that satisfies the Socket 'child_frame' of type PhysicalFrame (description: The child frame for the joint.).-->
+					<socket_child_frame>/bodyset/femur_distal_r</socket_child_frame>
+					<!--List containing the generalized coordinates (q's) that parameterize this joint.-->
+					<coordinates>
+						<Coordinate name="ground_femur_flex_r">
+							<!--All properties of this object have their default values.-->
+						</Coordinate>
+						<Coordinate name="ground_femur_add_r">
+							<!--All properties of this object have their default values.-->
+						</Coordinate>
+						<Coordinate name="ground_femur_rot_r">
+							<!--All properties of this object have their default values.-->
+						</Coordinate>
+						<Coordinate name="ground_femur_lat_r">
+							<!--All properties of this object have their default values.-->
+						</Coordinate>
+						<Coordinate name="ground_femur_ant_r">
+							<!--All properties of this object have their default values.-->
+						</Coordinate>
+						<Coordinate name="ground_femur_sup_r">
+							<!--All properties of this object have their default values.-->
+						</Coordinate>
+					</coordinates>
+					<!--Defines how the child body moves with respect to the parent as a function of the generalized coordinates.-->
+					<SpatialTransform>
+						<!--3 Axes for rotations are listed first.-->
+						<TransformAxis name="rotation1">
+							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
+							<coordinates>ground_femur_flex_r</coordinates>
+							<!--Rotation or translation axis for the transform.-->
+							<axis>1 0 0</axis>
+							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
+							<LinearFunction name="function">
+								<coefficients> 1 0</coefficients>
+							</LinearFunction>
+						</TransformAxis>
+						<TransformAxis name="rotation2">
+							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
+							<coordinates>ground_femur_add_r</coordinates>
+							<!--Rotation or translation axis for the transform.-->
+							<axis>0 1 0</axis>
+							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
+							<LinearFunction name="function">
+								<coefficients> 1 0</coefficients>
+							</LinearFunction>
+						</TransformAxis>
+						<TransformAxis name="rotation3">
+							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
+							<coordinates>ground_femur_rot_r</coordinates>
+							<!--Rotation or translation axis for the transform.-->
+							<axis>0 0 1</axis>
+							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
+							<LinearFunction name="function">
+								<coefficients> 1 0</coefficients>
+							</LinearFunction>
+						</TransformAxis>
+						<!--3 Axes for translations are listed next.-->
+						<TransformAxis name="translation1">
+							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
+							<coordinates>ground_femur_lat_r</coordinates>
+							<!--Rotation or translation axis for the transform.-->
+							<axis>1 0 0</axis>
+							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
+							<LinearFunction name="function">
+								<coefficients> 1 0</coefficients>
+							</LinearFunction>
+						</TransformAxis>
+						<TransformAxis name="translation2">
+							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
+							<coordinates>ground_femur_ant_r</coordinates>
+							<!--Rotation or translation axis for the transform.-->
+							<axis>0 1 0</axis>
+							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
+							<LinearFunction name="function">
+								<coefficients> 1 0</coefficients>
+							</LinearFunction>
+						</TransformAxis>
+						<TransformAxis name="translation3">
+							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
+							<coordinates>ground_femur_sup_r</coordinates>
+							<!--Rotation or translation axis for the transform.-->
+							<axis>0 0 1</axis>
+							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
+							<LinearFunction name="function">
+								<coefficients> 1 0</coefficients>
+							</LinearFunction>
+						</TransformAxis>
+					</SpatialTransform>
+				</CustomJoint>
+				<CustomJoint name="knee_r">
+					<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The parent frame for the joint.).-->
+					<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
+					<!--Path to a Component that satisfies the Socket 'child_frame' of type PhysicalFrame (description: The child frame for the joint.).-->
+					<socket_child_frame>/bodyset/tibia_proximal_r</socket_child_frame>
+					<!--List containing the generalized coordinates (q's) that parameterize this joint.-->
+					<coordinates>
+						<Coordinate name="knee_flex_r">
+							<!--The value of this coordinate before any value has been set. Rotational coordinate value is in radians and Translational in meters.-->
+							<default_value>0</default_value>
+						</Coordinate>
+						<Coordinate name="knee_add_r">
+							<!--The value of this coordinate before any value has been set. Rotational coordinate value is in radians and Translational in meters.-->
+							<default_value>0</default_value>
+						</Coordinate>
+						<Coordinate name="knee_rot_r">
+							<!--The value of this coordinate before any value has been set. Rotational coordinate value is in radians and Translational in meters.-->
+							<default_value>0</default_value>
+						</Coordinate>
+						<Coordinate name="knee_lat_r">
+							<!--The value of this coordinate before any value has been set. Rotational coordinate value is in radians and Translational in meters.-->
+							<default_value>0</default_value>
+						</Coordinate>
+						<Coordinate name="knee_ant_r">
+							<!--The value of this coordinate before any value has been set. Rotational coordinate value is in radians and Translational in meters.-->
+							<default_value>0.008</default_value>
+						</Coordinate>
+						<Coordinate name="knee_sup_r">
+							<!--The value of this coordinate before any value has been set. Rotational coordinate value is in radians and Translational in meters.-->
+							<default_value>-0.02</default_value>
+						</Coordinate>
+					</coordinates>
+					<!--Defines how the child body moves with respect to the parent as a function of the generalized coordinates.-->
+					<SpatialTransform>
+						<!--3 Axes for rotations are listed first.-->
+						<TransformAxis name="rotation1">
+							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
+							<coordinates>knee_flex_r</coordinates>
+							<!--Rotation or translation axis for the transform.-->
+							<axis>1 0 0</axis>
+							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
+							<LinearFunction name="function">
+								<coefficients> -1 0</coefficients>
+							</LinearFunction>
+						</TransformAxis>
+						<TransformAxis name="rotation2">
+							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
+							<coordinates>knee_add_r</coordinates>
+							<!--Rotation or translation axis for the transform.-->
+							<axis>0 1 0</axis>
+							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
+							<LinearFunction name="function">
+								<coefficients> 1 0</coefficients>
+							</LinearFunction>
+						</TransformAxis>
+						<TransformAxis name="rotation3">
+							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
+							<coordinates>knee_rot_r</coordinates>
+							<!--Rotation or translation axis for the transform.-->
+							<axis>0 0 1</axis>
+							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
+							<LinearFunction name="function">
+								<coefficients> 1 0</coefficients>
+							</LinearFunction>
+						</TransformAxis>
+						<!--3 Axes for translations are listed next.-->
+						<TransformAxis name="translation1">
+							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
+							<coordinates>knee_lat_r</coordinates>
+							<!--Rotation or translation axis for the transform.-->
+							<axis>1 0 0</axis>
+							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
+							<LinearFunction name="function">
+								<coefficients> 1 0</coefficients>
+							</LinearFunction>
+						</TransformAxis>
+						<TransformAxis name="translation2">
+							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
+							<coordinates>knee_ant_r</coordinates>
+							<!--Rotation or translation axis for the transform.-->
+							<axis>0 1 0</axis>
+							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
+							<LinearFunction name="function">
+								<coefficients> 1 0</coefficients>
+							</LinearFunction>
+						</TransformAxis>
+						<TransformAxis name="translation3">
+							<!--Names of the coordinates that serve as the independent variables         of the transform function.-->
+							<coordinates>knee_sup_r</coordinates>
+							<!--Rotation or translation axis for the transform.-->
+							<axis>0 0 1</axis>
+							<!--Transform function of the generalized coordinates used to        represent the amount of displacement along a specified axis.-->
+							<LinearFunction name="function">
+								<coefficients> 1 0</coefficients>
+							</LinearFunction>
+						</TransformAxis>
+					</SpatialTransform>
+				</CustomJoint>
+			</objects>
+			<groups />
+		</JointSet>
+		<!--Forces in the model (includes Actuators).-->
+		<ForceSet name="forceset">
+			<objects>
+				<Blankevoort1991Ligament name="MCL1">
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--The set of points defining the path of the ligament-->
+					<GeometryPath name="geometrypath">
+						<!--The set of points defining the path-->
+						<PathPointSet>
+							<objects>
+								<PathPoint name="MCL1-P1">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>-0.04 -0.01 0.0</location>
+								</PathPoint>
+								<PathPoint name="MCL1-P2">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>-0.04 -0.02 -0.01</location>
+								</PathPoint>
+							</objects>
+						</PathPointSet>
+						<!--The wrap objects that are associated with this path-->
+						<PathWrapSet>
+							<objects>
+							</objects>
+						</PathWrapSet>
+						<!--Default appearance attributes for this GeometryPath-->
+						<Appearance>
+							<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+							<color>0.1202 0.70540000000000003 0.1318</color>
+						</Appearance>
+					</GeometryPath>
+					<!--The slope of the linear region of the force-strain curve. Units of force/strain (N).-->
+					<linear_stiffness>500</linear_stiffness>
+					<!--The length at which ligament begins developing tension. Units of m.-->
+					<slack_length>0.02</slack_length>
+				</Blankevoort1991Ligament>
+				<Blankevoort1991Ligament name="MCL2">
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--The set of points defining the path of the ligament-->
+					<GeometryPath name="geometrypath">
+						<!--The set of points defining the path-->
+						<PathPointSet>
+							<objects>
+								<PathPoint name="MCL2-P1">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>-0.04 0.0 0.0</location>
+								</PathPoint>
+								<PathPoint name="MCL2-P2">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>-0.04 -0.01 -0.01</location>
+								</PathPoint>
+							</objects>
+						</PathPointSet>
+						<!--The wrap objects that are associated with this path-->
+						<PathWrapSet>
+							<objects>
+							</objects>
+						</PathWrapSet>
+						<!--Default appearance attributes for this GeometryPath-->
+						<Appearance>
+							<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+							<color>0.1202 0.70540000000000003 0.1318</color>
+						</Appearance>
+					</GeometryPath>
+					<!--The slope of the linear region of the force-strain curve. Units of force/strain (N).-->
+					<linear_stiffness>500</linear_stiffness>
+					<!--The length at which ligament begins developing tension. Units of m.-->
+					<slack_length>0.02</slack_length>
+				</Blankevoort1991Ligament>
+				<Blankevoort1991Ligament name="MCL3">
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--The set of points defining the path of the ligament-->
+					<GeometryPath name="geometrypath">
+						<!--The set of points defining the path-->
+						<PathPointSet>
+							<objects>
+								<PathPoint name="MCL3-P1">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>-0.04 0.01 0.0</location>
+								</PathPoint>
+								<PathPoint name="MCL3-P2">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>-0.04 0.0 -0.01</location>
+								</PathPoint>
+							</objects>
+						</PathPointSet>
+						<!--The wrap objects that are associated with this path-->
+						<PathWrapSet>
+							<objects>								
+							</objects>
+						</PathWrapSet>
+						<!--Default appearance attributes for this GeometryPath-->
+						<Appearance>
+							<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+							<color>0.1202 0.70540000000000003 0.1318</color>
+						</Appearance>
+					</GeometryPath>
+					<!--The slope of the linear region of the force-strain curve. Units of force/strain (N).-->
+					<linear_stiffness>500</linear_stiffness>
+					<!--The length at which ligament begins developing tension. Units of m.-->
+					<slack_length>0.02</slack_length>
+				</Blankevoort1991Ligament>
+				<Blankevoort1991Ligament name="LCL1">
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--The set of points defining the path of the ligament-->
+					<GeometryPath name="geometrypath">
+						<!--The set of points defining the path-->
+						<PathPointSet>
+							<objects>
+								<PathPoint name="LCL1-P1">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>0.04 -0.01 0.0</location>
+								</PathPoint>
+								<PathPoint name="LCL1-P2">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>0.04 -0.02 -0.01</location>
+								</PathPoint>
+							</objects>
+						</PathPointSet>
+						<!--The wrap objects that are associated with this path-->
+						<PathWrapSet>
+							<objects>
+							</objects>
+						</PathWrapSet>
+						<!--Default appearance attributes for this GeometryPath-->
+						<Appearance>
+							<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+							<color>0.1202 0.70540000000000003 0.1318</color>
+						</Appearance>
+					</GeometryPath>
+					<!--The slope of the linear region of the force-strain curve. Units of force/strain (N).-->
+					<linear_stiffness>500</linear_stiffness>
+					<!--The length at which ligament begins developing tension. Units of m.-->
+					<slack_length>0.02</slack_length>
+				</Blankevoort1991Ligament>
+				<Blankevoort1991Ligament name="LCL2">
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--The set of points defining the path of the ligament-->
+					<GeometryPath name="geometrypath">
+						<!--The set of points defining the path-->
+						<PathPointSet>
+							<objects>
+								<PathPoint name="LCL2-P1">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>0.04 0.0 0.0</location>
+								</PathPoint>
+								<PathPoint name="LCL2-P2">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>0.04 -0.01 -0.01</location>
+								</PathPoint>
+							</objects>
+						</PathPointSet>
+						<!--The wrap objects that are associated with this path-->
+						<PathWrapSet>
+							<objects>
+							</objects>
+						</PathWrapSet>
+						<!--Default appearance attributes for this GeometryPath-->
+						<Appearance>
+							<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+							<color>0.1202 0.70540000000000003 0.1318</color>
+						</Appearance>
+					</GeometryPath>
+					<!--The slope of the linear region of the force-strain curve. Units of force/strain (N).-->
+					<linear_stiffness>500</linear_stiffness>
+					<!--The length at which ligament begins developing tension. Units of m.-->
+					<slack_length>0.02</slack_length>
+				</Blankevoort1991Ligament>
+				<Blankevoort1991Ligament name="LCL3">
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--The set of points defining the path of the ligament-->
+					<GeometryPath name="geometrypath">
+						<!--The set of points defining the path-->
+						<PathPointSet>
+							<objects>
+								<PathPoint name="LCL3-P1">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/femur_distal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>0.04 0.01 0.0</location>
+								</PathPoint>
+								<PathPoint name="LCL3-P2">
+									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
+									<socket_parent_frame>/bodyset/tibia_proximal_r</socket_parent_frame>
+									<!--The fixed location of the path point expressed in its parent frame.-->
+									<location>0.04 0.0 -0.01</location>
+								</PathPoint>
+							</objects>
+						</PathPointSet>
+						<!--The wrap objects that are associated with this path-->
+						<PathWrapSet>
+							<objects>								
+							</objects>
+						</PathWrapSet>
+						<!--Default appearance attributes for this GeometryPath-->
+						<Appearance>
+							<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+							<color>0.1202 0.70540000000000003 0.1318</color>
+						</Appearance>
+					</GeometryPath>
+					<!--The slope of the linear region of the force-strain curve. Units of force/strain (N).-->
+					<linear_stiffness>500</linear_stiffness>
+					<!--The length at which ligament begins developing tension. Units of m.-->
+					<slack_length>0.02</slack_length>
+				</Blankevoort1991Ligament>
+				<Smith2018ArticularContactForce name="tf_contact">
+					<!--List of components that this component owns and serializes.-->
+					<components />
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--Path to a Component that satisfies the Socket 'target_mesh' of type Smith2018ContactMesh (description: Target mesh for collision detection.).-->
+					<socket_target_mesh>/contactgeometryset/femur_component</socket_target_mesh>
+					<!--Path to a Component that satisfies the Socket 'casting_mesh' of type Smith2018ContactMesh (description: Ray casting mesh for collision detection.).-->
+					<socket_casting_mesh>/contactgeometryset/tibia_inlay</socket_casting_mesh>
+					<!--The minimum proximity that is valid between contacting meshes to limit the search distance along the casting_mesh normal ray used for collision detection. Note this can be negative if proximity maps should include triangles that are not in contact.Default value set to 0.0 meters.-->
+					<min_proximity>0</min_proximity>
+					<!--The maximum proximity that is valid between contacting meshes to limit the search distance along the casting_mesh normal ray used for collision detection.Default value set to 0.01 meters.-->
+					<max_proximity>0.02</max_proximity>
+					<!--Formulation for depth-pressure relationship: 'linear' or 'nonlinear'. Default value set to 'linear'.-->
+					<elastic_foundation_formulation>linear</elastic_foundation_formulation>
+					<!--Combine the thickness and the average material properties between the Smith2018ContactMeshes for both meshes and use Bei & Fregly 2003 lumped parameter Elastic Foundation model.-->
+					<use_lumped_contact_model>true</use_lumped_contact_model>
+				</Smith2018ArticularContactForce>
+				<SpringGeneralizedForce name="knee_flex_r">
+					<!--List of components that this component owns and serializes.-->
+					<components />
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--Name of the coordinate to which this force is applied.-->
+					<coordinate>knee_flex_r</coordinate>
+					<!--Spring stiffness.-->
+					<stiffness>0</stiffness>
+					<!--Coordinate value at which spring produces no force.-->
+					<rest_length>0</rest_length>
+					<!--Damping constant.-->
+					<viscosity>0.10000000000000001</viscosity>
+				</SpringGeneralizedForce>
+				<SpringGeneralizedForce name="knee_add_r">
+					<!--List of components that this component owns and serializes.-->
+					<components />
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--Name of the coordinate to which this force is applied.-->
+					<coordinate>knee_add_r</coordinate>
+					<!--Spring stiffness.-->
+					<stiffness>0</stiffness>
+					<!--Coordinate value at which spring produces no force.-->
+					<rest_length>0</rest_length>
+					<!--Damping constant.-->
+					<viscosity>5</viscosity>
+				</SpringGeneralizedForce>
+				<SpringGeneralizedForce name="knee_rot_r">
+					<!--List of components that this component owns and serializes.-->
+					<components />
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--Name of the coordinate to which this force is applied.-->
+					<coordinate>knee_rot_r</coordinate>
+					<!--Spring stiffness.-->
+					<stiffness>0</stiffness>
+					<!--Coordinate value at which spring produces no force.-->
+					<rest_length>0</rest_length>
+					<!--Damping constant.-->
+					<viscosity>5</viscosity>
+				</SpringGeneralizedForce>
+				<SpringGeneralizedForce name="knee_lat_r">
+					<!--List of components that this component owns and serializes.-->
+					<components />
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--Name of the coordinate to which this force is applied.-->
+					<coordinate>knee_lat_r</coordinate>
+					<!--Spring stiffness.-->
+					<stiffness>0</stiffness>
+					<!--Coordinate value at which spring produces no force.-->
+					<rest_length>0</rest_length>
+					<!--Damping constant.-->
+					<viscosity>200</viscosity>
+				</SpringGeneralizedForce>
+				<SpringGeneralizedForce name="knee_sup_r">
+					<!--List of components that this component owns and serializes.-->
+					<components />
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--Name of the coordinate to which this force is applied.-->
+					<coordinate>knee_sup_r</coordinate>
+					<!--Spring stiffness.-->
+					<stiffness>0</stiffness>
+					<!--Coordinate value at which spring produces no force.-->
+					<rest_length>0</rest_length>
+					<!--Damping constant.-->
+					<viscosity>200</viscosity>
+				</SpringGeneralizedForce>
+				<SpringGeneralizedForce name="knee_ant_r">
+					<!--List of components that this component owns and serializes.-->
+					<components />
+					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
+					<appliesForce>true</appliesForce>
+					<!--Name of the coordinate to which this force is applied.-->
+					<coordinate>knee_ant_r</coordinate>
+					<!--Spring stiffness.-->
+					<stiffness>0</stiffness>
+					<!--Coordinate value at which spring produces no force.-->
+					<rest_length>0</rest_length>
+					<!--Damping constant.-->
+					<viscosity>200</viscosity>
+				</SpringGeneralizedForce>
+			</objects>
+			<groups />
+		</ForceSet>
+		<!--Geometry to be used in contact forces.-->
+		<ContactGeometrySet name="contactgeometryset">
+			<objects>
+				<Smith2018ContactMesh name="femur_component">
+					<!--List of components that this component owns and serializes.-->
+					<components />
+					<!--Path to a Component that satisfies the Socket 'frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
+					<socket_frame>/bodyset/femur_distal_r</socket_frame>
+					<!--Location of geometry center in the PhysicalFrame.-->
+					<location>0 0 0</location>
+					<!--Orientation of geometry in the PhysicalFrame (body-fixed XYZ Euler angles).-->
+					<orientation>0 0 0</orientation>
+					<!--Default appearance for this Geometry-->
+					<Appearance>
+						<!--Flag indicating whether the associated Geometry is visible or hidden.-->
+						<visible>true</visible>
+						<!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
+						<opacity>1</opacity>
+						<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+						<color>0 1 1</color>
+						<!--Visuals applied to surfaces associated with this Appearance.-->
+						<SurfaceProperties>
+							<!--The representation (1:Points, 2:Wire, 3:Shaded) used to display the object.-->
+							<representation>3</representation>
+						</SurfaceProperties>
+					</Appearance>
+					<!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: When using the ScaleTool, the scale factors from this frame will be used to scale the mesh.).-->
+					<socket_scale_frame>/ground</socket_scale_frame>
+					<!--Path to triangle mesh geometry file representing the contact surface (supports .obj, .stl, .vtp).-->
+					<mesh_file>femur_implant_Mplus_JWI_contact.stl</mesh_file>
+					<!--Uniform Elastic Modulus value for every triangle in mesh. The default value is 1000000.0 Pa.-->
+					<elastic_modulus>463000000</elastic_modulus>
+					<!--Uniform Poissons Ratio value for every triangle in mesh. The default value is 0.5.-->
+					<poissons_ratio>0.45000000000000001</poissons_ratio>
+					<!--Uniform thickness of elastic layer for entire mesh. The default value is 0.005 meters-->
+					<thickness>0.0030000000000000001</thickness>
+					<!--Compute the local thickness for each triangle in mesh_file by calculating the distance along a normal ray cast from the center of each triangle in the mesh_file to intersection with the mesh_back_file. If use_variable_thickness is true, mesh_back_file must be defined and the 'thickness' property value is not used.The Default value is false.-->
+					<use_variable_thickness>false</use_variable_thickness>
+					<!--Path to traingle mesh geometry file representing the backside of contact surface elastic layer (bone / backside of artifical component) mesh geometry file (supports .obj, .stl, .vtp). -->
+					<mesh_back_file></mesh_back_file>
+					<!--Minimum thickness threshold for elastic layer [m] when calculating variable thickness for each triangle.-->
+					<min_thickness>0.001</min_thickness>
+					<!--Maximum thickness threshold for elastic layer [m] when calculating variable thickness for each triangle.-->
+					<max_thickness>0.01</max_thickness>
+					<!--[x,y,z] scale factors applied to vertex locations of the mesh_file and mesh_back_file meshes.-->
+					<scale_factors>1 1 1</scale_factors>
+				</Smith2018ContactMesh>
+				<Smith2018ContactMesh name="tibia_inlay">
+					<!--List of components that this component owns and serializes.-->
+					<components />
+					<!--Path to a Component that satisfies the Socket 'frame' of type PhysicalFrame (description: The frame to which this geometry is attached.).-->
+					<socket_frame>/bodyset/tibia_proximal_r</socket_frame>
+					<!--Location of geometry center in the PhysicalFrame.-->
+					<location>0 0 0</location>
+					<!--Orientation of geometry in the PhysicalFrame (body-fixed XYZ Euler angles).-->
+					<orientation>0 0 0</orientation>
+					<!--Default appearance for this Geometry-->
+					<Appearance>
+						<!--Flag indicating whether the associated Geometry is visible or hidden.-->
+						<visible>true</visible>
+						<!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
+						<opacity>1</opacity>
+						<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+						<color>0 1 1</color>
+						<!--Visuals applied to surfaces associated with this Appearance.-->
+						<SurfaceProperties>
+							<!--The representation (1:Points, 2:Wire, 3:Shaded) used to display the object.-->
+							<representation>3</representation>
+						</SurfaceProperties>
+					</Appearance>
+					<!--Path to a Component that satisfies the Socket 'scale_frame' of type PhysicalFrame (description: When using the ScaleTool, the scale factors from this frame will be used to scale the mesh.).-->
+					<socket_scale_frame>/ground</socket_scale_frame>
+					<!--Path to triangle mesh geometry file representing the contact surface (supports .obj, .stl, .vtp).-->
+					<mesh_file>tibia_inlay_JWI_contact.stl</mesh_file>
+					<!--Uniform Elastic Modulus value for every triangle in mesh. The default value is 1000000.0 Pa.-->
+					<elastic_modulus>463000000</elastic_modulus>
+					<!--Uniform Poissons Ratio value for every triangle in mesh. The default value is 0.5.-->
+					<poissons_ratio>0.45000000000000001</poissons_ratio>
+					<!--Uniform thickness of elastic layer for entire mesh. The default value is 0.005 meters-->
+					<thickness>0.0030000000000000001</thickness>
+					<!--Compute the local thickness for each triangle in mesh_file by calculating the distance along a normal ray cast from the center of each triangle in the mesh_file to intersection with the mesh_back_file. If use_variable_thickness is true, mesh_back_file must be defined and the 'thickness' property value is not used.The Default value is false.-->
+					<use_variable_thickness>false</use_variable_thickness>
+					<!--Path to traingle mesh geometry file representing the backside of contact surface elastic layer (bone / backside of artifical component) mesh geometry file (supports .obj, .stl, .vtp). -->
+					<mesh_back_file></mesh_back_file>
+					<!--Minimum thickness threshold for elastic layer [m] when calculating variable thickness for each triangle.-->
+					<min_thickness>0.001</min_thickness>
+					<!--Maximum thickness threshold for elastic layer [m] when calculating variable thickness for each triangle.-->
+					<max_thickness>0.01</max_thickness>
+					<!--[x,y,z] scale factors applied to vertex locations of the mesh_file and mesh_back_file meshes.-->
+					<scale_factors>1 1 1</scale_factors>
+				</Smith2018ContactMesh>
+			</objects>
+		</ContactGeometrySet>
+	</Model>
+</OpenSimDocument>

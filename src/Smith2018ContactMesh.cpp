@@ -642,6 +642,40 @@ bool Smith2018ContactMesh::rayIntersectMesh(
     return false;
 }
 
+void Smith2018ContactMesh::printMeshDebugInfo() const {
+    int w = 20;
+    std::cout << std::setw(w) << "Tri #"
+        << std::setw(w) << "Area"
+        << std::setw(w) << "Thickness"
+        << std::setw(w) << "Elastic Modulus"
+        << std::setw(w) << "Poissons Ratio"
+        << std::setw(w) << "Center"
+        << std::setw(w) << "Normal"
+        << std::endl;
+
+    const SimTK::Vector& area = getTriangleAreas();
+    const SimTK::Vector_<SimTK::Vec3>&  center = getTriangleCenters();
+    const SimTK::Vector_<SimTK::UnitVec3>& normal = getTriangleNormals();
+
+    for (int i = 0; i < getNumFaces(); i++) {
+        double t = getTriangleThickness(i);
+        double E = getTriangleElasticModulus(i);
+        double v = getTrianglePoissonsRatio(i);
+        double a = area(i);
+        SimTK::Vec3 c = center(i);
+        SimTK::Vec3 n = normal(i);
+
+        std::cout
+            << std::setw(w) << t
+            << std::setw(w) << E
+            << std::setw(w) << v
+            << std::setw(w) << a
+            << std::setw(w) << c
+            << std::setw(w) << n
+            << std::endl;
+    }
+}
+
 //=============================================================================
 //               Smith2018ContactMesh :: OBBTreeNode
 //=============================================================================

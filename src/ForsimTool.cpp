@@ -27,7 +27,7 @@
 #include <OpenSim\Actuators\Millard2012EquilibriumMuscle.h>
 #include <OpenSim/Common/IO.h>
 #include "Smith2018ArticularContactForce.h"
-
+#include "Blankevoort1991Ligament.h"
 using namespace OpenSim;
 
 ForsimTool::ForsimTool() : Object()
@@ -116,6 +116,11 @@ void ForsimTool::run()
 
     state = _model.initSystem();
 
+    if (get_verbose() > 2) {
+        for (const auto& mesh : _model.updComponentList<Smith2018ContactMesh>()) {
+            mesh.printMeshDebugInfo();
+        }
+    }
 
     initializeStartStopTimes();
 
@@ -170,9 +175,7 @@ void ForsimTool::run()
         double t = get_start_time() + i * dt;
         std::cout << "time:" << t << std::endl;
 
-        if (get_verbose() >= 2) {
-            printDebugInfo(state);
-        }
+        printDebugInfo(state);
 
         //Set Prescribed Muscle Forces
         if(_prescribed_frc_actuator_paths.size() > 0){
@@ -600,63 +603,78 @@ void ForsimTool::loadModel(const std::string &aToolSetupFileName)
 }
 
 void ForsimTool::printDebugInfo(const SimTK::State& state) {
+    
     _model.realizeReport(state);
     int w = 20;
 
-    std::cout << std::setw(w) << "Muscle" 
-        << std::setw(w) << "Force"  
-        << std::setw(w) << "Activation"
-        << std::setw(w) << "Control" << std::endl;
+    if (get_verbose() >= 2) {
+        //Muscle
+        std::cout << std::setw(w) << "Muscle"
+            << std::setw(w) << "Force"
+            << std::setw(w) << "Activation"
+            << std::setw(w) << "Control" << std::endl;
 
-    for (const Muscle& msl : _model.updComponentList<Muscle>()) {
-        std::cout << std::setw(w) << msl.getName()
-            << std::setw(w) << msl.getActuation(state)
-            << std::setw(w) << msl.getActivation(state)
-            << std::setw(w) << msl.getControl(state) 
-            << std::endl;
+        for (const Muscle& msl : _model.updComponentList<Muscle>()) {
+            std::cout << std::setw(w) << msl.getName()
+                << std::setw(w) << msl.getActuation(state)
+                << std::setw(w) << msl.getActivation(state)
+                << std::setw(w) << msl.getControl(state)
+                << std::endl;
+        }
+        std::cout << std::endl;
+
+        //Ligament 
+        std::cout << std::setw(w) << "Ligament "
+                << std::setw(w) << "Total Force"
+                << std::setw(w) << "Spring Force"
+                << std::setw(w) << "Damping Force"
+                << std::setw(w) << "Strain"
+                << std::setw(w) << "Strain Rate"
+                << std::setw(w) << "Length"
+                << std::setw(w) << "Lengthening Rate"
+                << std::endl;
+
+
+        for (const Blankevoort1991Ligament& lig : _model.updComponentList<Blankevoort1991Ligament>()) {
+            std::cout << std::setw(w) << lig.getName()
+                << std::setw(w) << lig.getOutputValue<double>(state, "total_force")
+                << std::setw(w) << lig.getOutputValue<double>(state, "spring_force")
+                << std::setw(w) << lig.getOutputValue<double>(state, "damping_force")
+                << std::setw(w) << lig.getOutputValue<double>(state, "strain")
+                << std::setw(w) << lig.getOutputValue<double>(state, "strain_rate")
+                << std::setw(w) << lig.getOutputValue<double>(state, "length")
+                << std::setw(w) << lig.getOutputValue<double>(state, "lengthening_speed")
+                << std::endl;
+        }
+        std::cout << std::endl;
+
+        std::cout << std::setw(w) << "Contact " << std::setw(20)
+            << "Force" << std::setw(w) << "COP" << std::endl;
+
+        for (Smith2018ArticularContactForce& cnt : _model.updComponentList<Smith2018ArticularContactForce>()) {
+            std::cout << std::setw(w) << cnt.getName()
+                << std::setw(w) << cnt.getOutputValue<SimTK::Vec3>(state, "casting_total_contact_force")
+                << std::setw(w) << cnt.getOutputValue<SimTK::Vec3>(state, "casting_total_center_of_pressure")
+                << std::endl;
+        }
+        std::cout << std::endl;
     }
-    std::cout << std::endl;
 
-/*    std::cout << std::setw(w) << "Ligament " 
-        << std::setw(w) << "Total Force" 
-        << std::setw(w) << "Spring Force" 
-        << std::setw(w) << "Damping Force" 
-        << std::setw(w) << "Strain" 
-        << std::setw(w) << "Strain Rate" 
-        << std::setw(w) << "Length" 
-        << std::setw(w) << "Lengthening Rate" 
-        << std::endl;
+    if (get_verbose() >= 3) {
+        std::cout << std::setw(w) << "Contact " << std::setw(20)
+            << "Force" << std::setw(w) << "COP" << std::endl;
 
-            
+        for (Smith2018ArticularContactForce& cnt : _model.updComponentList<Smith2018ArticularContactForce>()) {
 
-    for (const Blankevoort1991Ligament& lig : _model.updComponentList<Blankevoort1991Ligament>()) {
-        std::cout << std::setw(w) << lig.getName()
-            << std::setw(w) << lig.getOutputValue<double>(state, "force_total")
-            << std::setw(w) << lig.getOutputValue<double>(state, "force_spring")
-            << std::setw(w) << lig.getOutputValue<double>(state, "force_damping")
-            << std::setw(w) << lig.getOutputValue<double>(state, "strain")
-            << std::setw(w) << lig.getOutputValue<double>(state, "strain_rate")
-            << std::setw(w) << lig.getOutputValue<double>(state, "length")
-            << std::setw(w) << lig.getOutputValue<double>(state, "lengthening_rate")                    
-            << std::endl;
-    }*/
-    std::cout << std::endl;
-
-    std::cout << std::setw(w) << "Contact " << std::setw(20) 
-        << "Force" << std::setw(w) << "COP" << std::endl;
-
-    for (Smith2018ArticularContactForce& cnt : _model.updComponentList<Smith2018ArticularContactForce>()) {
-        cnt.getOutputValue<SimTK::Vec3>(state, "casting_total_contact_force");
-        cnt.getOutputValue<SimTK::Vec3>(state, "casting_total_center_of_pressure");
-
-
-        std::cout << std::setw(w) <<cnt.getName() 
-            << std::setw(w) << cnt.getOutputValue<SimTK::Vec3>(state, "casting_total_contact_force") 
-            << std::setw(w) << cnt.getOutputValue<SimTK::Vec3>(state, "casting_total_center_of_pressure")
-            << std::endl;
+            std::cout << std::setw(w) << cnt.getName()
+                << std::setw(w) << cnt.getOutputValue<SimTK::Vector>(state, "casting_triangle_proximity")
+                << std::setw(w) << cnt.getOutputValue<SimTK::Vector>(state, "casting_triangle_pressure")
+                << std::endl;
+        }
     }
-    std::cout << std::endl;    
-    
-    std::cout << "Press Any Key to Continue." << std::endl;
-    std::cin.ignore();
+
+    if (get_verbose() >= 2) {
+        std::cout << "Press Any Key to Continue." << std::endl;
+        std::cin.ignore();
+    }
 }

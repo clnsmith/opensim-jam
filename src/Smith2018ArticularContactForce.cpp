@@ -599,7 +599,7 @@ void Smith2018ArticularContactForce::computeForce(const State& state,
         casting_triangle_proximity = getCacheVariableValue<SimTK::Vector>
             (state, "casting.triangle.proximity");
     }
-    
+
     SimTK::Vector casting_triangle_pressure;
     SimTK::Vector casting_triangle_energy;
     SimTK::Vector_<Vec3> casting_triangle_force;
@@ -1044,3 +1044,4 @@ getRecordValues(const SimTK::State& state) const {
 
     return values;
 }
+

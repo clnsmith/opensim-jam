@@ -39,10 +39,11 @@ void H5FileAdapter::close() {
 	_file.close();
 }
 
-
-
 void H5FileAdapter::createGroup(const std::string& group_name) {
-	_file.createGroup(group_name);
+    
+    if(H5Lexists(_file.getId(), group_name.c_str(), H5P_DEFAULT ) == 0){
+       _file.createGroup(group_name);
+    }
 }
 	
 void H5FileAdapter::writeDataSet(const TimeSeriesTable& table, const std::string dataset_path) 
@@ -183,18 +184,64 @@ void H5FileAdapter::writeComponentGroupDataSet(std::string group_name,
 	std::vector<std::string> output_double_names,
     std::vector<SimTK::Matrix> output_double_values)
 {
-	_file.createGroup(group_name);
+    createGroup(group_name);
 
     int i = 0;
-    for (std::string lig_name : names) {
-        std::string lig_group = group_name + "/" + lig_name;
-		_file.createGroup(lig_group);
+    for (std::string comp_name : names) {
+        std::string comp_group = group_name + "/" + comp_name;
+        createGroup(comp_group);
 
         int j = 0;
         for (std::string data_label : output_double_names) {
 
             SimTK::Vector data = output_double_values[i](j);
-			writeDataSetSimTKVector(data, lig_group + "/" + data_label);
+			writeDataSetSimTKVector(data, comp_group + "/" + data_label);
+            j++;
+        }
+        i++;
+    }
+}
+
+void H5FileAdapter::writeComponentGroupDataSetVec3(std::string group_name,
+    std::vector<std::string> names,
+	std::vector<std::string> output_vec3_names,
+    std::vector<SimTK::Matrix_<SimTK::Vec3>> output_vec3_values)
+{
+    createGroup(group_name);
+
+    int i = 0;
+    for (std::string comp_name : names) {
+        std::string comp_group = group_name + "/" + comp_name;
+		createGroup(comp_group);
+
+        int j = 0;
+        for (std::string data_label : output_vec3_names) {
+
+            SimTK::Vector_<SimTK::Vec3> data = output_vec3_values[i](j);
+			writeDataSetSimTKVectorVec3(data, comp_group + "/" + data_label);
+            j++;
+        }
+        i++;
+    }
+}
+
+void H5FileAdapter::writeComponentGroupDataSetVector(std::string group_name,
+    std::vector<std::string> names,
+	std::vector<std::string> output_vector_names,
+    std::vector<std::vector<SimTK::Matrix>> output_vector_values)
+{
+	createGroup(group_name);
+    
+    int i = 0;
+    for (std::string comp_name : names) {
+        std::string comp_group = group_name + "/" + comp_name;
+		createGroup(comp_group);
+
+        int j = 0;
+        for (std::string data_label : output_vector_names) {
+
+            SimTK::Matrix data = output_vector_values[i][j];
+            writeDataSetSimTKMatrix(data, comp_group + "/" + data_label);
             j++;
         }
         i++;
@@ -241,6 +288,34 @@ void H5FileAdapter::writeDataSetSimTKVectorVec3(const SimTK::Vector_<SimTK::Vec3
 	for (int r = 0; r < dim_data[0]; ++r) {
 		for (int c = 0; c < 3; ++c) {
 			data[r][c] = data_vector(r)(c);
+		}
+	}
+
+	dataset.write(&data[0][0], datatype);
+
+	//Free dynamically allocated memory
+	free(data[0]);
+	free(data);
+}
+
+void H5FileAdapter::writeDataSetSimTKMatrix(const SimTK::Matrix& data_matrix, const std::string dataset_path) {
+	hsize_t dim_data[2];
+	dim_data[0] = data_matrix.nrow();
+	dim_data[1] = data_matrix.ncol();
+		
+	H5::DataSpace dataspace(2, dim_data, dim_data);
+	H5::PredType datatype(H5::PredType::NATIVE_DOUBLE);
+	H5::DataSet dataset = _file.createDataSet(dataset_path, datatype, dataspace);
+
+	//Allocate space for data
+	double** data = (double**)malloc(dim_data[0] * sizeof(double*));
+	data[0] = (double*)malloc(dim_data[1] * dim_data[0] * sizeof(double));
+	for (int i = 1; i < dim_data[0]; i++) data[i] = data[0] + i*dim_data[1];
+
+	//Set Data Array
+	for (int r = 0; r < dim_data[0]; ++r) {
+		for (int c = 0; c < dim_data[1]; ++c) {
+			data[r][c] = data_matrix(r,c);
 		}
 	}
 

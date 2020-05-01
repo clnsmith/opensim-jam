@@ -226,7 +226,8 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
     }
     
     double x[] = { start_value, start_value, stop_value };
-    PiecewiseLinearFunction func(3, t, x);
+    //PiecewiseLinearFunction func(3, t, x);
+    SimmSpline func(3, t, x, "func");
 
     //Set coordinate Types
     for (auto& coord : model.updComponentList<Coordinate>()) {

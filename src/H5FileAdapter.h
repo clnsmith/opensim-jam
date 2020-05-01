@@ -16,7 +16,19 @@
  * limitations under the License.                                             *
  * -------------------------------------------------------------------------- */
 
+//=============================================================================
+//                         H5FileAdapter
+//=============================================================================
+/**
+This class implements enables .h5 (HDF5, https://www.hdfgroup.org/) files to 
+be written. The .h5 format is a binary file that can store large amounts of 
+data in a compressed file size and can be more quickly written and read than
+text file formats such as .sto or .mot. The file has a hierarchical structure
+of groups 
 
+@author Colin Smith
+
+*/
 
 #include "OpenSim/Common/FileAdapter.h"
 #include "SimTKmath.h"
@@ -45,18 +57,41 @@ namespace OpenSim {
 	   void close();
 
 	   void createGroup(const std::string& new_group);
+
 	   void writeDataSet(const TimeSeriesTable& table, const std::string group_path);
+
 	   void writeDataSetVec3(const TimeSeriesTableVec3& table, const std::string group_path);
+
 	   void writeDataSetVector(const TimeSeriesTable& table, const std::string group_path);
+
 	   void writeDataSetSimTKVector(const SimTK::Vector& data_vector, const std::string dataset_path);
+
 	   void writeDataSetSimTKVectorVec3(const SimTK::Vector_<SimTK::Vec3>& data_vector, const std::string dataset_path);
+
+       void writeDataSetSimTKMatrix(const SimTK::Matrix& data_matrix, const std::string dataset_path);
+
 	   void writeDataSetSimTKMatrixColumns(const SimTK::Matrix& data, std::vector<std::string> column_dataset_paths);
+
 	   void writeDataSetSimTKMatrixVec3Columns(const SimTK::Matrix_<SimTK::Vec3>& data, std::vector<std::string> column_dataset_paths);
+
 	   void writeTimeDataSet(const Array<double>& time);
-	   void writeStatesDataSet(const TimeSeriesTable& table);	   
+
+	   void writeStatesDataSet(const TimeSeriesTable& table);
+
 	   void writeComponentGroupDataSet(std::string group_name, std::vector<std::string> names,
            std::vector<std::string> output_double_names,
            std::vector<SimTK::Matrix> output_double_values);
+
+       void writeComponentGroupDataSetVec3(std::string group_name,
+           std::vector<std::string> names,
+           std::vector<std::string> output_vec3_names,
+           std::vector<SimTK::Matrix_<SimTK::Vec3>> output_vec3_values);
+
+       void H5FileAdapter::writeComponentGroupDataSetVector(std::string group_name,
+           std::vector<std::string> names,
+           std::vector<std::string> output_vector_names,
+           std::vector<std::vector<SimTK::Matrix>> output_vector_values);
+
     protected:
         OutputTables extendRead(const std::string& fileName) const override;
 

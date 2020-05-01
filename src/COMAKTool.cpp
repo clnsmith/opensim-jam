@@ -1305,7 +1305,9 @@ void COMAKTool::extractKinematicsFromFile() {
 
 void COMAKTool::applyExternalLoads()
 {
-    const std::string& aExternalLoadsFileName = get_external_loads_file();
+    const std::string& aExternalLoadsFileName = 
+        SimTK::Pathname::getAbsolutePathname(get_external_loads_file());
+
 
     if (aExternalLoadsFileName == "" || aExternalLoadsFileName == "Unassigned") {
         std::cout << "No external loads will be applied (external loads file not specified)." << std::endl;
