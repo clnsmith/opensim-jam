@@ -205,14 +205,40 @@ void COMAKInverseKinematicsTool::run()
 void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
     std::cout << "Performing IK Secondary Constraint Simulation..." << std::endl;
     
+    //Initialize Model
     Model model = _model;
+    model.setUseVisualizer(get_use_visualizer());
     model.initSystem();
 
-    //Setup Prescribed Function
-    double start_time = get_secondary_constraint_sim_settle_time();
-    double stop_time = start_time + get_secondary_constraint_sim_sweep_time();
-    double t[] = { 0, start_time, stop_time };
+    for (Muscle& msl : model.updComponentList<Muscle>()) {
+        if (msl.getConcreteClassName() == "Millard2012EquilibriumMuscle") {
+            msl.set_ignore_activation_dynamics(true);
+            msl.set_ignore_tendon_compliance(true);
+        }
+    }
+        
+    for(auto& cc_const : model.updComponentList<CoordinateCouplerConstraint>()){
+        std::string cc_coord_name = cc_const.getDependentCoordinateName();
+        Coordinate& coord = model.updCoordinateSet().get(cc_coord_name);
+        coord.set_locked(false);
+    }
 
+    //Set coordinate types
+    for (auto& coord : model.updComponentList<Coordinate>()) {
+        if (getProperty_secondary_coordinates().findIndex(coord.getAbsolutePathString()) > -1) {
+            coord.set_locked(false);
+        }
+        else if (coord.getAbsolutePathString() == get_secondary_coupled_coordinate()){
+            coord.set_locked(false);
+            coord.set_prescribed(true);
+        }
+        else {
+            coord.set_locked(true);
+        }
+    }
+
+    Coordinate& coupled_coord = model.updComponent<Coordinate>(get_secondary_coupled_coordinate());
+    
     double start_value;
     double stop_value;
 
@@ -224,50 +250,9 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         start_value = get_secondary_coupled_coordinate_start_value();
         stop_value = get_secondary_coupled_coordinate_stop_value();
     }
-    
-    double x[] = { start_value, start_value, stop_value };
-    //PiecewiseLinearFunction func(3, t, x);
-    SimmSpline func(3, t, x, "func");
 
-    //Set coordinate Types
-    for (auto& coord : model.updComponentList<Coordinate>()) {
-        if (getProperty_secondary_coordinates().findIndex(coord.getAbsolutePathString()) > -1) {
-            coord.set_locked(false);
-        }
-        else if (coord.getAbsolutePathString() == get_secondary_coupled_coordinate()){
-            coord.set_locked(false);
-            coord.set_prescribed(true);
-            coord.set_prescribed_function(func);
-        }
-        else {
-            coord.set_locked(true);
-        }
-    }
-
-    for(auto& cc_const : model.updComponentList<CoordinateCouplerConstraint>()){
-        std::string cc_coord_name = cc_const.getDependentCoordinateName();
-        Coordinate& coord = model.updCoordinateSet().get(cc_coord_name);
-        coord.set_locked(false);
-    }
-
-    for (Muscle& msl : model.updComponentList<Muscle>()) {
-        if (msl.getConcreteClassName() == "Millard2012EquilibriumMuscle") {
-            msl.set_ignore_activation_dynamics(true);
-            msl.set_ignore_tendon_compliance(true);
-        }
-    }
-
-    //Initialize Model
-    model.setUseVisualizer(get_use_visualizer());
-    SimTK::State state = model.initSystem();
-    model.equilibrateMuscles(state);
-
-    //Prescribe Muscle Force
-    for (Muscle& msl : model.updComponentList<Muscle>()) {
-        msl.overrideActuation(state, true);
-        double value = msl.getMaxIsometricForce()*0.01;
-        msl.setOverrideActuation(state, value);
-    }
+    //Initialize Simulation 
+    //---------------------
 
     if (get_use_visualizer()) {
         SimTK::Visualizer& viz = model.updVisualizer().updSimbodyVisualizer();
@@ -275,23 +260,30 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         viz.setShowSimTime(true);
     }
 
-    //Simulate
-    double initialTime = 0.0;
-    double finalTime = stop_time;
-
-    //Setup Results Storage
-    TimeSeriesTable q_table;
-    SimTK::RowVector q_row(model.getNumCoordinates());
-    std::vector<std::string> q_names;
-
-    for (Coordinate& coord : _model.updComponentList<Coordinate>()) {
-        q_names.push_back(coord.getAbsolutePathString() + "/value");
-
-    }
-
-    q_table.setColumnLabels(q_names);
     StatesTrajectory result_states;
 
+
+
+    //Perform settling simulation
+    //---------------------------
+    double settle_start = 0.0;
+    double settle_stop = get_secondary_constraint_sim_settle_time();
+
+    //prescribe coupled coord
+    Constant settle_func = Constant(start_value);
+    coupled_coord.set_prescribed_function(settle_func);
+
+    SimTK::State state = model.initSystem();
+
+    //prescribe muscle force
+    for (Muscle& msl : model.updComponentList<Muscle>()) {
+        msl.overrideActuation(state, true);
+        double value = msl.getMaxIsometricForce()*0.01;
+        msl.setOverrideActuation(state, value);
+    }
+    model.equilibrateMuscles(state);
+
+    //setup integrator
     SimTK::CPodesIntegrator integrator(model.getSystem(), SimTK::CPodes::BDF, SimTK::CPodes::Newton);
     integrator.setAccuracy(get_secondary_constraint_sim_integrator_accuracy());
     if (get_secondary_constraint_sim_internal_step_limit() != -1) {
@@ -301,16 +293,99 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
     SimTK::TimeStepper timestepper(model.getSystem(), integrator);
 
     timestepper.initialize(state);
-
+    
     double dt = 0.01;
 
-    int nSteps = round((finalTime - initialTime) / dt);
+    int nSteps = round((settle_stop - settle_start) / dt);
 
     for (int i = 0; i <= nSteps; ++i) {
-        model.realizeReport(state);
-
         timestepper.stepTo(i*dt);
         state = timestepper.getState();
+
+        result_states.append(state);
+    }
+
+    SimTK::Vector settled_secondary_values(_secondary_coord_path.getSize());
+
+    //Save secondardy coord values to initialize sweep simulation
+    
+    for (int c = 0; c < _secondary_coord_path.getSize(); c++) {
+        std::string secondary_coord = _secondary_coord_path[c];
+        Coordinate& coord = model.updComponent<Coordinate>(secondary_coord);
+        settled_secondary_values.set(c, coord.getValue(state));       
+    }
+
+
+    //Perform Sweep Simulation
+    //------------------------
+
+    //setup quadratic sweep function
+    double Vx = get_secondary_constraint_sim_settle_time();
+    double Vy = start_value;
+    double Px = Vx + get_secondary_constraint_sim_sweep_time();
+    double Py = stop_value;
+    double a = (Py - Vy) / SimTK::square(Px - Vx);
+
+    double C1 = a;
+    double C2 = -2 * a * Vx;
+    double C3 = a * SimTK::square(Vx) + Vy;
+
+    SimTK::Vector coefficients(3);
+    coefficients.set(0, C1);
+    coefficients.set(1, C2);
+    coefficients.set(2, C3);
+
+    PolynomialFunction sweep_func = PolynomialFunction(coefficients);
+    coupled_coord.set_prescribed_function(sweep_func);
+
+    state = model.initSystem();
+
+    //prescribe muscle force
+    for (Muscle& msl : model.updComponentList<Muscle>()) {
+        msl.overrideActuation(state, true);
+        double value = msl.getMaxIsometricForce()*0.01;
+        msl.setOverrideActuation(state, value);
+    }
+    model.equilibrateMuscles(state);
+
+    //set settled secondary coordinate values
+    for (int c = 0; c < _secondary_coord_path.getSize(); c++) {
+        std::string secondary_coord = _secondary_coord_path[c];
+        Coordinate& coord = model.updComponent<Coordinate>(secondary_coord);
+        coord.setValue(state, settled_secondary_values(c));
+    }
+
+    double sweep_start = settle_stop + dt;
+    double sweep_stop = Px;
+
+    nSteps = round((sweep_stop - sweep_start) / dt);
+
+    //Setup storage for computing constraint functions
+    TimeSeriesTable q_table;
+    SimTK::RowVector q_row(model.getNumCoordinates());
+    std::vector<std::string> q_names;
+
+    for (Coordinate& coord : _model.updComponentList<Coordinate>()) {
+        q_names.push_back(coord.getAbsolutePathString() + "/value");
+    }
+
+    q_table.setColumnLabels(q_names);
+
+    //setup integrator
+    SimTK::CPodesIntegrator sweep_integrator(model.getSystem(), SimTK::CPodes::BDF, SimTK::CPodes::Newton);
+    sweep_integrator.setAccuracy(get_secondary_constraint_sim_integrator_accuracy());
+    if (get_secondary_constraint_sim_internal_step_limit() != -1) {
+        sweep_integrator.setInternalStepLimit(
+            get_secondary_constraint_sim_internal_step_limit());
+    }
+    SimTK::TimeStepper sweep_timestepper(model.getSystem(), sweep_integrator);
+
+    sweep_timestepper.initialize(state);
+
+    for (int i = 0; i <= nSteps; ++i) {
+
+        sweep_timestepper.stepTo(sweep_start + i*dt);
+        state = sweep_timestepper.getState();
 
         result_states.append(state);
 
@@ -322,34 +397,27 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         q_table.appendRow(state.getTime(), q_row);
     }
 
+
+
     //Compute Coupled Constraint Functions
     std::vector<double> time = q_table.getIndependentColumn();
-    int start_frame = round((start_time - initialTime) / dt);
-    int nCutFrames = nSteps - start_frame;
 
     SimTK::Vector ind_data = q_table.getDependentColumn(get_secondary_coupled_coordinate() + "/value");
-    SimTK::Vector cut_ind_data(nCutFrames);
-    SimTK::Matrix cut_data(nCutFrames, _n_secondary_coord);
 
-    int k = 0;
-    for (int i = start_frame; i < nSteps; ++i) {
-        cut_ind_data(k) = ind_data(i);
-        k++;
-    }
+    SimTK::Matrix data(time.size(), _n_secondary_coord);
 
     for (int j = 0; j < _n_secondary_coord; ++j) {
         std::string path = _secondary_coord_path[j];
-        SimTK::Vector data = q_table.getDependentColumn(path + "/value");
-
-        k = 0;
-        for (int i = start_frame; i < nSteps; ++i) {
-            cut_data(k, j) = data(i);
-            k++;
+        SimTK::Vector col_data = q_table.getDependentColumn(path + "/value");
+        
+        for (int i = 0; i < nSteps; ++i) {
+            data(i, j) = col_data(i);
+            
         }
     }
 
-    double ind_max = SimTK::max(cut_ind_data);
-    double ind_min = SimTK::min(cut_ind_data);
+    double ind_max = SimTK::max(ind_data);
+    double ind_min = SimTK::min(ind_data);
     
     int npts = 15;
     double step = (ind_max - ind_min) / npts;
@@ -365,10 +433,10 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
     for (int j=0; j < _n_secondary_coord; ++j){
         std::string path = _secondary_coord_path[j];
         
-        SimTK::Vector data = cut_data(j);
+        SimTK::Vector secondary_data = data(j);
 
         //GCVSpline data_fit = GCVSpline(5, data.size(), &ind_data[0], &data[0]);
-        SimmSpline data_fit = SimmSpline(data.size(), &cut_ind_data[0], &data[0]);
+        SimmSpline data_fit = SimmSpline(secondary_data.size(), &ind_data[0], &secondary_data[0]);
 
         
         SimmSpline* spline = new SimmSpline();
