@@ -227,9 +227,11 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
     for (auto& coord : model.updComponentList<Coordinate>()) {
         if (getProperty_secondary_coordinates().findIndex(coord.getAbsolutePathString()) > -1) {
             coord.set_locked(false);
+            coord.set_clamped(false);
         }
         else if (coord.getAbsolutePathString() == get_secondary_coupled_coordinate()){
             coord.set_locked(false);
+            coord.set_clamped(false);
             coord.set_prescribed(true);
         }
         else {
@@ -303,6 +305,10 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         state = timestepper.getState();
 
         result_states.append(state);
+
+        if (get_verbose() > 0) {
+            std::cout << state.getTime() << std::endl;
+        }
     }
 
     SimTK::Vector settled_secondary_values(_secondary_coord_path.getSize());
@@ -395,6 +401,10 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
             j++;
         }
         q_table.appendRow(state.getTime(), q_row);
+
+        if (get_verbose() > 0) {
+            std::cout << state.getTime() << std::endl;
+        }
     }
 
 
