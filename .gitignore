@@ -12,3 +12,11 @@ render_images_acld_contact
 /opensim-jam-release/examples/walking/graphics/render_images_ligament
 /opensim-jam-release/examples/walking/graphics/render_images_contact
 /opensim-jam-release/examples/walking/results/joint-mechanics_contact_energy
+/opensim-jam-release-windows/examples/anterior_laxity/results/joint-mechanics/*.vtp
+/opensim-jam-release-windows/examples/anterior_laxity/results/joint-mechanics_acld/*.vtp
+/opensim-jam-release-windows/examples/isometric_extension/results/joint-mechanics/*.vtp
+/opensim-jam-release-windows/examples/passive_flexion/results/joint-mechanics/*.vtp
+/opensim-jam-release-windows/examples/visualize_kinematics/results/joint-mechanics/*.vtp
+/opensim-jam-release-windows/examples/walking/results/joint-mechanics/*.vtp
+/opensim-jam-release-windows/examples/walking/results/joint-mechanics_contact_energy/*.vtp
+/opensim-jam-release-windows/examples/walking/results/joint-mechanics_muscle_weights/*.vtp
