@@ -312,13 +312,14 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
     }
 
     SimTK::Vector settled_secondary_values(_secondary_coord_path.getSize());
+    SimTK::Vector settled_secondary_speeds(_secondary_coord_path.getSize());
 
     //Save secondardy coord values to initialize sweep simulation
-    
     for (int c = 0; c < _secondary_coord_path.getSize(); c++) {
         std::string secondary_coord = _secondary_coord_path[c];
         Coordinate& coord = model.updComponent<Coordinate>(secondary_coord);
-        settled_secondary_values.set(c, coord.getValue(state));       
+        settled_secondary_values.set(c, coord.getValue(state));
+        settled_secondary_speeds.set(c, coord.getSpeedValue(state));
     }
 
 
