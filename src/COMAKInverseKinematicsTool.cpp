@@ -360,12 +360,17 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         std::string secondary_coord = _secondary_coord_path[c];
         Coordinate& coord = model.updComponent<Coordinate>(secondary_coord);
         coord.setValue(state, settled_secondary_values(c));
+        coord.setSpeedValue(state, settled_secondary_speeds(c));
     }
+
+    
 
     double sweep_start = settle_stop + dt;
     double sweep_stop = Px;
 
     nSteps = round((sweep_stop - sweep_start) / dt);
+
+    state.setTime(sweep_start);
 
     //Setup storage for computing constraint functions
     TimeSeriesTable q_table;
