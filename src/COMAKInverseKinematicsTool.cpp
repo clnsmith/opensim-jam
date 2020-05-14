@@ -266,7 +266,7 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
 
 
 
-    //Perform settling simulation
+    //Perform Settling Simulation
     //---------------------------
     double settle_start = 0.0;
     double settle_stop = get_secondary_constraint_sim_settle_time();
@@ -276,6 +276,14 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
     coupled_coord.set_prescribed_function(settle_func);
 
     SimTK::State state = model.initSystem();
+
+    for (auto& coord : model.updComponentList<Coordinate>()) {
+        if (getProperty_secondary_coordinates().findIndex(coord.getAbsolutePathString()) > -1) {
+            
+            std::cout << coord.get_clamped() << std::endl;
+        }
+
+    }
 
     //prescribe muscle force
     for (Muscle& msl : model.updComponentList<Muscle>()) {
@@ -310,6 +318,38 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
             std::cout << state.getTime() << std::endl;
         }
     }
+
+    /*double max_coord_delta = SimTK::Infinity;
+    int i = 1;
+    while (max_coord_delta > get_settle_threshold()){
+        timestepper.stepTo(i*dt);
+        state = timestepper.getState();
+        result_states.append(state);
+        
+        if (get_verbose() > 0) {
+            std::cout << std::endl;
+            std::cout << "Time: " << state.getTime() << std::endl;
+            std::cout << "\t\t VALUE \t\tDELTA" << std::endl;
+        }
+
+        //Compute Delta Coordinate
+        max_coord_delta = 0;
+        for (int k = 0; k < _n_secondary_coord; k++) {
+            Coordinate& coord = settle_model.updComponent<Coordinate>(_secondary_coord_path[k]);
+            double value = coord.getValue(state);
+            double delta = abs(value - prev_sec_coord_value(k));
+            
+            if (delta > max_coord_delta) {
+                max_coord_delta = delta;
+            }
+            prev_sec_coord_value(k) = value;
+
+            if (get_verbose() > 0) {
+                std::cout << coord.getName() << " \t" << value << "\t" << delta <<std::endl;
+            }
+        }
+        i++;
+    }*/
 
     SimTK::Vector settled_secondary_values(_secondary_coord_path.getSize());
     SimTK::Vector settled_secondary_speeds(_secondary_coord_path.getSize());
@@ -363,8 +403,6 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         coord.setSpeedValue(state, settled_secondary_speeds(c));
     }
 
-    
-
     double sweep_start = settle_stop + dt;
     double sweep_stop = Px;
 
@@ -413,8 +451,6 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         }
     }
 
-
-
     //Compute Coupled Constraint Functions
     std::vector<double> time = q_table.getIndependentColumn();
 
@@ -454,14 +490,13 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         //GCVSpline data_fit = GCVSpline(5, data.size(), &ind_data[0], &data[0]);
         SimmSpline data_fit = SimmSpline(secondary_data.size(), &ind_data[0], &secondary_data[0]);
 
-        
         SimmSpline* spline = new SimmSpline();
-        spline->setName(path);		
+        spline->setName(path);
 
         for (int i = 0; i < npts; ++i) {
             spline->addPoint(ind_pt_data(i), data_fit.calcValue(SimTK::Vector(1, ind_pt_data(i))));
         }
-        
+
         _secondary_constraint_functions.adoptAndAppend(spline);
     }
 
@@ -516,6 +551,21 @@ void COMAKInverseKinematicsTool::performIK()
 
         model.addComponent(cc_constraint);
     }
+
+        //Set coordinate types
+    for (auto& coord : model.updComponentList<Coordinate>()) {
+        if (getProperty_secondary_coordinates().findIndex(coord.getAbsolutePathString()) > -1) {
+            coord.set_locked(false);
+            coord.set_clamped(false);
+        }
+        else if (coord.getAbsolutePathString() == get_secondary_coupled_coordinate()){
+            coord.set_locked(false);
+            coord.set_clamped(false);
+        }
+    }
+
+    model.initSystem();
+
     if (!get_constrained_model_file().empty()) {
         model.print(get_constrained_model_file());
     }
