@@ -67,11 +67,14 @@ public:
         "independent_coordinate_name for the CoordinateCouplerConstraints "
         "for all secondary coordinates. ")
 
-    OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_settle_time, double, 
-        "Duration of the initial settle period where the "
-        "secondary_coupled_coordinate is locked and secondary coordinates "
-        "settle into equilibrium."
-        "The default value is 1.0 seconds.")
+    OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_settle_threshold, double,
+        "Set the maximum change in secondary coordinates between timesteps "
+        "that defines equilibrium for the settling simulation. Once the "
+        "change in all COMAKSecondaryCoordinate values is smaller than the "
+        "settle_threshold, the settling simulation is finished. The final "
+        "secondary coordinate values are used to initialize the sweep "
+        "simulation."
+        "The default value is 1e-5.")
 
     OpenSim_DECLARE_PROPERTY(secondary_constraint_sim_sweep_time, double, 
         "The duration of the simulation phase where the "

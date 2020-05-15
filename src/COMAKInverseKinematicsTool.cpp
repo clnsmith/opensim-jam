@@ -61,7 +61,7 @@ void COMAKInverseKinematicsTool::constructProperties()
     constructProperty_perform_secondary_constraint_sim(true);
     constructProperty_secondary_coordinates();
     constructProperty_secondary_coupled_coordinate("");
-    constructProperty_secondary_constraint_sim_settle_time(1.0);
+    constructProperty_secondary_constraint_sim_settle_threshold(1e-5);
     constructProperty_secondary_constraint_sim_sweep_time(1.0);
     constructProperty_secondary_coupled_coordinate_start_value(0.0);
     constructProperty_secondary_coupled_coordinate_stop_value(0.0);
@@ -170,8 +170,8 @@ void COMAKInverseKinematicsTool::initialize()
     std::cout << "Secondary Coupled Coordinate: " <<
         get_secondary_coupled_coordinate() << std::endl;
 
-    std::cout << "Settle Time: " << 
-        get_secondary_constraint_sim_settle_time()<< std::endl;
+    std::cout << "Settle Threshold: " << 
+        get_secondary_constraint_sim_settle_threshold()<< std::endl;
 
     std::cout << "Sweep Time: " <<
         get_secondary_constraint_sim_sweep_time() << std::endl;
@@ -261,29 +261,15 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         viz.setBackgroundColor(SimTK::White);
         viz.setShowSimTime(true);
     }
-
-    StatesTrajectory result_states;
-
-
-
+        
     //Perform Settling Simulation
     //---------------------------
-    double settle_start = 0.0;
-    double settle_stop = get_secondary_constraint_sim_settle_time();
 
     //prescribe coupled coord
     Constant settle_func = Constant(start_value);
     coupled_coord.set_prescribed_function(settle_func);
 
     SimTK::State state = model.initSystem();
-
-    for (auto& coord : model.updComponentList<Coordinate>()) {
-        if (getProperty_secondary_coordinates().findIndex(coord.getAbsolutePathString()) > -1) {
-            
-            std::cout << coord.get_clamped() << std::endl;
-        }
-
-    }
 
     //prescribe muscle force
     for (Muscle& msl : model.updComponentList<Muscle>()) {
@@ -304,27 +290,22 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
 
     timestepper.initialize(state);
     
+    StatesTrajectory settle_states;
+
     double dt = 0.01;
-
-    int nSteps = round((settle_stop - settle_start) / dt);
-
-    for (int i = 0; i <= nSteps; ++i) {
-        timestepper.stepTo(i*dt);
-        state = timestepper.getState();
-
-        result_states.append(state);
-
-        if (get_verbose() > 0) {
-            std::cout << state.getTime() << std::endl;
-        }
+ 
+    if (get_verbose() > 0) {
+        std::cout << "Starting Settling Simulation."<< std::endl;
     }
 
-    /*double max_coord_delta = SimTK::Infinity;
+    SimTK::Vector prev_sec_coord_value(_n_secondary_coord);
+
+    double max_coord_delta = SimTK::Infinity;
     int i = 1;
-    while (max_coord_delta > get_settle_threshold()){
+    while (max_coord_delta > get_secondary_constraint_sim_settle_threshold()){
         timestepper.stepTo(i*dt);
         state = timestepper.getState();
-        result_states.append(state);
+        settle_states.append(state);
         
         if (get_verbose() > 0) {
             std::cout << std::endl;
@@ -335,7 +316,7 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         //Compute Delta Coordinate
         max_coord_delta = 0;
         for (int k = 0; k < _n_secondary_coord; k++) {
-            Coordinate& coord = settle_model.updComponent<Coordinate>(_secondary_coord_path[k]);
+            Coordinate& coord = model.updComponent<Coordinate>(_secondary_coord_path[k]);
             double value = coord.getValue(state);
             double delta = abs(value - prev_sec_coord_value(k));
             
@@ -349,7 +330,7 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
             }
         }
         i++;
-    }*/
+    }
 
     SimTK::Vector settled_secondary_values(_secondary_coord_path.getSize());
     SimTK::Vector settled_secondary_speeds(_secondary_coord_path.getSize());
@@ -362,12 +343,16 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         settled_secondary_speeds.set(c, coord.getSpeedValue(state));
     }
 
+    if (get_verbose() > 0) {
+        std::cout << "Finished Settling Simulation in " << state.getTime() << " s." << std::endl;
+        std::cout << "Starting Sweep Simulation."<< std::endl;
+    }
 
     //Perform Sweep Simulation
     //------------------------
 
     //setup quadratic sweep function
-    double Vx = get_secondary_constraint_sim_settle_time();
+    double Vx = 0;
     double Vy = start_value;
     double Px = Vx + get_secondary_constraint_sim_sweep_time();
     double Py = stop_value;
@@ -403,12 +388,10 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         coord.setSpeedValue(state, settled_secondary_speeds(c));
     }
 
-    double sweep_start = settle_stop + dt;
+    double sweep_start = 0;
     double sweep_stop = Px;
 
-    nSteps = round((sweep_stop - sweep_start) / dt);
-
-    state.setTime(sweep_start);
+    int nSteps = round((sweep_stop - sweep_start) / dt);
 
     //Setup storage for computing constraint functions
     TimeSeriesTable q_table;
@@ -431,13 +414,15 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
     SimTK::TimeStepper sweep_timestepper(model.getSystem(), sweep_integrator);
 
     sweep_timestepper.initialize(state);
+    
+    StatesTrajectory sweep_states;
 
     for (int i = 0; i <= nSteps; ++i) {
 
         sweep_timestepper.stepTo(sweep_start + i*dt);
         state = sweep_timestepper.getState();
 
-        result_states.append(state);
+        sweep_states.append(state);
 
         int j = 0;
         for (const auto& coord : model.getComponentList<Coordinate>()) {
@@ -510,15 +495,25 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
 
          std::string name = "secondary_constraint_sim_states";
 
-        TimeSeriesTable states_table = result_states.exportToTable(model);
-        states_table.addTableMetaData("header", name);
-        states_table.addTableMetaData("nRows", std::to_string(states_table.getNumRows()));
-        states_table.addTableMetaData("nColumns", std::to_string(states_table.getNumColumns()+1));
+        TimeSeriesTable settle_table = settle_states.exportToTable(model);
+        settle_table.addTableMetaData("header", name);
+        settle_table.addTableMetaData("nRows", std::to_string(settle_table.getNumRows()));
+        settle_table.addTableMetaData("nColumns", std::to_string(settle_table.getNumColumns()+1));
 
-        std::string states_file =
-            get_results_directory() + "/secondary_constraint_sim_states.sto";
+        TimeSeriesTable sweep_table = sweep_states.exportToTable(model);
+        sweep_table.addTableMetaData("header", name);
+        sweep_table.addTableMetaData("nRows", std::to_string(sweep_table.getNumRows()));
+        sweep_table.addTableMetaData("nColumns", std::to_string(sweep_table.getNumColumns()+1));
+
+        std::string settle_file =
+            get_results_directory() + "/secondary_constraint_settle_states.sto";
+
+        std::string sweep_file =
+            get_results_directory() + "/secondary_constraint_sweep_states.sto";
+
         STOFileAdapter sto_file_adapt;
-        sto_file_adapt.write(states_table, states_file);
+        sto_file_adapt.write(settle_table, settle_file);
+        sto_file_adapt.write(sweep_table, sweep_file);
     }
 }
 
@@ -552,7 +547,7 @@ void COMAKInverseKinematicsTool::performIK()
         model.addComponent(cc_constraint);
     }
 
-        //Set coordinate types
+    //Set coordinate types
     for (auto& coord : model.updComponentList<Coordinate>()) {
         if (getProperty_secondary_coordinates().findIndex(coord.getAbsolutePathString()) > -1) {
             coord.set_locked(false);

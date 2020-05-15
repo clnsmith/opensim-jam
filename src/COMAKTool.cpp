@@ -936,19 +936,19 @@ void COMAKTool::printResultsFiles() {
     states_table.addTableMetaData("header", std::string("COMAK Model States"));
     states_table.addTableMetaData("nRows", std::to_string(states_table.getNumRows()));
     states_table.addTableMetaData("nColumns", std::to_string(states_table.getNumColumns() + 1));
-    sto.write(states_table, get_results_directory() + get_results_prefix() + "_states.sto");
+    sto.write(states_table, get_results_directory() + "/" + get_results_prefix() + "_states.sto");
 
     _result_activations.addTableMetaData("header", std::string("COMAK Actuator Activations"));
     _result_activations.addTableMetaData("nRows", std::to_string(_result_activations.getNumRows()));
     _result_activations.addTableMetaData("nColumns", std::to_string( _result_activations.getNumColumns() + 1));
 
-    sto.write(_result_activations, get_results_directory() + get_results_prefix() + "_activation.sto");
+    sto.write(_result_activations, get_results_directory() + "/" + get_results_prefix() + "_activation.sto");
 
     _result_forces.addTableMetaData("header", std::string("COMAK Actuator Forces"));
     _result_forces.addTableMetaData("nRows", std::to_string(_result_forces.getNumRows()));
     _result_forces.addTableMetaData("nColumns", std::to_string(_result_forces.getNumColumns() + 1));
 
-    sto.write(_result_forces, get_results_directory() + get_results_prefix() + "_force.sto");
+    sto.write(_result_forces, get_results_directory() + "/" + get_results_prefix() + "_force.sto");
 
     _result_kinematics.addTableMetaData("inDegrees", std::string("no"));
     _model.getSimbodyEngine().convertRadiansToDegrees(_result_kinematics);
@@ -956,7 +956,7 @@ void COMAKTool::printResultsFiles() {
     _result_kinematics.addTableMetaData("nRows", std::to_string(_result_kinematics.getNumRows()));
     _result_kinematics.addTableMetaData("nColumns", std::to_string(_result_kinematics.getNumColumns() + 1));
 
-    sto.write(_result_kinematics, get_results_directory() + get_results_prefix() + "_kinematics.sto");
+    sto.write(_result_kinematics, get_results_directory() + "/" + get_results_prefix() + "_kinematics.sto");
 
     _result_values.addTableMetaData("inDegrees", std::string("no"));
     _model.getSimbodyEngine().convertRadiansToDegrees(_result_values);
@@ -964,7 +964,7 @@ void COMAKTool::printResultsFiles() {
     _result_values.addTableMetaData("nRows", std::to_string(_result_values.getNumRows()));
     _result_values.addTableMetaData("nColumns", std::to_string(_result_values.getNumColumns() + 1));
 
-    sto.write(_result_values, get_results_directory() + get_results_prefix() + "_values.sto");
+    sto.write(_result_values, get_results_directory() + "/" + get_results_prefix() + "_values.sto");
 }
 
 SimTK::Vector COMAKTool::equilibriateSecondaryCoordinates() 
