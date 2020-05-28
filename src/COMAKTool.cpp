@@ -509,10 +509,12 @@ void COMAKTool::performCOMAK()
     // initialize optimization parameters
     for (int i = 0; i < _n_muscles; ++i) {
         _optim_parameters[i] = 0.02;
+        
     }
     for (int i = 0; i < _n_secondary_coord; ++i) {
         _optim_parameters[i + _n_actuators] = init_secondary_values(i);
     }
+    _prev_parameters = _optim_parameters;
 
     //Set initial Secondary Qs
     _dt = _time[1] - _time[0];
@@ -573,8 +575,11 @@ void COMAKTool::performCOMAK()
         std::vector<std::string> iter_max_udot_coord(get_max_iterations(), "");
         SimTK::Matrix iter_parameters(get_max_iterations(), _n_parameters, 0.0);
 
-        int iter;
-        for (iter = 0; iter < get_max_iterations(); ++iter) {            
+        int n_iter = 0;
+
+        for (int iter = 0; iter < get_max_iterations(); ++iter) {
+            n_iter++;
+
             if (get_verbose() > 0) {
                 std::cout << std::endl;
                 std::cout << "--------------------------------------------------------------------------------" << std::endl;
@@ -629,7 +634,7 @@ void COMAKTool::performCOMAK()
             optimizer.setDiagnosticsLevel(0);
             //optimizer.setMaxIterations(500);
             //optimizer.setConvergenceTolerance(0.00000001);
-
+            //optimizer.setConstraintTolerance();
             optimizer.useNumericalGradient(false);
             optimizer.useNumericalJacobian(false);
 
@@ -718,14 +723,16 @@ void COMAKTool::performCOMAK()
             iter_max_udot_error(iter) = max_udot_error;
             iter_max_udot_coord[iter] = max_udot_coord;
 
+            
             //Check for convergence
             if (max_udot_error < get_udot_tolerance()) {
                 _consecutive_bad_frame = 1; //converged so reset
                 break;
             }
+            
         }// END COMAK ITERATION
-
-        if (iter == get_max_iterations()) {
+                
+        if (max_udot_error > get_udot_tolerance()) {
             std::cout << std::endl;
             std::cout << "COMAK failed to converge." << std::endl;
 
@@ -735,7 +742,7 @@ void COMAKTool::performCOMAK()
             double min_val = get_udot_worse_case_tolerance();
             int min_iter = -1;
             std::string bad_coord;
-            for (int m = 0; m < iter_max_udot_error.size(); ++m) {
+            for (int m = 0; m < get_max_iterations(); ++m) {
                 if (iter_max_udot_error(m) < min_val) {
                     min_val = iter_max_udot_error(m);
                     min_iter = m;
@@ -761,9 +768,25 @@ void COMAKTool::performCOMAK()
         }
         else {
             std::cout << "COMAK Converged! Number of iterations: " 
-                << iter << std::endl << std::endl;
+                << n_iter << std::endl << std::endl;
+        }
+        /*
+        std::cout << std::endl << std::endl;
+        std::cout << "_optim_parameters" << std::endl;
+        std::cout << _optim_parameters << std::endl;
+
+        std::cout << std::endl << std::endl;
+        std::cout << "_prev_parameters" << std::endl;
+        std::cout << _prev_parameters << std::endl;
+
+        std::cout << std::endl << std::endl;
+        std::cout << "iter_parameters" << std::endl;
+        for (int m = 0; m < get_max_iterations(); ++m) {
+            std::cout << iter_parameters[m] << std::endl;
         }
 
+        std::cout << std::endl << std::endl;
+        */
         //Store Solution
         _model.realizeAcceleration(state);
         _prev_parameters = _optim_parameters;
@@ -773,8 +796,10 @@ void COMAKTool::performCOMAK()
             _prev_secondary_value(m) = coord.getValue(state);
         }
 
+
+
         //Save the results
-        recordResultsStorage(state,i);        
+        recordResultsStorage(state,i);
  
         //Visualize the Results
         if (get_use_visualizer()) {

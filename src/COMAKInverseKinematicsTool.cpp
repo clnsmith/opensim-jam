@@ -544,7 +544,7 @@ void COMAKInverseKinematicsTool::performIK()
         cc_constraint->setFunction(_secondary_constraint_functions.get(name));
         cc_constraint->setName(coord_name + "_function");
 
-        model.addComponent(cc_constraint);
+        model.addConstraint(cc_constraint);
     }
 
     //Set coordinate types
@@ -555,7 +555,7 @@ void COMAKInverseKinematicsTool::performIK()
         }
         else if (coord.getAbsolutePathString() == get_secondary_coupled_coordinate()){
             coord.set_locked(false);
-            coord.set_clamped(false);
+            coord.set_clamped(true);
         }
     }
 

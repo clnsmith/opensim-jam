@@ -241,7 +241,7 @@ mesh such as contact area, mean/max proximity/pressure, center of
 proximity/pressure etc. Finally, there are regional summary outputs which
 return a SimTK::Vector (size = 6). Here, the entries in the vector reflect the
 summary metrics corresponding to subset of mesh triangles located in six 
-specific regions. These regions are defined as the subset of mesh triangles 
+specific regions. These six regions are defined as the subset of mesh triangles 
 whose center is located in the half space [+x, -x, +y, -y, +z, -z] in the 
 local mesh coordinate system. If the mesh coordinate system is aligned with 
 anatomical axes, then this enables simulation results to be more readily 
@@ -739,6 +739,8 @@ protected:
         const SimTK::Vector& total_triangle_proximity,
         const SimTK::Vector& total_triangle_pressure,
         const std::vector<int>& triIndices) const;
+    
+    //void computeRegionalContactStats(const SimTK::State& state) const;
 
 private:
     void setNull();
