@@ -17,7 +17,7 @@ _Source_
 - [Blankevoort1991Ligament.cpp](../src/Blankevoort1991Ligament.cpp)
 
 _Description_
-- [Blakevoort1991Ligament Description](./documentation/doxygen/Blakevoort1991Ligament_doxygen.pdf)
+- [Blakevoort1991Ligament Description](./documentation/doxygen/Blankevoort1991Ligament_doxygen.pdf)
 
 
 
