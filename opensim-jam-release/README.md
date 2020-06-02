@@ -17,7 +17,7 @@ _Source_
 - [Blankevoort1991Ligament.cpp](../src/Blankevoort1991Ligament.cpp)
 
 _Description_
-- [Blakevoort1991Ligament Description](./documentation/doxygen/Blankevoort1991Ligament_doxygen.pdf)
+- [Blankevoort1991Ligament Description](./documentation/doxygen/Blankevoort1991Ligament_doxygen.pdf)
 
 
 
@@ -53,7 +53,7 @@ _Source_
 - [ForsimTool.cpp](../src/ForsimTool.cpp)
 
 _Description_
-- [Smith2018ArticularContactForce Description](./documentation/doxygen/ForsimTool_doxygen.pdf) coming soon
+- [ForsimTool Description](./documentation/doxygen/ForsimTool_doxygen.pdf) _coming soon_
 
 ### COMAKInverseKinematics and COMAK
 The **C**oncurrent **O**ptimization of **M**uscle **A**ctivations and **K**inematics (COMAK) algorithm enables the calculation of muscle forces and detailed joint mechanics during dynamic movements. For details of the COMAK algorithm refer to the following publications:
@@ -85,10 +85,12 @@ _Description_
 - [JointMechanicsTool Description](./documentation/doxygen/JointMechanicsToolTool_doxygen.pdf) coming soon
 
 ## Distribution
-### OpenSim-JAM Plugin
-An OpenSim Plugin containing the OpenSim-JAM Components and Tools has been compiled for Windows and OpenSim 4.0 using Visual Studio 15 2017 Win64. The plugin file is located at [./bin/jam-plugin.dll](./bin/jam-plugin.dll) For linux or mac users, you must compile the plugin yourself. 
+The C++ [source code](../src) and CMake files are available so you can build all of the OpenSim-JAM libraries and executables for windows, linux, and mac operating system. Additionally, compiled versions of OpenSim-JAM are provided for windows and Centos6 (redhat linux) users. The descriptions below are focused on the windows release.  
 
-The plugin can be used with the OpenSim 4.0 GUI, MATLAB/Python, and commmand line interfaces ([instructions](https://simtk-confluence.stanford.edu/display/OpenSim/Using+Plugins)).
+### OpenSim-JAM Plugin
+An OpenSim Plugin containing the OpenSim-JAM Components and Tools has been compiled for Windows and OpenSim 4.1 using Visual Studio 15 2017 Win64. The plugin file is located at [./bin/win/jam-plugin.dll](./bin/win/jam-plugin.dll). 
+
+The plugin can be used with the OpenSim 4.1 GUI, MATLAB/Python, and commmand line interfaces ([instructions](https://simtk-confluence.stanford.edu/display/OpenSim/Using+Plugins)).
 
 ### Executables 
 Each of the [Simulation Tools](#simulation-tools) have been compiled as command line executables (.exe) for windows. This allows users to define simulation settings in a .xml file and organize and perform simulations using windows .cmd files. The compiled executable files are located at [bin](./bin) and the c++ source code is located at [cmd_tools](../src/cmd_tools)
