@@ -15,7 +15,7 @@ This simulation uses the [lenhart2015 model](../../models/lenhart2015/lenhart201
 </p>
 
 ## Workflow steps 
-1) Use MATLAB to run the [./inputs/generate_passive_flexion_input_files.m](./inputs/generate_passive_flexion_input_files.m) script to generate the [./inputs/prescribed_coordinates.sto](./inputs/prescribed_coordinate.sto) file containing the knee_flex_r and pelvis_tilt coordinate values vs time. 
+1) Use MATLAB to run the [./inputs/generate_passive_flexion_input_files.m](./inputs/generate_passive_flexion_input_files.m) script to generate the [./inputs/prescribed_coordinates.sto](./inputs/prescribed_coordinates.sto) file containing the knee_flex_r and pelvis_tilt coordinate values vs time. 
 
 2) Inspect the [./inputs/forsim_settings.xml](inputs/forsim_settings.xml) and [./inputs/joint_mechanics_settings.xml](./inputs/joint_mechanics_settings.xml) files in a text editor to understand the property settings used to setup the simulation.
 
