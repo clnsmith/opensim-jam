@@ -56,6 +56,6 @@ This simulation uses the [lenhart2015 model](../../models/lenhart2015/lenhart201
 
 3) Double click on [run_anterior_laxity.cmd](run_anterior_laxity.cmd) to perform the forsim simulation and joint-mechanics analysis for the healthy and ACL deficient models using the command line. You can open this file in a text editor to understand the code format to run the forsim and joint-mechanics executables.
 
-4) Use Paraview and/or the OpenSim GUI to visualize the simulation results [instructions](../../documentation/visualizing-models-and-simulation-results).
+4) Use Paraview and/or the OpenSim GUI to visualize the simulation results [instructions](../../documentation/visualizing-models-and-simulation-results.md).
 
 5) Use MATLAB to run the [./analysis/generate_anterior_laxity_results_plots.m](./analysis/generate_anterior_laxity_results_plots.m) script to generate plots of anterior translation vs time for the healthy and ACL deficient models. A plot of ACL force vs time is also generated for the healthy model.  
