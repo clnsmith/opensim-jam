@@ -88,12 +88,12 @@ _Description_
 The C++ [source code](../src) and CMake files are available so you can build all of the OpenSim-JAM libraries and executables for windows, linux, and mac operating system. Additionally, compiled versions of OpenSim-JAM are provided for windows and Centos6 (redhat linux) users. The descriptions below are focused on the windows release.  
 
 ### OpenSim-JAM Plugin
-An OpenSim Plugin containing the OpenSim-JAM Components and Tools has been compiled for Windows and OpenSim 4.1 using Visual Studio 15 2017 Win64. The plugin file is located at [./bin/win/jam-plugin.dll](./bin/win/jam-plugin.dll). 
+An OpenSim Plugin containing the OpenSim-JAM Components and Tools has been compiled for Windows and OpenSim 4.1 using Visual Studio 15 2017 Win64. The plugin file is located at [./bin/win/jam_plugin.dll](./bin/win/jam_plugin.dll). 
 
 The plugin can be used with the OpenSim 4.1 GUI, MATLAB/Python, and commmand line interfaces ([instructions](https://simtk-confluence.stanford.edu/display/OpenSim/Using+Plugins)).
 
 ### Executables 
-Each of the [Simulation Tools](#simulation-tools) have been compiled as command line executables (.exe) for windows. This allows users to define simulation settings in a .xml file and organize and perform simulations using windows .cmd files. The compiled executable files are located at [bin](./bin) and the c++ source code is located at [cmd_tools](../src/cmd_tools)
+Each of the [Simulation Tools](#simulation-tools) have been compiled as command line executables (.exe) for windows. This allows users to define simulation settings in a .xml file and organize and perform simulations using windows .cmd files. The compiled executable files are located [here](./bin/win) and the C++ source files for each tool is located at [cmd_tools](../src/cmd_tools)
 
 Each executable can be called in the windows command line using the following syntax:
 
@@ -101,14 +101,14 @@ Each executable can be called in the windows command line using the following sy
 exectuable-name .\path\to\jam_plugin.dll .\path\to\settings_file.xml
 ```
 
-The execuatables are dependent on the OpenSim 4.0 libraries. A copy of the necessary OpenSim .dll libraries are included in this repository [here](opensim).
+The execuatables are dependent on the OpenSim 4.1 libraries. A copy of the necessary OpenSim .dll libraries are included in this repository [here](opensim/win).
 
 Relative paths in the .xml settings files should be referenced to the location of the .xml file.
 
 ## Examples
 A series of examples are provided to demonstrate the capabilities of OpenSim JAM. 
 
-The examples use the [OpenSim 4.0 - MATLAB scripting interface](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+with+Matlab) to generate the necessary input files and process the simulation results. The windows commmand line executables are used to perform the simulations. Thus, currently only windows can be used to run the examples. 
+The examples use the [OpenSim 4.1 - MATLAB scripting interface](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+with+Matlab) to generate the necessary input files and process the simulation results. The windows commmand line executables are used to perform the simulations. Thus, currently only windows can be used to run the examples. 
 
 
 ### [Visualize Kinematics](./examples/visualize_kinematics)
@@ -146,11 +146,11 @@ Replicate a clinical isometric extension test where the hip and knee are held at
 Use COMAK to predict muscle forces, ligament forces, cartilage contact pressures, and secondary knee kinematics during walking. 
 
 ## Software:
-### [OpenSim 4.0 GUI](https://opensim.stanford.edu/)
+### [OpenSim 4.1 GUI](https://opensim.stanford.edu/)
 The OpenSim GUI is helpful for visualizing models and simulation results. Instructions for visualizing models and simulation results are provided [here](documentation/visualizing-simulation-results.md)
 
 ### [MATLAB](https://www.mathworks.com/products/matlab.html)
-MATLAB is used in the examples to generate input files and process simulation results. You will need to have the [OpenSim 4.0 - MATLAB scripting interface](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+with+Matlab) setup in order to generate the example input files. [Python](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+in+Python) is an open-source alternative that can also be used for this purpose, but you will need to translate the MATLAB scripts. 
+MATLAB is used in the examples to generate input files and process simulation results. You will need to have the [OpenSim 4.1 - MATLAB scripting interface](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+with+Matlab) setup in order to generate the example input files. [Python](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+in+Python) is an open-source alternative that can also be used for this purpose, but you will need to translate the MATLAB scripts. 
 
 ### Text Editor
 A text editor that is capable of syntax highlighting and code folding is nice for viewing the .osim model files, as well as the .cmd scripts and .xml settings files in the examples. [Visual Studio Code](https://code.visualstudio.com/) is my personal choice at the moment, but many OpenSim users also like [Notepad++](https://notepad-plus-plus.org/).
