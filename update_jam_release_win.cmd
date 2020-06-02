@@ -17,8 +17,4 @@ xcopy /I /y  .\models\smith2019\motion_data  opensim-jam-release\models\smith201
 xcopy /I /y  .\models\smith2019\graphics  opensim-jam-release\models\smith2019\graphics
 
 REM Copy Documentation
-xcopy /I /y  .\documentation opensim-jam-release\documentation
-xcopy /I /y  .\documentation\doxygen opensim-jam-release\documentation\doxygen
-xcopy /I /y  .\documentation\figures\visualization opensim-jam-release\documentation\figures\visualization
-xcopy /I /y  .\documentation\figures\comak opensim-jam-release\documentation\figures\comak
 pause
