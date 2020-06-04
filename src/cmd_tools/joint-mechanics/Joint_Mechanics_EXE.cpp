@@ -31,49 +31,52 @@ using SimTK::Vec3;
 */
 int main(int argc, char *argv[])
 {
-	
-	try {
-		//Read Inputs
-		if (argc != 3) {
-			std::cout << "Invalid Number of Arguments. Use form:" << std::endl;
-			std::cout << "joint-mechanics plugin_file settings_file" << std::endl;
-		}
-		std::string plugin_file = argv[1];
-		std::string settings_file = argv[2]; 
+    
+    try {
+        Stopwatch watch;
 
-		LoadOpenSimLibrary(plugin_file, true);
+        //Read Inputs
+        if (argc != 3) {
+            std::cout << "Invalid Number of Arguments. Use form:" << std::endl;
+            std::cout << "joint-mechanics plugin_file settings_file" << std::endl;
+        }
+        std::string plugin_file = argv[1];
+        std::string settings_file = argv[2]; 
 
-		//Perform Posthoc Joint Mechanics Analysis
-		JointMechanicsTool JMP = JointMechanicsTool(settings_file);
+        LoadOpenSimLibrary(plugin_file, true);
 
-		JMP.run();
+        //Perform Posthoc Joint Mechanics Analysis
+        JointMechanicsTool JMP = JointMechanicsTool(settings_file);
 
-		// **********  END CODE  **********
-	}
-	catch (OpenSim::Exception ex)
-	{
-		std::cout << ex.getMessage() << std::endl;
-		std::cin.get();
-		return 1;
-	}
-	catch (SimTK::Exception::Base ex)
-	{
-		std::cout << ex.getMessage() << std::endl;
-		std::cin.get();
-		return 1;
-	}
-	catch (std::exception ex)
-	{
-		std::cout << ex.what() << std::endl;
-		std::cin.get();
-		return 1;
-	}
-	catch (...)
-	{
-		std::cout << "UNRECOGNIZED EXCEPTION" << std::endl;
-		std::cin.get();
-		return 1;
-	}
-	return 0;
+        JMP.run();
+
+        std::cout << "\n\nTotal Computation Time: "
+            << watch.getElapsedTimeFormatted() << std::endl;
+        // **********  END CODE  **********
+    }
+    catch (OpenSim::Exception ex)
+    {
+        std::cout << ex.getMessage() << std::endl;
+        std::cin.get();
+        return 1;
+    }
+    catch (SimTK::Exception::Base ex)
+    {
+        std::cout << ex.getMessage() << std::endl;
+        std::cin.get();
+        return 1;
+    }
+    catch (std::exception ex)
+    {
+        std::cout << ex.what() << std::endl;
+        std::cin.get();
+        return 1;
+    }
+    catch (...)
+    {
+        std::cout << "UNRECOGNIZED EXCEPTION" << std::endl;
+        std::cin.get();
+        return 1;
+    }
+    return 0;
 }
-

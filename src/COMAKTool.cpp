@@ -27,7 +27,7 @@
 #include "COMAKTarget.h"
 #include "HelperFunctions.h"
 #include "Smith2018ArticularContactForce.h"
-
+#include <OpenSim/Common/Stopwatch.h>
 
 using namespace OpenSim;
 using namespace SimTK;
@@ -569,7 +569,7 @@ void COMAKTool::performCOMAK()
         _model.assemble(state);
         _model.realizeVelocity(state);
 
-        //Iterate for COMAK Solution		
+        //Iterate for COMAK Solution
         double max_udot_error = SimTK::Infinity;
         SimTK::Vector iter_max_udot_error(get_max_iterations(), 0.0);
         std::vector<std::string> iter_max_udot_coord(get_max_iterations(), "");
@@ -631,12 +631,25 @@ void COMAKTool::performCOMAK()
             SimTK::OptimizerAlgorithm algorithm = SimTK::InteriorPoint;
             SimTK::Optimizer optimizer(target, algorithm);
 
-            optimizer.setDiagnosticsLevel(0);
-            //optimizer.setMaxIterations(500);
+            optimizer.setDiagnosticsLevel(1);
+            optimizer.setMaxIterations(500);
             //optimizer.setConvergenceTolerance(0.00000001);
             //optimizer.setConstraintTolerance();
             optimizer.useNumericalGradient(false);
             optimizer.useNumericalJacobian(false);
+            //optimizer.setLimitedMemoryHistory();
+            /*
+             convergenceTolerance(Real(1e-3)),
+             constraintTolerance(Real(1e-4)),
+             maxIterations(1000),
+             limitedMemoryHistory(50),
+             diagnosticsLevel(0),
+             diffMethod(Differentiator::CentralDifference),
+             objectiveEstimatedAccuracy(SignificantReal),
+             constraintsEstimatedAccuracy(SignificantReal),
+             numericalGradient(false), 
+             numericalJacobian(false)
+            */
 
             if (algorithm == SimTK::InteriorPoint) {
                 // Some IPOPT-specific settings
@@ -761,7 +774,7 @@ void COMAKTool::performCOMAK()
             setStateFromComakParameters(state, _optim_parameters);
 
             //Save data about failed convergence
-            _bad_frames.push_back(frame_num);
+            _bad_frames.push_back(i);
             _bad_times.push_back(_time[i]);
             _bad_udot_errors.push_back(min_val);
             _bad_udot_coord.push_back(bad_coord);
@@ -795,8 +808,6 @@ void COMAKTool::performCOMAK()
             Coordinate& coord = _model.updComponent<Coordinate>(_secondary_coord_path[m]);
             _prev_secondary_value(m) = coord.getValue(state);
         }
-
-
 
         //Save the results
         recordResultsStorage(state,i);

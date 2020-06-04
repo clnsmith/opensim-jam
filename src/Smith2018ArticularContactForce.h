@@ -739,6 +739,8 @@ protected:
         const SimTK::Vector& total_triangle_proximity,
         const SimTK::Vector& total_triangle_pressure,
         const std::vector<int>& triIndices) const;
+
+    void realizeContactMetricCaches(const SimTK::State& state) const;
     
     //void computeRegionalContactStats(const SimTK::State& state) const;
 

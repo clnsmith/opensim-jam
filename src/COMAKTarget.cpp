@@ -30,7 +30,7 @@ using namespace OpenSim;
 //==============================================================================
 
 ComakTarget::
-ComakTarget(SimTK::State s, Model* aModel, const SimTK::Vector& observed_udot,
+ComakTarget(SimTK::State s,Model* aModel, const SimTK::Vector& observed_udot,
     const SimTK::Vector& init_parameters, 
     const Array<std::string>& parameter_names,
     Array<std::string> primary_coords, Array<std::string> secondary_coords,
@@ -359,7 +359,7 @@ int ComakTarget::constraintJacobian(const SimTK::Vector &parameters, bool new_pa
 // ACCELERATION
 //=============================================================================
 //
-void ComakTarget::computeSimulatedAcceleration(SimTK::State s, const SimTK::Vector &parameters, SimTK::Vector &sim_udot) const
+void ComakTarget::computeSimulatedAcceleration(SimTK::State s, const SimTK::Vector &parameters, SimTK::Vector &sim_udot) 
 {
     //Apply Muscle Forces
     int j = 0;

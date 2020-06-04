@@ -33,47 +33,49 @@ using SimTK::Vec3;
 */
 int main(int argc, char *argv[])
 {
-	
-	try {
-				
-		//Read Inputs
-		std::string plugin_file = argv[1];
-		std::string settings_file = argv[2]; 
+    
+    try {
+        Stopwatch watch;
 
-		//Load Plugin
-		LoadOpenSimLibrary(plugin_file, true);
-	
-		//Run Forward Simulation
-	    ForsimTool forsim = ForsimTool(settings_file);
-		
-		forsim.run();
+        //Read Inputs
+        std::string plugin_file = argv[1];
+        std::string settings_file = argv[2]; 
 
-		// **********  END CODE  **********
-	}
-	catch (OpenSim::Exception ex)
-	{
-		std::cout << ex.getMessage() << std::endl;
-		std::cin.get();
-		return 1;
-	}
-	catch (SimTK::Exception::Base ex)
-	{
-		std::cout << ex.getMessage() << std::endl;
-		std::cin.get();
-		return 1;
-	}
-	catch (std::exception ex)
-	{
-		std::cout << ex.what() << std::endl;
-		std::cin.get();
-		return 1;
-	}
-	catch (...)
-	{
-		std::cout << "UNRECOGNIZED EXCEPTION" << std::endl;
-		std::cin.get();
-		return 1;
-	}
-	return 0;
+        //Load Plugin
+        LoadOpenSimLibrary(plugin_file, true);
+    
+        //Run Forward Simulation
+        ForsimTool forsim = ForsimTool(settings_file);
+        
+        forsim.run();
+
+        std::cout << "\n\nTotal Computation Time: "
+            << watch.getElapsedTimeFormatted() << std::endl;
+        // **********  END CODE  **********
+    }
+    catch (OpenSim::Exception ex)
+    {
+        std::cout << ex.getMessage() << std::endl;
+        std::cin.get();
+        return 1;
+    }
+    catch (SimTK::Exception::Base ex)
+    {
+        std::cout << ex.getMessage() << std::endl;
+        std::cin.get();
+        return 1;
+    }
+    catch (std::exception ex)
+    {
+        std::cout << ex.what() << std::endl;
+        std::cin.get();
+        return 1;
+    }
+    catch (...)
+    {
+        std::cout << "UNRECOGNIZED EXCEPTION" << std::endl;
+        std::cin.get();
+        return 1;
+    }
+    return 0;
 }
-

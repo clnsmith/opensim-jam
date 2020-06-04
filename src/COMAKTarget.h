@@ -60,7 +60,7 @@ public:
     int constraintJacobian(const SimTK::Vector &x, bool new_coefficients, SimTK::Matrix &jac) const override;
 
     //Set
-    void setModel(Model& aModel){
+   void setModel(Model& aModel){
         _model = &aModel;
     }
 
@@ -122,7 +122,7 @@ public:
     }
 
     //Helper
-    void computeSimulatedAcceleration(SimTK::State s, const SimTK::Vector &parameters, SimTK::Vector& sim_udot) const;
+    void computeSimulatedAcceleration(SimTK::State s, const SimTK::Vector &parameters, SimTK::Vector& sim_udot);
     void computeUnitUdot(SimTK::State s, const SimTK::Vector& parameters);
     void precomputeConstraintMatrix();
     void setParameterBounds(double scale);
@@ -135,7 +135,7 @@ private:
 public:
 
 private:
-    Model * _model;
+    Model *_model;
     SimTK::State _state;
     SimTK::Vector _optimalForce;
     SimTK::Vector _init_parameters;
@@ -178,8 +178,6 @@ private:
     Array<std::string> _constraint_names;
 
     int _verbose;
-
-
 
     SimTK::Vector _max_change;
     double _udot_tolerance;
