@@ -569,14 +569,23 @@ void COMAKInverseKinematicsTool::performIK()
             coord.set_clamped(true);
         }
     }
-    //model.set_assembly_accuracy();
+    
     SimTK::State state = model.initSystem();
 
     if (!get_constrained_model_file().empty()) {
         model.print(get_constrained_model_file());
     }
 
-    upd_InverseKinematicsTool().setModel(model);
 
-    upd_InverseKinematicsTool().run();
+    upd_InverseKinematicsTool().setModel(model);
+    try {
+        upd_InverseKinematicsTool().run();
+    }
+    catch (Exception) {
+        std::cout << "Inverse Kinematics Failed." << std::endl;
+        std::cout << "Relaxing model assembly accuracy to 1e-3 and trying again." << std::endl;
+        model.set_assembly_accuracy(1e-3);
+        upd_InverseKinematicsTool().setModel(model);
+        upd_InverseKinematicsTool().run();
+    }
 }
