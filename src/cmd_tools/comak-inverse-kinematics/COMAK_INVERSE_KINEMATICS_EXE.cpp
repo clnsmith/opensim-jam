@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- *
- *                                 COMAK_EXE.cpp                              *
+ *                   COMAK_INVERSE_KINEMATICS_EXE.cpp                         *
  * -------------------------------------------------------------------------- *
  * Author(s): Colin Smith                                                     *
  *                                                                            *
@@ -42,6 +42,9 @@ int main(int argc, char *argv[])
         }
         std::string plugin_file = argv[1];
         std::string settings_file = argv[2]; 
+
+        std::cout << "COMAK Inverse Kinematics" << std::endl;
+        std::cout << "Settings File: " << settings_file << std::endl;
 
         LoadOpenSimLibrary(plugin_file, true);
     

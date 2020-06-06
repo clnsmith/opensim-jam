@@ -170,20 +170,21 @@ void COMAKInverseKinematicsTool::initialize()
     std::cout << "Secondary Coupled Coordinate: " <<
         get_secondary_coupled_coordinate() << std::endl;
 
-    std::cout << "Settle Threshold: " << 
-        get_secondary_constraint_sim_settle_threshold()<< std::endl;
+    if (get_perform_secondary_constraint_sim()) {
+        std::cout << "Settle Threshold: " <<
+            get_secondary_constraint_sim_settle_threshold() << std::endl;
 
-    std::cout << "Sweep Time: " <<
-        get_secondary_constraint_sim_sweep_time() << std::endl;
+        std::cout << "Sweep Time: " <<
+            get_secondary_constraint_sim_sweep_time() << std::endl;
 
-    std::cout << "Sweep secondary_coupled_coordinate start value: " <<
-        get_secondary_coupled_coordinate_start_value() << std::endl;
+        std::cout << "Sweep secondary_coupled_coordinate start value: " <<
+            get_secondary_coupled_coordinate_start_value() << std::endl;
 
-    std::cout << "Sweep secondary_coupled_coordinate stop value: " <<
-        get_secondary_coupled_coordinate_stop_value() << std::endl;
+        std::cout << "Sweep secondary_coupled_coordinate stop value: " <<
+            get_secondary_coupled_coordinate_stop_value() << std::endl;
 
-    std::cout << std::endl;
-
+        std::cout << std::endl;
+    }
 
     _state = _model.initSystem();
 }
@@ -532,17 +533,26 @@ void COMAKInverseKinematicsTool::performIK()
 
     }
 
+    SimTK::Vector coupled_coord_default_value = SimTK::Vector(1,
+        model.getComponent<Coordinate>(
+            get_secondary_coupled_coordinate()).getDefaultValue());
+
     for (int i = 0; i < getProperty_secondary_coordinates().size(); ++i) {
-        std::string name = get_secondary_coordinates(i);
-        std::string coord_name = model.getComponent<Coordinate>(name).getName();
+        std::string path = get_secondary_coordinates(i);
+        Coordinate& coord = model.updComponent<Coordinate>(path);
+        std::string coord_name = coord.getName();
         std::string ind_coord_name = model.getComponent<Coordinate>(get_secondary_coupled_coordinate()).getName();
 
+
+        const Function& function = _secondary_constraint_functions.get(path);
         CoordinateCouplerConstraint* cc_constraint = new CoordinateCouplerConstraint();
 
         cc_constraint->setIndependentCoordinateNames(Array<std::string>(ind_coord_name, 1, 2));
         cc_constraint->setDependentCoordinateName(coord_name);
-        cc_constraint->setFunction(_secondary_constraint_functions.get(name));
+        cc_constraint->setFunction(function);
         cc_constraint->setName(coord_name + "_function");
+
+        coord.setDefaultValue(function.calcValue(coupled_coord_default_value));
 
         model.addConstraint(cc_constraint);
     }
@@ -552,29 +562,21 @@ void COMAKInverseKinematicsTool::performIK()
         if (getProperty_secondary_coordinates().findIndex(coord.getAbsolutePathString()) > -1) {
             coord.set_locked(false);
             coord.set_clamped(false);
+            coord.set_prescribed(false);
         }
         else if (coord.getAbsolutePathString() == get_secondary_coupled_coordinate()){
             coord.set_locked(false);
             coord.set_clamped(true);
         }
     }
-
-    model.initSystem();
+    //model.set_assembly_accuracy();
+    SimTK::State state = model.initSystem();
 
     if (!get_constrained_model_file().empty()) {
         model.print(get_constrained_model_file());
     }
 
-    //SimTK::State state = model.initSystem();
-
-    /*if (get_use_visualizer()) {
-        SimTK::Visualizer& viz = model.updVisualizer().updSimbodyVisualizer();
-        viz.setBackgroundColor(SimTK::White);
-        viz.setShowSimTime(true);
-    }*/
     upd_InverseKinematicsTool().setModel(model);
 
     upd_InverseKinematicsTool().run();
 }
-
-
