@@ -473,15 +473,16 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         
         SimTK::Vector secondary_data = data(j);
 
-        //GCVSpline data_fit = GCVSpline(5, data.size(), &ind_data[0], &data[0]);
-        SimmSpline data_fit = SimmSpline(secondary_data.size(), &ind_data[0], &secondary_data[0]);
+        GCVSpline* spline = new GCVSpline(5, secondary_data.nrow(), &ind_data[0], &secondary_data[0],path,-1);
+        /*SimmSpline data_fit = SimmSpline(secondary_data.size(), &ind_data[0], &secondary_data[0]);
 
         SimmSpline* spline = new SimmSpline();
         spline->setName(path);
 
         for (int i = 0; i < npts; ++i) {
             spline->addPoint(ind_pt_data(i), data_fit.calcValue(SimTK::Vector(1, ind_pt_data(i))));
-        }
+        }*/
+
 
         _secondary_constraint_functions.adoptAndAppend(spline);
     }
@@ -556,6 +557,20 @@ void COMAKInverseKinematicsTool::performIK()
 
         model.addConstraint(cc_constraint);
     }
+    /*
+    for (int i = 0; i < getProperty_secondary_coordinates().size(); ++i) {
+        std::string path = get_secondary_coordinates(i);
+        Coordinate& coord = model.updComponent<Coordinate>(path);
+        std::string joint_path = coord.getJoint().getAbsolutePathString();
+
+        Joint& joint = model.updComponent<Joint>(joint_path);
+
+        std::string coupler_coord = joint_path + "/coupler";
+
+        if (!joint.hasComponent<Coordinate>("/coupler")) {
+            joint.append_coordinates(Coordinate(""))
+        }
+        */
 
     //Set coordinate types
     for (auto& coord : model.updComponentList<Coordinate>()) {
@@ -569,7 +584,13 @@ void COMAKInverseKinematicsTool::performIK()
             coord.set_clamped(true);
         }
     }
-    
+    /*CoordinateCouplerConstraint* cc = new CoordinateCouplerConstraint();
+
+        cc->setIndependentCoordinateNames(Array<std::string>("knee_add_r", 1, 2));
+        cc->setDependentCoordinateName("knee_rot_r");
+        cc->setFunction(Constant(1));
+        model.addConstraint(cc);*/
+
     SimTK::State state = model.initSystem();
 
     if (!get_constrained_model_file().empty()) {
@@ -582,10 +603,21 @@ void COMAKInverseKinematicsTool::performIK()
         upd_InverseKinematicsTool().run();
     }
     catch (Exception) {
+        std::cout << std::endl << std::endl;
         std::cout << "Inverse Kinematics Failed." << std::endl;
         std::cout << "Relaxing model assembly accuracy to 1e-3 and trying again." << std::endl;
+        std::cout << std::endl << std::endl;
         model.set_assembly_accuracy(1e-3);
+        model.initSystem();
         upd_InverseKinematicsTool().setModel(model);
-        upd_InverseKinematicsTool().run();
+ 
+        AbstractProperty& accuracy = upd_InverseKinematicsTool().updPropertyByName("accuracy");
+        accuracy.updValue<double>(1e-3);
+        AbstractProperty& constraint_weight = upd_InverseKinematicsTool().updPropertyByName("constraint_weight");
+        constraint_weight.updValue<double>(10);
+        
+        InverseKinematicsTool new_IK = InverseKinematicsTool(upd_InverseKinematicsTool());
+        new_IK.setModel(model);
+        new_IK.run();
     }
 }
