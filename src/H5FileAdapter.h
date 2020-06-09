@@ -87,7 +87,7 @@ namespace OpenSim {
            std::vector<std::string> output_vec3_names,
            std::vector<SimTK::Matrix_<SimTK::Vec3>> output_vec3_values);
 
-       void H5FileAdapter::writeComponentGroupDataSetVector(std::string group_name,
+       void writeComponentGroupDataSetVector(std::string group_name,
            std::vector<std::string> names,
            std::vector<std::string> output_vector_names,
            std::vector<std::vector<SimTK::Matrix>> output_vector_values);

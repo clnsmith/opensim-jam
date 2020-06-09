@@ -109,8 +109,9 @@ void COMAKTool::initialize()
             get_results_directory() +
             "Possible reason: This tool cannot make new folder with subfolder.");
     }
+    _model = Model(get_model_file());
 
-    setModel(Model(get_model_file()));
+    //setModel(Model(get_model_file()));
     updateModelForces();
 
     _model.initSystem();

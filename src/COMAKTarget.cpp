@@ -19,7 +19,7 @@
 // INCLUDES
 //=============================================================================
 #include <OpenSim/Simulation/Model/Model.h>
-#include "ComakTarget.h"
+#include "COMAKTarget.h"
 #include "Smith2018ArticularContactForce.h"
 #include <OpenSim.h>
 using namespace OpenSim;

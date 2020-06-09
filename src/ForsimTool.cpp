@@ -24,7 +24,7 @@
 #include <OpenSim/Common/STOFileAdapter.h>
 #include <OpenSim/OpenSim.h>
 #include <OpenSim/Common/Constant.h>
-#include <OpenSim\Actuators\Millard2012EquilibriumMuscle.h>
+#include <OpenSim/Actuators/Millard2012EquilibriumMuscle.h>
 #include <OpenSim/Common/IO.h>
 #include "Smith2018ArticularContactForce.h"
 #include "Blankevoort1991Ligament.h"

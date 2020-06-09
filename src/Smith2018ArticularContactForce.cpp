@@ -240,8 +240,17 @@ extendAddToSystem(MultibodySystem& system) const
 
 void Smith2018ArticularContactForce::computeMeshProximity(
     const State& state, const Smith2018ContactMesh& casting_mesh,
+    const Smith2018ContactMesh& target_mesh, const std::string& cache_mesh_name) const
+{
+    SimTK::Vector triangle_proximity;
+    computeMeshProximity(state, casting_mesh, target_mesh,
+        cache_mesh_name, triangle_proximity);
+}
+
+void Smith2018ArticularContactForce::computeMeshProximity(
+    const State& state, const Smith2018ContactMesh& casting_mesh,
     const Smith2018ContactMesh& target_mesh,const std::string& cache_mesh_name,
-    SimTK::Vector& triangle_proximity = SimTK::Vector()) const
+    SimTK::Vector& triangle_proximity) const
 {
     // Get Mesh Properties
     Vector_<SimTK::Vec3> tri_cen = casting_mesh.getTriangleCenters();
@@ -375,10 +384,23 @@ void Smith2018ArticularContactForce::computeMeshProximity(
 
 void Smith2018ArticularContactForce::computeMeshDynamics(
     const State& state, const Smith2018ContactMesh& casting_mesh,
+    const Smith2018ContactMesh& target_mesh) const
+{
+    SimTK::Vector_<SimTK::Vec3> triangle_force;
+    SimTK::Vector triangle_pressure;
+    SimTK::Vector triangle_energy;
+
+    computeMeshDynamics(
+        state, casting_mesh, target_mesh,
+        triangle_force, triangle_pressure, triangle_energy);
+}
+
+void Smith2018ArticularContactForce::computeMeshDynamics(
+    const State& state, const Smith2018ContactMesh& casting_mesh,
     const Smith2018ContactMesh& target_mesh,
-    SimTK::Vector_<SimTK::Vec3>& triangle_force = SimTK::Vector_<SimTK::Vec3>(),
-    SimTK::Vector& triangle_pressure = SimTK::Vector(),
-    SimTK::Vector& triangle_energy = SimTK::Vector()) const
+    SimTK::Vector_<SimTK::Vec3>& triangle_force,
+    SimTK::Vector& triangle_pressure,
+    SimTK::Vector& triangle_energy) const
 {
     std::string casting_path = getConnectee<Smith2018ContactMesh>
         ("casting_mesh").getAbsolutePathString();
@@ -606,7 +628,7 @@ void Smith2018ArticularContactForce::computeForce(const State& state,
 
     //Pressure
     computeMeshDynamics(state, casting_mesh, target_mesh, casting_triangle_force,
-        casting_triangle_pressure);
+        casting_triangle_pressure,casting_triangle_energy);
 
     //Force
     const PhysicalFrame& target_frame = target_mesh.getMeshFrame();
@@ -694,9 +716,9 @@ void Smith2018ArticularContactForce::realizeContactMetricCaches(const SimTK::Sta
 
         //target pressure        
         SimTK::Vector_<SimTK::Vec3> target_triangle_force;
-
+        SimTK::Vector target_triangle_energy;
         computeMeshDynamics(state, target_mesh, casting_mesh,
-            target_triangle_force, target_triangle_pressure);
+            target_triangle_force, target_triangle_pressure,target_triangle_energy);
 
         //target contact stats
         std::vector<int> casting_faces;

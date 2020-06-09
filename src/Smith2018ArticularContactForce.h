@@ -719,8 +719,17 @@ protected:
     void computeMeshProximity(const SimTK::State& state,
         const Smith2018ContactMesh& casting_mesh,
         const Smith2018ContactMesh& target_mesh,
+        const std::string& cache_mesh_name) const;
+
+    void computeMeshProximity(const SimTK::State& state,
+        const Smith2018ContactMesh& casting_mesh,
+        const Smith2018ContactMesh& target_mesh,
         const std::string& cache_mesh_name,
         SimTK::Vector& triangle_proximity) const;
+
+    void computeMeshDynamics(const SimTK::State& state,
+        const Smith2018ContactMesh& casting_mesh,
+        const Smith2018ContactMesh& target_mesh) const;
 
     void computeMeshDynamics(const SimTK::State& state,
         const Smith2018ContactMesh& casting_mesh,

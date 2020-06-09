@@ -17,7 +17,7 @@
  * -------------------------------------------------------------------------- */
 
 #include <OpenSim/Simulation/Model/Analysis.h>
-#include <OpenSim\Simulation\Model\Model.h>
+#include <OpenSim/Simulation/Model/Model.h>
 #include "Smith2018ArticularContactForce.h"
 #include "H5FileAdapter.h"
 #include "osimPluginDLL.h"
@@ -224,7 +224,7 @@ private:
     std::string findMeshFile(const std::string& file);
 
     void getGeometryPathPoints(const SimTK::State& s, const GeometryPath& geoPath, SimTK::Vector_<SimTK::Vec3>& path_points, int& nPoints);
-    void JointMechanicsTool::collectMeshContactOutputData(const std::string& mesh_name,
+    void collectMeshContactOutputData(const std::string& mesh_name,
         std::vector<SimTK::Matrix>& faceData, std::vector<std::string>& faceDataNames,
         std::vector<SimTK::Matrix>& pointData, std::vector<std::string>& pointDataNames);
 //=============================================================================

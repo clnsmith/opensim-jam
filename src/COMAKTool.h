@@ -17,7 +17,7 @@
  * -------------------------------------------------------------------------- */
 
 #include "osimPluginDLL.h"
-#include <OpenSim\Simulation\Model\Model.h>
+#include <OpenSim/Simulation/Model/Model.h>
 #include <OpenSim/Common/FunctionSet.h>
 #include <OpenSim/Simulation/Model/ExternalLoads.h>
 #include <OpenSim/Simulation/Model/ForceSet.h>
