@@ -22,7 +22,7 @@ REM Joint Mechanics Analysis
 move out.log results\joint_mechanics_out.log
 move err.log results\joint_mechanics_err.log
 
-rem Inverse Dynamics
+REM Inverse Dynamics
 %OPENSIM%\opensim-cmd  -L %BIN%\jam_plugin.dll run-tool .\inputs\inverse_dynamics_settings.xml 
 move out.log results\inverse_dynamics_out.log
 move err.log results\inverse_dynamics_err.log
