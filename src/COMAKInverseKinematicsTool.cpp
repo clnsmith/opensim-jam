@@ -444,92 +444,92 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
 
     SimTK::Matrix data(time.size(), _n_secondary_coord);
 
-    for (int j = 0; j < _n_secondary_coord; ++j) {
-        std::string path = _secondary_coord_path[j];
-        SimTK::Vector col_data = q_table.getDependentColumn(path + "/value");
-        
-        for (int i = 0; i < nSteps; ++i) {
-            data(i, j) = col_data(i);
-            
-        }
-    }
+for (int j = 0; j < _n_secondary_coord; ++j) {
+    std::string path = _secondary_coord_path[j];
+    SimTK::Vector col_data = q_table.getDependentColumn(path + "/value");
 
-    double ind_max = SimTK::max(ind_data);
-    double ind_min = SimTK::min(ind_data);
-    
-    int npts = 15;
-    double step = (ind_max - ind_min) / npts;
-    
-    SimTK::Vector ind_pt_data(npts);
+    for (int i = 0; i < nSteps; ++i) {
+        data(i, j) = col_data(i);
 
-    for (int i = 0; i < npts; ++i) {
-        ind_pt_data(i) = ind_min + i * step;
-    }
-
-    _secondary_constraint_functions.clearAndDestroy();
-
-    for (int j=0; j < _n_secondary_coord; ++j){
-        std::string path = _secondary_coord_path[j];
-        
-        SimTK::Vector secondary_data = data(j);
-
-        GCVSpline* spline = new GCVSpline(5, secondary_data.nrow(), &ind_data[0], &secondary_data[0],path,-1);
-        /*SimmSpline data_fit = SimmSpline(secondary_data.size(), &ind_data[0], &secondary_data[0]);
-
-        SimmSpline* spline = new SimmSpline();
-        spline->setName(path);
-
-        for (int i = 0; i < npts; ++i) {
-            spline->addPoint(ind_pt_data(i), data_fit.calcValue(SimTK::Vector(1, ind_pt_data(i))));
-        }*/
-
-
-        _secondary_constraint_functions.adoptAndAppend(spline);
-    }
-
-    //Print Secondardy Constraint Functions to file
-    _secondary_constraint_functions.print(get_secondary_constraint_function_file());
-
-    //Write Outputs
-    if (get_print_secondary_constraint_sim_results()) {
-        std::cout << "Printing secondary constraint simulation results: " <<
-            get_results_directory() << std::endl;
-
-         std::string name = "secondary_constraint_sim_states";
-
-        TimeSeriesTable settle_table = settle_states.exportToTable(model);
-        settle_table.addTableMetaData("header", name);
-        settle_table.addTableMetaData("nRows", std::to_string(settle_table.getNumRows()));
-        settle_table.addTableMetaData("nColumns", std::to_string(settle_table.getNumColumns()+1));
-
-        TimeSeriesTable sweep_table = sweep_states.exportToTable(model);
-        sweep_table.addTableMetaData("header", name);
-        sweep_table.addTableMetaData("nRows", std::to_string(sweep_table.getNumRows()));
-        sweep_table.addTableMetaData("nColumns", std::to_string(sweep_table.getNumColumns()+1));
-
-        std::string settle_file =
-            get_results_directory() + "/secondary_constraint_settle_states.sto";
-
-        std::string sweep_file =
-            get_results_directory() + "/secondary_constraint_sweep_states.sto";
-
-        STOFileAdapter sto_file_adapt;
-        sto_file_adapt.write(settle_table, settle_file);
-        sto_file_adapt.write(sweep_table, sweep_file);
     }
 }
 
-void COMAKInverseKinematicsTool::performIK() 
+double ind_max = SimTK::max(ind_data);
+double ind_min = SimTK::min(ind_data);
+
+int npts = 15;
+double step = (ind_max - ind_min) / npts;
+
+SimTK::Vector ind_pt_data(npts);
+
+for (int i = 0; i < npts; ++i) {
+    ind_pt_data(i) = ind_min + i * step;
+}
+
+_secondary_constraint_functions.clearAndDestroy();
+
+for (int j = 0; j < _n_secondary_coord; ++j) {
+    std::string path = _secondary_coord_path[j];
+
+    SimTK::Vector secondary_data = data(j);
+
+    GCVSpline* spline = new GCVSpline(5, secondary_data.nrow(), &ind_data[0], &secondary_data[0], path, -1);
+    /*SimmSpline data_fit = SimmSpline(secondary_data.size(), &ind_data[0], &secondary_data[0]);
+
+    SimmSpline* spline = new SimmSpline();
+    spline->setName(path);
+
+    for (int i = 0; i < npts; ++i) {
+        spline->addPoint(ind_pt_data(i), data_fit.calcValue(SimTK::Vector(1, ind_pt_data(i))));
+    }*/
+
+
+    _secondary_constraint_functions.adoptAndAppend(spline);
+}
+
+//Print Secondardy Constraint Functions to file
+_secondary_constraint_functions.print(get_secondary_constraint_function_file());
+
+//Write Outputs
+if (get_print_secondary_constraint_sim_results()) {
+    std::cout << "Printing secondary constraint simulation results: " <<
+        get_results_directory() << std::endl;
+
+    std::string name = "secondary_constraint_sim_states";
+
+    TimeSeriesTable settle_table = settle_states.exportToTable(model);
+    settle_table.addTableMetaData("header", name);
+    settle_table.addTableMetaData("nRows", std::to_string(settle_table.getNumRows()));
+    settle_table.addTableMetaData("nColumns", std::to_string(settle_table.getNumColumns() + 1));
+
+    TimeSeriesTable sweep_table = sweep_states.exportToTable(model);
+    sweep_table.addTableMetaData("header", name);
+    sweep_table.addTableMetaData("nRows", std::to_string(sweep_table.getNumRows()));
+    sweep_table.addTableMetaData("nColumns", std::to_string(sweep_table.getNumColumns() + 1));
+
+    std::string settle_file =
+        get_results_directory() + "/secondary_constraint_settle_states.sto";
+
+    std::string sweep_file =
+        get_results_directory() + "/secondary_constraint_sweep_states.sto";
+
+    STOFileAdapter sto_file_adapt;
+    sto_file_adapt.write(settle_table, settle_file);
+    sto_file_adapt.write(sweep_table, sweep_file);
+}
+}
+
+void COMAKInverseKinematicsTool::performIK()
 {
     Model model = _model;
     model.initSystem();
 
     try {
-        _secondary_constraint_functions = 
+        _secondary_constraint_functions =
             FunctionSet(get_secondary_constraint_function_file());
     }
-    catch (Exception){
-        OPENSIM_THROW(Exception,"Function file: " + 
+    catch (Exception) {
+        OPENSIM_THROW(Exception, "Function file: " +
             get_secondary_constraint_function_file() + " does not exist.");
 
     }
@@ -538,39 +538,119 @@ void COMAKInverseKinematicsTool::performIK()
         model.getComponent<Coordinate>(
             get_secondary_coupled_coordinate()).getDefaultValue());
 
-    for (int i = 0; i < getProperty_secondary_coordinates().size(); ++i) {
+    const std::string& coupled_coord_name = model.getComponent<Coordinate>(
+        get_secondary_coupled_coordinate()).getName();
+
+    //Replace secondary coordinates in all CustomJoints with functions that
+    //depend on the secondary_coupled_coordinate
+
+    for (Joint& joint : model.updComponentList<Joint>()) {
+        if (joint.getConcreteClassName() == "CustomJoint") {
+            bool replace_joint = false;
+
+            CustomJoint& old_joint = model.updComponent<CustomJoint>(joint.getAbsolutePathString());
+
+            for (int i = 0; i < old_joint.numCoordinates(); ++i) {
+                const std::string& coord_path = old_joint.get_coordinates(i).getAbsolutePathString();
+                const std::string& coord_name = old_joint.get_coordinates(i).getName();
+
+                int index = getProperty_secondary_coordinates().findIndex(coord_path);
+                if ( index > -1) {
+                    replace_joint = true;
+
+
+                }
+            }
+
+            if (replace_joint) {
+                CustomJoint new_joint = model.getComponent<CustomJoint>(joint.getAbsolutePathString());
+
+                new_joint.updProperty_coordinates().clear();
+
+                for (int i = 0; i < old_joint.numCoordinates(); ++i) {
+                    const std::string& coord_path = old_joint.get_coordinates(i).getAbsolutePathString();
+                    const std::string& coord_name = old_joint.get_coordinates(i).getName();
+
+                    if (getProperty_secondary_coordinates().findIndex(coord_path) > -1) {
+                        auto& new_ST = new_joint.updSpatialTransform();
+                        auto& rot1 = new_ST.upd_rotation1();
+                        auto& rot2 = new_ST.upd_rotation2();
+                        auto& rot3 = new_ST.upd_rotation3();
+                        auto& trans1 = new_ST.upd_translation1();
+                        auto& trans2 = new_ST.upd_translation2();
+                        auto& trans3 = new_ST.upd_translation3();
+
+                        if (rot1.getCoordinateNames().findIndex(coord_name)) {
+                            rot1.setCoordinateNames(
+                                Array<std::string>(coupled_coord_name, 1, 2));
+                            rot1.setFunction(
+                                _secondary_constraint_functions.get(coord_path));
+                        }
+                        if (rot2.getCoordinateNames().findIndex(coord_name)) {
+                            rot2.setCoordinateNames(
+                                Array<std::string>(coupled_coord_name, 1, 2));
+                            rot2.setFunction(
+                                _secondary_constraint_functions.get(coord_path));
+                        }
+                        if (rot3.getCoordinateNames().findIndex(coord_name)) {
+                            rot3.setCoordinateNames(
+                                Array<std::string>(coupled_coord_name, 1, 2));
+                            rot3.setFunction(
+                                _secondary_constraint_functions.get(coord_path));
+                        };
+                        if (trans1.getCoordinateNames().findIndex(coord_name)) {
+                            trans1.setCoordinateNames(
+                                Array<std::string>(coupled_coord_name, 1, 2));
+                            trans1.setFunction(
+                                _secondary_constraint_functions.get(coord_path));
+                        };
+                        if (trans2.getCoordinateNames().findIndex(coord_name)) {
+                            trans2.setCoordinateNames(
+                                Array<std::string>(coupled_coord_name, 1, 2));
+                            trans2.setFunction(
+                                _secondary_constraint_functions.get(coord_path));
+                        }
+                        if (trans3.getCoordinateNames().findIndex(coord_name)) {
+                            trans3.setCoordinateNames(
+                                Array<std::string>(coupled_coord_name, 1, 2));
+                            trans3.setFunction(
+                                _secondary_constraint_functions.get(coord_path));
+                        }
+
+                    }
+                    else {
+                        new_joint.append_coordinates(new_joint.get_coordinates(i));
+                    }
+                }
+            }
+        }
+    }
+    //Replace all secondary coordinates in non CustomJoint 
+
+   for (int i = 0; i < getProperty_secondary_coordinates().size(); ++i) {
         std::string path = get_secondary_coordinates(i);
         Coordinate& coord = model.updComponent<Coordinate>(path);
         std::string coord_name = coord.getName();
         std::string ind_coord_name = model.getComponent<Coordinate>(get_secondary_coupled_coordinate()).getName();
-
-
-        const Function& function = _secondary_constraint_functions.get(path);
-        CoordinateCouplerConstraint* cc_constraint = new CoordinateCouplerConstraint();
-
-        cc_constraint->setIndependentCoordinateNames(Array<std::string>(ind_coord_name, 1, 2));
-        cc_constraint->setDependentCoordinateName(coord_name);
-        cc_constraint->setFunction(function);
-        cc_constraint->setName(coord_name + "_function");
-
-        coord.setDefaultValue(function.calcValue(coupled_coord_default_value));
-
-        model.addConstraint(cc_constraint);
-    }
-    /*
-    for (int i = 0; i < getProperty_secondary_coordinates().size(); ++i) {
-        std::string path = get_secondary_coordinates(i);
-        Coordinate& coord = model.updComponent<Coordinate>(path);
         std::string joint_path = coord.getJoint().getAbsolutePathString();
 
-        Joint& joint = model.updComponent<Joint>(joint_path);
+        if (model.updComponent<Joint>(joint_path).getConcreteClassName() != "CustomJoint") {
+            const Function& function = _secondary_constraint_functions.get(path);
+            CoordinateCouplerConstraint* cc_constraint = new CoordinateCouplerConstraint();
 
-        std::string coupler_coord = joint_path + "/coupler";
+            cc_constraint->setIndependentCoordinateNames(Array<std::string>(ind_coord_name, 1, 2));
+            cc_constraint->setDependentCoordinateName(coord_name);
+            cc_constraint->setFunction(function);
+            cc_constraint->setName(coord_name + "_function");
 
-        if (!joint.hasComponent<Coordinate>("/coupler")) {
-            joint.append_coordinates(Coordinate(""))
+            coord.setDefaultValue(function.calcValue(coupled_coord_default_value));
+
+            model.addConstraint(cc_constraint);
         }
-        */
+        else {
+            continue;
+        }
+   }
 
     //Set coordinate types
     for (auto& coord : model.updComponentList<Coordinate>()) {
@@ -584,12 +664,6 @@ void COMAKInverseKinematicsTool::performIK()
             coord.set_clamped(true);
         }
     }
-    /*CoordinateCouplerConstraint* cc = new CoordinateCouplerConstraint();
-
-        cc->setIndependentCoordinateNames(Array<std::string>("knee_add_r", 1, 2));
-        cc->setDependentCoordinateName("knee_rot_r");
-        cc->setFunction(Constant(1));
-        model.addConstraint(cc);*/
 
     SimTK::State state = model.initSystem();
 
@@ -597,27 +671,7 @@ void COMAKInverseKinematicsTool::performIK()
         model.print(get_constrained_model_file());
     }
 
-
     upd_InverseKinematicsTool().setModel(model);
-    try {
-        upd_InverseKinematicsTool().run();
-    }
-    catch (Exception) {
-        std::cout << std::endl << std::endl;
-        std::cout << "Inverse Kinematics Failed." << std::endl;
-        std::cout << "Relaxing model assembly accuracy to 1e-3 and trying again." << std::endl;
-        std::cout << std::endl << std::endl;
-        model.set_assembly_accuracy(1e-3);
-        model.initSystem();
-        upd_InverseKinematicsTool().setModel(model);
- 
-        AbstractProperty& accuracy = upd_InverseKinematicsTool().updPropertyByName("accuracy");
-        accuracy.updValue<double>(1e-3);
-        AbstractProperty& constraint_weight = upd_InverseKinematicsTool().updPropertyByName("constraint_weight");
-        constraint_weight.updValue<double>(10);
-        
-        InverseKinematicsTool new_IK = InverseKinematicsTool(upd_InverseKinematicsTool());
-        new_IK.setModel(model);
-        new_IK.run();
-    }
+
+    upd_InverseKinematicsTool().run();
 }

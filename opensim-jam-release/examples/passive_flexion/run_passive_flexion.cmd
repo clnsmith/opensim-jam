@@ -14,7 +14,7 @@ move out.log results\forsim_out.log
 move err.log results\forsim_err.log
 
 REM Run Joint Mechanics Analysis
-%BIN%\joint-mechanics %BIN%\jam_plugin.dll .\inputs\joint_mechanics_settings.xml 
+%BIN%\joint-mechanics %BIN%\jam_plugin.dll .\inputs\joint_mechanics_settings_test.xml 
 move out.log results\joint_mechanics_out.log
 move err.log results\joint_mechanics_err.log
 

@@ -341,6 +341,6 @@
 		<!--Use SimTK visualizer to display the model during secondary_constraint_sim and inverse kinematics.The default value is false.-->
 		<use_visualizer>false</use_visualizer>
 		<!--Level of debug information written to the console. (0: silent). The default value is 0.-->
-		<verbose>0</verbose>
+		<verbose>1</verbose>
 	</COMAKInverseKinematicsTool>
 </OpenSimDocument>

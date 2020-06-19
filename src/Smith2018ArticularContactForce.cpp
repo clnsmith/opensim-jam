@@ -1026,7 +1026,6 @@ getRecordLabels() const {
     labels.append(getName() + ".casting.total.contact_moment_x");
     labels.append(getName() + ".casting.total.contact_moment_y");
     labels.append(getName() + ".casting.total.contact_moment_z");
-
     labels.append(getName() + ".casting.regional.contact_force_0_x");
     labels.append(getName() + ".casting.regional.contact_force_0_y");
     labels.append(getName() + ".casting.regional.contact_force_0_z");
@@ -1083,7 +1082,7 @@ getRecordValues(const SimTK::State& state) const {
     SimTK::Vector_<SimTK::Vec3> reg_contact_force =  getCacheVariableValue<SimTK::Vector_<SimTK::Vec3>>
         (state, "casting.regional.contact_force");
 
-    OpenSim::Array<double> values(1);
+    OpenSim::Array<double> values;
     
     values.append(contact_area);
     values.append(mean_proximity);
