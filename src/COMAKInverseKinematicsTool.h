@@ -19,7 +19,7 @@
 
 #include <OpenSim/Simulation/Model/Model.h>
 #include <OpenSim/Common/FunctionSet.h>
-#include <OpenSim/Tools/InverseKinematicsTool.h>
+#include <OpenSim/Tools/IKTaskSet.h>
 #include "osimPluginDLL.h"
 
 namespace OpenSim { 
@@ -104,15 +104,27 @@ public:
         "Limit on the number of internal steps that can be taken by BDF "
         "integrator. If -1, then there is no limit. The Default value is -1")
 
-     OpenSim_DECLARE_PROPERTY(secondary_constraint_function_file, std::string, 
+     OpenSim_DECLARE_PROPERTY(
+         secondary_constraint_function_file, std::string, 
         "Name for .xml results file where secondary constraint functions "
         "will be saved. "
         "The default value is "
         "'secondary_coordinate_constraint_functions.xml'.")
 
+    OpenSim_DECLARE_PROPERTY(constraint_function_num_interpolation_points, int, 
+        "Number of points used in the secondary_constraint_function spline "
+        "computed based on the sweep simulation results."
+        "The default value is 20."
+        "'secondary_coordinate_constraint_functions.xml'.")
+
     OpenSim_DECLARE_PROPERTY(print_secondary_constraint_sim_results, bool, 
         "Print model states to a .sto file for secondary_constraint_sim. "
         "The default value is false.")
+
+    OpenSim_DECLARE_PROPERTY(constrained_model_file, std::string, 
+        "Print the .osim model file with added CoordinateCouplerConstraints "
+        "that is used in the InverseKinematicsTool. If empty, no model file "
+        "will be printed.")
 
     OpenSim_DECLARE_PROPERTY(perform_inverse_kinematics, bool, 
         "Perform Inverse Kinematics where CoordinateCouplerConstraints are "
@@ -120,16 +132,51 @@ public:
         "the secondary_coupled_coordinate. "
         "The default value is true.")
 
-    OpenSim_DECLARE_UNNAMED_PROPERTY(InverseKinematicsTool, 
-        "The InverseKinematicsTool that is used to calculate the joint "
-        "kinematics after CoordinateCouplerConstraints for the secondary "
-        "constraints are added to model.")
+    OpenSim_DECLARE_PROPERTY(marker_file, std::string,
+        "TRC file (.trc) containing the time history of observations of marker "
+        "positions obtained during a motion capture experiment. Markers in this "
+        "file that have a corresponding task and model marker are included.");
 
-    OpenSim_DECLARE_PROPERTY(constrained_model_file, std::string, 
-        "Print the .osim model file with added CoordinateCouplerConstraints "
-        "that is used in the InverseKinematicsTool. If empty, no model file "
-        "will be printed.")
-    
+    OpenSim_DECLARE_PROPERTY(coordinate_file, std::string,
+        "The name of the storage (.sto or .mot) file containing the time "
+        "history of coordinate observations. Coordinate values from this file are "
+        "included if there is a corresponding model coordinate and task. ");
+
+    OpenSim_DECLARE_PROPERTY(output_motion_file, std::string,
+        "The name of the storage (.sto or .mot) file containing the time "
+        "history of coordinate observations. Coordinate values from this file are "
+        "included if there is a corresponding model coordinate and task. ");
+
+    OpenSim_DECLARE_LIST_PROPERTY_SIZE(time_range, double, 2,
+        "The desired time range over which inverse kinematics is solved. "
+        "The closest start and final times from the provided observations "
+        "are used to specify the actual time range to be processed.");
+
+    OpenSim_DECLARE_PROPERTY(report_errors, bool,
+        "Flag (true or false) indicating whether or not to report marker "
+        "errors from the inverse kinematics solution in a .sto file.");
+
+    OpenSim_DECLARE_PROPERTY(report_marker_locations, bool,
+        "Flag (true or false) indicating whether or not to report model "
+        "marker locations to a .sto file."
+        "Note, model marker locations are expressed in Ground.");
+
+    OpenSim_DECLARE_PROPERTY(ik_constraint_weight, double,
+        "A positive scalar that weights the relative importance of satisfying "
+        "model constraints during the inverse kinematics optimization. A "
+        "weighting of 'Infinity' (the default) results in the "
+        "constraints being strictly enforced. Otherwise, the weighted-squared "
+        "constraint errors are appended to the cost function.");
+
+    OpenSim_DECLARE_PROPERTY(ik_accuracy, double,
+        "The accuracy of the inverse kinematics solution in absolute terms. "
+        "Default is 1e-5. It determines the number of significant digits to "
+        "which the solution can be trusted.");
+
+    OpenSim_DECLARE_UNNAMED_PROPERTY(IKTaskSet, 
+        "Markers and coordinates to be considered (tasks) and their weightings. "
+        "The sum of weighted-squared task errors composes the cost function."); 
+
     OpenSim_DECLARE_PROPERTY(use_visualizer, bool,
         "Use SimTK visualizer to display the model during "
         "secondary_constraint_sim and inverse kinematics."
@@ -144,7 +191,7 @@ public:
 
     //=============================================================================
 // METHODS
-//=============================================================================    
+//=============================================================================
   
     /**
     * Default constructor.
@@ -162,6 +209,9 @@ public:
     void run();
     void performIKSecondaryConstraintSimulation();
     void performIK();
+    void runInverseKinematics();
+    void populateReferences(MarkersReference& markersReference,
+        SimTK::Array_<CoordinateReference>&coordinateReferences) const;
     //--------------------------------------------------------------------------
     // Members
     //--------------------------------------------------------------------------
@@ -224,5 +274,3 @@ public:
 //=============================================================================
 
 #endif // OPENSIM_COMAK_INVERSE_KINEMATICS_TOOL_H_
-
-

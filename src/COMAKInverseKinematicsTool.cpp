@@ -22,7 +22,7 @@
 #include <OpenSim.h>
 #include "COMAKInverseKinematicsTool.h"
 #include "HelperFunctions.h"
-
+#include <OpenSim/Common/IO.h>
 
 using namespace OpenSim;
 using namespace SimTK;
@@ -67,13 +67,24 @@ void COMAKInverseKinematicsTool::constructProperties()
     constructProperty_secondary_coupled_coordinate_stop_value(0.0);
     constructProperty_secondary_constraint_sim_integrator_accuracy(1e-6);
     constructProperty_secondary_constraint_sim_internal_step_limit(-1);
+    constructProperty_constraint_function_num_interpolation_points(20);
     constructProperty_secondary_constraint_function_file(
         "secondary_coordinate_constraint_functions.xml");
     constructProperty_print_secondary_constraint_sim_results(false);
 
     constructProperty_perform_inverse_kinematics(true);
+    constructProperty_IKTaskSet(IKTaskSet());
+    constructProperty_marker_file("");
+    constructProperty_coordinate_file("");
+    constructProperty_output_motion_file("");
+    constructProperty_ik_constraint_weight(Infinity);
+    constructProperty_ik_accuracy(1e-5);
+    Array<double> range{SimTK::Infinity, 2};
+    range[0] = -SimTK::Infinity; 
+    constructProperty_time_range(range);
+    constructProperty_report_errors(false);
+    constructProperty_report_marker_locations(false);
     constructProperty_constrained_model_file("");
-    constructProperty_InverseKinematicsTool(InverseKinematicsTool());
     constructProperty_use_visualizer(false);
     constructProperty_verbose(0);
 }
@@ -119,21 +130,24 @@ void COMAKInverseKinematicsTool::initialize()
     std::string name = get_secondary_coupled_coordinate();
     try { _model.getComponent<Coordinate>(name); }
     catch (Exception) {
-        OPENSIM_THROW(Exception, "secondary_coupled_coord: " + name + " not found in model.")
+        OPENSIM_THROW(Exception, "secondary_coupled_coord: " + 
+            name + " not found in model.")
     }
     
     for (int i = 0; i < getProperty_secondary_coordinates().size(); ++i) {
         std::string name = get_secondary_coordinates(i);
         try { _model.getComponent<Coordinate>(name); }
         catch (Exception){
-            OPENSIM_THROW(Exception,"secondary_coordinate: " + name + "not found in model.")
+            OPENSIM_THROW(Exception,"secondary_coordinate: " + 
+                name + "not found in model.")
         }
 
         int n = 0;
         for (int j = 0; j < getProperty_secondary_coordinates().size(); ++j) {
             if (name == get_secondary_coordinates(j)) n++;
         }
-        OPENSIM_THROW_IF(n>1, Exception, name + "listed multiple times in secondary_coordinates")
+        OPENSIM_THROW_IF(n>1, Exception, name + 
+            "listed multiple times in secondary_coordinates")
     }
 
     //Count numbers
@@ -146,7 +160,8 @@ void COMAKInverseKinematicsTool::initialize()
 
     for (int i = 0; i < _n_secondary_coord; ++i) {
         _secondary_coord_path[i] = get_secondary_coordinates(i);
-        _secondary_coord_name[i] = _model.getComponent<Coordinate>(get_secondary_coordinates(i)).getName();
+        _secondary_coord_name[i] = _model.getComponent<Coordinate>
+            (get_secondary_coordinates(i)).getName();
     }
 
     int nCoord = 0;
@@ -240,14 +255,19 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
         }
     }
 
-    Coordinate& coupled_coord = model.updComponent<Coordinate>(get_secondary_coupled_coordinate());
+    Coordinate& coupled_coord = 
+        model.updComponent<Coordinate>(get_secondary_coupled_coordinate());
     
     double start_value;
     double stop_value;
 
-    if (model.getComponent<Coordinate>(get_secondary_coupled_coordinate()).getMotionType() == Coordinate::MotionType::Rotational) {
-        start_value = get_secondary_coupled_coordinate_start_value() * SimTK::Pi / 180;
-        stop_value = get_secondary_coupled_coordinate_stop_value() * SimTK::Pi / 180;
+    if (model.getComponent<Coordinate>(get_secondary_coupled_coordinate()).
+            getMotionType() == Coordinate::MotionType::Rotational) {
+
+        start_value = 
+            get_secondary_coupled_coordinate_start_value() * SimTK::Pi / 180;
+        stop_value = 
+            get_secondary_coupled_coordinate_stop_value() * SimTK::Pi / 180;
     }
     else {
         start_value = get_secondary_coupled_coordinate_start_value();
@@ -281,8 +301,10 @@ void COMAKInverseKinematicsTool::performIKSecondaryConstraintSimulation() {
     model.equilibrateMuscles(state);
 
     //setup integrator
-    SimTK::CPodesIntegrator integrator(model.getSystem(), SimTK::CPodes::BDF, SimTK::CPodes::Newton);
+    SimTK::CPodesIntegrator integrator(
+        model.getSystem(), SimTK::CPodes::BDF, SimTK::CPodes::Newton);
     integrator.setAccuracy(get_secondary_constraint_sim_integrator_accuracy());
+
     if (get_secondary_constraint_sim_internal_step_limit() != -1) {
         integrator.setInternalStepLimit(
             get_secondary_constraint_sim_internal_step_limit());
@@ -457,7 +479,7 @@ for (int j = 0; j < _n_secondary_coord; ++j) {
 double ind_max = SimTK::max(ind_data);
 double ind_min = SimTK::min(ind_data);
 
-int npts = 15;
+int npts = get_constraint_function_num_interpolation_points();
 double step = (ind_max - ind_min) / npts;
 
 SimTK::Vector ind_pt_data(npts);
@@ -473,16 +495,15 @@ for (int j = 0; j < _n_secondary_coord; ++j) {
 
     SimTK::Vector secondary_data = data(j);
 
-    GCVSpline* spline = new GCVSpline(5, secondary_data.nrow(), &ind_data[0], &secondary_data[0], path, -1);
-    /*SimmSpline data_fit = SimmSpline(secondary_data.size(), &ind_data[0], &secondary_data[0]);
+    //GCVSpline* spline = new GCVSpline(5, secondary_data.nrow(), &ind_data[0], &secondary_data[0], path, -1);
+    SimmSpline data_fit = SimmSpline(secondary_data.size(), &ind_data[0], &secondary_data[0]);
 
     SimmSpline* spline = new SimmSpline();
     spline->setName(path);
 
     for (int i = 0; i < npts; ++i) {
         spline->addPoint(ind_pt_data(i), data_fit.calcValue(SimTK::Vector(1, ind_pt_data(i))));
-    }*/
-
+    }
 
     _secondary_constraint_functions.adoptAndAppend(spline);
 }
@@ -499,19 +520,25 @@ if (get_print_secondary_constraint_sim_results()) {
 
     TimeSeriesTable settle_table = settle_states.exportToTable(model);
     settle_table.addTableMetaData("header", name);
-    settle_table.addTableMetaData("nRows", std::to_string(settle_table.getNumRows()));
-    settle_table.addTableMetaData("nColumns", std::to_string(settle_table.getNumColumns() + 1));
+    settle_table.addTableMetaData("nRows", 
+        std::to_string(settle_table.getNumRows()));
+    settle_table.addTableMetaData("nColumns", 
+        std::to_string(settle_table.getNumColumns() + 1));
 
     TimeSeriesTable sweep_table = sweep_states.exportToTable(model);
     sweep_table.addTableMetaData("header", name);
-    sweep_table.addTableMetaData("nRows", std::to_string(sweep_table.getNumRows()));
-    sweep_table.addTableMetaData("nColumns", std::to_string(sweep_table.getNumColumns() + 1));
+    sweep_table.addTableMetaData("nRows", 
+        std::to_string(sweep_table.getNumRows()));
+    sweep_table.addTableMetaData("nColumns", 
+        std::to_string(sweep_table.getNumColumns() + 1));
 
     std::string settle_file =
-        get_results_directory() + "/secondary_constraint_settle_states.sto";
+        get_results_directory() + "/" + get_results_prefix() +
+        "_secondary_constraint_settle_states.sto";
 
     std::string sweep_file =
-        get_results_directory() + "/secondary_constraint_sweep_states.sto";
+        get_results_directory() + "/" + get_results_prefix() +
+        "_secondary_constraint_sweep_states.sto";
 
     STOFileAdapter sto_file_adapt;
     sto_file_adapt.write(settle_table, settle_file);
@@ -538,122 +565,37 @@ void COMAKInverseKinematicsTool::performIK()
         model.getComponent<Coordinate>(
             get_secondary_coupled_coordinate()).getDefaultValue());
 
-    const std::string& coupled_coord_name = model.getComponent<Coordinate>(
-        get_secondary_coupled_coordinate()).getName();
+    const std::string& secondary_coupled_coord_name = 
+        model.getComponent<Coordinate>(
+            get_secondary_coupled_coordinate()).getName();
 
-    //Replace secondary coordinates in all CustomJoints with functions that
-    //depend on the secondary_coupled_coordinate
-
-    for (Joint& joint : model.updComponentList<Joint>()) {
-        if (joint.getConcreteClassName() == "CustomJoint") {
-            bool replace_joint = false;
-
-            CustomJoint& old_joint = model.updComponent<CustomJoint>(joint.getAbsolutePathString());
-
-            for (int i = 0; i < old_joint.numCoordinates(); ++i) {
-                const std::string& coord_path = old_joint.get_coordinates(i).getAbsolutePathString();
-                const std::string& coord_name = old_joint.get_coordinates(i).getName();
-
-                int index = getProperty_secondary_coordinates().findIndex(coord_path);
-                if ( index > -1) {
-                    replace_joint = true;
-
-
-                }
-            }
-
-            if (replace_joint) {
-                CustomJoint new_joint = model.getComponent<CustomJoint>(joint.getAbsolutePathString());
-
-                new_joint.updProperty_coordinates().clear();
-
-                for (int i = 0; i < old_joint.numCoordinates(); ++i) {
-                    const std::string& coord_path = old_joint.get_coordinates(i).getAbsolutePathString();
-                    const std::string& coord_name = old_joint.get_coordinates(i).getName();
-
-                    if (getProperty_secondary_coordinates().findIndex(coord_path) > -1) {
-                        auto& new_ST = new_joint.updSpatialTransform();
-                        auto& rot1 = new_ST.upd_rotation1();
-                        auto& rot2 = new_ST.upd_rotation2();
-                        auto& rot3 = new_ST.upd_rotation3();
-                        auto& trans1 = new_ST.upd_translation1();
-                        auto& trans2 = new_ST.upd_translation2();
-                        auto& trans3 = new_ST.upd_translation3();
-
-                        if (rot1.getCoordinateNames().findIndex(coord_name)) {
-                            rot1.setCoordinateNames(
-                                Array<std::string>(coupled_coord_name, 1, 2));
-                            rot1.setFunction(
-                                _secondary_constraint_functions.get(coord_path));
-                        }
-                        if (rot2.getCoordinateNames().findIndex(coord_name)) {
-                            rot2.setCoordinateNames(
-                                Array<std::string>(coupled_coord_name, 1, 2));
-                            rot2.setFunction(
-                                _secondary_constraint_functions.get(coord_path));
-                        }
-                        if (rot3.getCoordinateNames().findIndex(coord_name)) {
-                            rot3.setCoordinateNames(
-                                Array<std::string>(coupled_coord_name, 1, 2));
-                            rot3.setFunction(
-                                _secondary_constraint_functions.get(coord_path));
-                        };
-                        if (trans1.getCoordinateNames().findIndex(coord_name)) {
-                            trans1.setCoordinateNames(
-                                Array<std::string>(coupled_coord_name, 1, 2));
-                            trans1.setFunction(
-                                _secondary_constraint_functions.get(coord_path));
-                        };
-                        if (trans2.getCoordinateNames().findIndex(coord_name)) {
-                            trans2.setCoordinateNames(
-                                Array<std::string>(coupled_coord_name, 1, 2));
-                            trans2.setFunction(
-                                _secondary_constraint_functions.get(coord_path));
-                        }
-                        if (trans3.getCoordinateNames().findIndex(coord_name)) {
-                            trans3.setCoordinateNames(
-                                Array<std::string>(coupled_coord_name, 1, 2));
-                            trans3.setFunction(
-                                _secondary_constraint_functions.get(coord_path));
-                        }
-
-                    }
-                    else {
-                        new_joint.append_coordinates(new_joint.get_coordinates(i));
-                    }
-                }
-            }
-        }
-    }
-    //Replace all secondary coordinates in non CustomJoint 
-
+        //Replace all secondary coordinates in non CustomJoint 
    for (int i = 0; i < getProperty_secondary_coordinates().size(); ++i) {
         std::string path = get_secondary_coordinates(i);
         Coordinate& coord = model.updComponent<Coordinate>(path);
         std::string coord_name = coord.getName();
-        std::string ind_coord_name = model.getComponent<Coordinate>(get_secondary_coupled_coordinate()).getName();
+        std::string ind_coord_name = model.getComponent<Coordinate>(
+            get_secondary_coupled_coordinate()).getName();
         std::string joint_path = coord.getJoint().getAbsolutePathString();
+        
+        const Function& function = _secondary_constraint_functions.get(path);
+        CoordinateCouplerConstraint* cc_constraint = new CoordinateCouplerConstraint();
 
-        if (model.updComponent<Joint>(joint_path).getConcreteClassName() != "CustomJoint") {
-            const Function& function = _secondary_constraint_functions.get(path);
-            CoordinateCouplerConstraint* cc_constraint = new CoordinateCouplerConstraint();
+        cc_constraint->setIndependentCoordinateNames(
+            Array<std::string>(ind_coord_name, 1, 2));
+        cc_constraint->setDependentCoordinateName(coord_name);
+        cc_constraint->setFunction(function);
+        cc_constraint->setName(coord_name + "_function");
 
-            cc_constraint->setIndependentCoordinateNames(Array<std::string>(ind_coord_name, 1, 2));
-            cc_constraint->setDependentCoordinateName(coord_name);
-            cc_constraint->setFunction(function);
-            cc_constraint->setName(coord_name + "_function");
+        coord.setDefaultValue(function.calcValue(coupled_coord_default_value));
 
-            coord.setDefaultValue(function.calcValue(coupled_coord_default_value));
-
-            model.addConstraint(cc_constraint);
-        }
-        else {
-            continue;
-        }
+        model.addConstraint(cc_constraint);
    }
 
+
+
     //Set coordinate types
-    for (auto& coord : model.updComponentList<Coordinate>()) {
+    /*for (auto& coord : model.updComponentList<Coordinate>()) {
         if (getProperty_secondary_coordinates().findIndex(coord.getAbsolutePathString()) > -1) {
             coord.set_locked(false);
             coord.set_clamped(false);
@@ -663,15 +605,266 @@ void COMAKInverseKinematicsTool::performIK()
             coord.set_locked(false);
             coord.set_clamped(true);
         }
-    }
+    }*/
 
     SimTK::State state = model.initSystem();
 
     if (!get_constrained_model_file().empty()) {
         model.print(get_constrained_model_file());
     }
+    /*
 
     upd_InverseKinematicsTool().setModel(model);
 
     upd_InverseKinematicsTool().run();
+    */
+
+    runInverseKinematics();
+}
+
+void COMAKInverseKinematicsTool::runInverseKinematics() {
+
+     Kinematics* kinematicsReporter = nullptr;
+    try{
+        // although newly loaded model will be finalized
+        // there is no guarantee that the _model has not been edited/modified
+        _model.finalizeFromProperties();
+        _model.printBasicInfo();
+
+        // Define reporter for output
+        kinematicsReporter = new Kinematics();
+        kinematicsReporter->setRecordAccelerations(false);
+        kinematicsReporter->setInDegrees(true);
+        _model.addAnalysis(kinematicsReporter);
+
+        std::cout<<"Running Inverse Kinematics\n";
+
+        // Initialize the model's underlying system and get its default state.
+        SimTK::State& s = _model.initSystem();
+
+        //Convert old Tasks to references for assembly and tracking
+        MarkersReference markersReference;
+        SimTK::Array_<CoordinateReference> coordinateReferences;
+        // populate the references according to the setting of this Tool
+        populateReferences(markersReference, coordinateReferences);
+
+        // Determine the start time, if the provided time range is not 
+        // specified then use time from marker reference.
+        // Adjust the time range for the tool if the provided range exceeds
+        // that of the marker data.
+        SimTK::Vec2 markersValidTimeRange = markersReference.getValidTimeRange();
+        double start_time = (markersValidTimeRange[0] > get_time_range(0)) ?
+            markersValidTimeRange[0] : get_time_range(0);
+        double final_time = (markersValidTimeRange[1] < get_time_range(1)) ?
+            markersValidTimeRange[1] : get_time_range(1);
+
+        SimTK_ASSERT2_ALWAYS(final_time >= start_time,
+            "InverseKinematicsTool final time (%f) is before start time (%f).",
+            final_time, start_time);
+
+        const auto& markersTable = markersReference.getMarkerTable();
+        const int start_ix = int(
+            markersTable.getNearestRowIndexForTime(start_time) );
+        const int final_ix = int(
+            markersTable.getNearestRowIndexForTime(final_time) );
+        const int Nframes = final_ix - start_ix + 1;
+        const auto& times = markersTable.getIndependentColumn();
+
+        // create the solver given the input data
+        InverseKinematicsSolver ikSolver(_model, markersReference,
+            coordinateReferences, get_ik_constraint_weight());
+        ikSolver.setAccuracy(get_ik_accuracy());
+        s.updTime() = times[start_ix];
+        ikSolver.assemble(s);
+        kinematicsReporter->begin(s);
+
+        AnalysisSet& analysisSet = _model.updAnalysisSet();
+        analysisSet.begin(s);
+        // Get the actual number of markers the Solver is using, which
+        // can be fewer than the number of references if there isn't a
+        // corresponding model marker for each reference.
+        int nm = ikSolver.getNumMarkersInUse();
+        SimTK::Array_<double> squaredMarkerErrors(nm, 0.0);
+        SimTK::Array_<Vec3> markerLocations(nm, Vec3(0));
+        
+        Storage *modelMarkerLocations = get_report_marker_locations() ?
+            new Storage(Nframes, "ModelMarkerLocations") : nullptr;
+        Storage *modelMarkerErrors = get_report_errors() ? 
+            new Storage(Nframes, "ModelMarkerErrors") : nullptr;
+
+        Stopwatch watch;
+
+        for (int i = start_ix; i <= final_ix; ++i) {
+            s.updTime() = times[i];
+            ikSolver.track(s);
+            // show progress line every 1000 frames so users see progress
+            if (std::remainder(i - start_ix, 1000) == 0 && i != start_ix)
+                std::cout << "Solved " << i - start_ix << " frames..." << std::endl;
+            if(get_report_errors()){
+                Array<double> markerErrors(0.0, 3);
+                double totalSquaredMarkerError = 0.0;
+                double maxSquaredMarkerError = 0.0;
+                int worst = -1;
+
+                ikSolver.computeCurrentSquaredMarkerErrors(squaredMarkerErrors);
+                for(int j=0; j<nm; ++j){
+                    totalSquaredMarkerError += squaredMarkerErrors[j];
+                    if(squaredMarkerErrors[j] > maxSquaredMarkerError){
+                        maxSquaredMarkerError = squaredMarkerErrors[j];
+                        worst = j;
+                    }
+                }
+
+                double rms = nm > 0 ? sqrt(totalSquaredMarkerError / nm) : 0;
+                markerErrors.set(0, totalSquaredMarkerError); 
+                markerErrors.set(1, rms);
+                markerErrors.set(2, sqrt(maxSquaredMarkerError));
+                modelMarkerErrors->append(s.getTime(), 3, &markerErrors[0]);
+
+                std::cout << "Frame " << i << " (t=" << s.getTime() << "):\t"
+                    << "total squared error = " << totalSquaredMarkerError
+                    << ", marker error: RMS=" << rms << ", max="
+                    << sqrt(maxSquaredMarkerError) << " (" 
+                    << ikSolver.getMarkerNameForIndex(worst) << ")" << std::endl;
+            }
+
+            if(get_report_marker_locations()){
+                ikSolver.computeCurrentMarkerLocations(markerLocations);
+                Array<double> locations(0.0, 3*nm);
+                for(int j=0; j<nm; ++j){
+                    for(int k=0; k<3; ++k)
+                        locations.set(3*j+k, markerLocations[j][k]);
+                }
+
+                modelMarkerLocations->append(s.getTime(), 3*nm, &locations[0]);
+
+            }
+
+            kinematicsReporter->step(s, i);
+            analysisSet.step(s, i);
+        }
+
+        if (get_output_motion_file() != "" &&
+                get_output_motion_file() != "Unassigned") {
+            kinematicsReporter->getPositionStorage()->print(
+                    get_results_directory() + "/" + get_output_motion_file());
+        }
+        // Remove the analysis we added to the model, this also deletes it
+        _model.removeAnalysis(kinematicsReporter);
+
+        if (modelMarkerErrors) {
+            Array<std::string> labels("", 4);
+            labels[0] = "time";
+            labels[1] = "total_squared_error";
+            labels[2] = "marker_error_RMS";
+            labels[3] = "marker_error_max";
+
+            modelMarkerErrors->setColumnLabels(labels);
+            modelMarkerErrors->setName("Model Marker Errors from IK");
+
+            IO::makeDir(get_results_directory());
+            std::string errorFileName = get_results_prefix() + 
+                "_ik_marker_errors";
+            Storage::printResult(modelMarkerErrors, errorFileName,
+                                 get_results_directory(), -1, ".sto");
+
+            delete modelMarkerErrors;
+        }
+
+        if(modelMarkerLocations){
+            Array<std::string> labels("", 3*nm+1);
+            labels[0] = "time";
+            Array<std::string> XYZ("", 3*nm);
+            XYZ[0] = "_tx"; XYZ[1] = "_ty"; XYZ[2] = "_tz";
+
+            for(int j=0; j<nm; ++j){
+                for(int k=0; k<3; ++k)
+                    labels.set(3*j+k+1, ikSolver.getMarkerNameForIndex(j)+XYZ[k]);
+            }
+            modelMarkerLocations->setColumnLabels(labels);
+            modelMarkerLocations->setName("Model Marker Locations from IK");
+    
+            IO::makeDir(get_results_directory());
+            std::string markerFileName = get_results_prefix() + 
+                "_ik_model_marker_locations";
+            Storage::printResult(modelMarkerLocations, markerFileName,
+                                 get_results_directory(), -1, ".sto");
+
+            delete modelMarkerLocations;
+        }
+
+        std::cout << "InverseKinematicsTool completed " << Nframes << " frames in "
+            << watch.getElapsedTimeFormatted() << "\n" <<std::endl;
+    }
+    catch (const std::exception& ex) {
+        std::cout << "InverseKinematicsTool Failed: " << ex.what() << std::endl;
+        // If failure happened after kinematicsReporter was added, make sure to cleanup
+        if (kinematicsReporter!= nullptr)
+            _model.removeAnalysis(kinematicsReporter);
+        throw (Exception("InverseKinematicsTool Failed, "
+            "please see messages window for details..."));
+    }
+}
+
+void COMAKInverseKinematicsTool::populateReferences(MarkersReference& markersReference,
+    SimTK::Array_<CoordinateReference>&coordinateReferences) const
+{
+    FunctionSet *coordFunctions = NULL;
+    // Load the coordinate data
+    // bool haveCoordinateFile = false;
+    if (get_coordinate_file() != "" && get_coordinate_file() != "Unassigned") {
+        Storage coordinateValues(get_coordinate_file());
+        // Convert degrees to radian (TODO: this needs to have a check that the storage is, in fact, in degrees!)
+        _model.getSimbodyEngine().convertDegreesToRadians(coordinateValues);
+        // haveCoordinateFile = true;
+        coordFunctions = new GCVSplineSet(5, &coordinateValues);
+    }
+
+    Set<MarkerWeight> markerWeights;
+    // Loop through old "IKTaskSet" and assign weights to the coordinate and marker references
+    // For coordinates, create the functions for coordinate reference values
+    int index = 0;
+    for (int i = 0; i < get_IKTaskSet().getSize(); i++) {
+        if (!get_IKTaskSet()[i].getApply()) continue;
+        if (IKCoordinateTask *coordTask = dynamic_cast<IKCoordinateTask *>(&get_IKTaskSet()[i])) {
+            CoordinateReference *coordRef = NULL;
+            if (coordTask->getValueType() == IKCoordinateTask::FromFile) {
+                if (!coordFunctions)
+                    throw Exception("InverseKinematicsTool: value for coordinate " + coordTask->getName() + " not found.");
+
+                index = coordFunctions->getIndex(coordTask->getName(), index);
+                if (index >= 0) {
+                    coordRef = new CoordinateReference(coordTask->getName(), coordFunctions->get(index));
+                }
+            }
+            else if ((coordTask->getValueType() == IKCoordinateTask::ManualValue)) {
+                Constant reference(Constant(coordTask->getValue()));
+                coordRef = new CoordinateReference(coordTask->getName(), reference);
+            }
+            else { // assume it should be held at its default value
+                double value = _model.getCoordinateSet().get(coordTask->getName()).getDefaultValue();
+                Constant reference = Constant(value);
+                coordRef = new CoordinateReference(coordTask->getName(), reference);
+            }
+
+            if (coordRef == NULL)
+                throw Exception("InverseKinematicsTool: value for coordinate " + coordTask->getName() + " not found.");
+            else
+                coordRef->setWeight(coordTask->getWeight());
+
+            coordinateReferences.push_back(*coordRef);
+        }
+        else if (IKMarkerTask *markerTask = dynamic_cast<IKMarkerTask *>(&get_IKTaskSet()[i])) {
+            if (markerTask->getApply()) {
+                // Only track markers that have a task and it is "applied"
+                markerWeights.adoptAndAppend(
+                    new MarkerWeight(markerTask->getName(), markerTask->getWeight()));
+            }
+        }
+    }
+
+    //Read in the marker data file and set the weights for associated markers.
+    //Markers in the model and the marker file but not in the markerWeights are
+    //ignored
+    markersReference.initializeFromMarkersFile(get_marker_file(), markerWeights);
 }

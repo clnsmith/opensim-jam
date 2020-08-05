@@ -55,8 +55,6 @@ int main(int argc, char *argv[])
         
         std::cout << "\n\nTotal Computation Time: "
             << watch.getElapsedTimeFormatted() << std::endl;
-
-
         // **********  END CODE  **********
     }
     catch (OpenSim::Exception ex)
